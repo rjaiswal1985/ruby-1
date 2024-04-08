@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Reltio CM Inbound Platform Event Access</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Reltio CM PlatformEvent Access</label>
+    <license>Salesforce Integration</license>
+</PermissionSet>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>sm@aligntech.com</contactEmail>
+    <label>Reltio Connection</label>
+    <oauthConfig>
+        <callbackUrl>http://localhost:8083/connectors</callbackUrl>
+        <certificate>MIIDpzCCAo8CFH5dsSK/u/Pm0w1iT0EHdOhVB9ruMA0GCSqGSIb3DQEBCwUAMIGPMQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTERMA8GA1UEBwwIU2FuIEpvc2UxGTAXBgNVBAoMEEFsaWduIFRlY2hub2xvZ3kxCzAJBgNVBAsMAklUMQ8wDQYDVQQDDAZSZWx0aW8xHzAdBgkqhkiG9w0BCQEWEHNtQGFsaWdudGVjaC5jb20wHhcNMjMxMjA0MTM1NzU3WhcNMjQxMjAzMTM1NzU3WjCBjzELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExETAPBgNVBAcMCFNhbiBKb3NlMRkwFwYDVQQKDBBBbGlnbiBUZWNobm9sb2d5MQswCQYDVQQLDAJJVDEPMA0GA1UEAwwGUmVsdGlvMR8wHQYJKoZIhvcNAQkBFhBzbUBhbGlnbnRlY2guY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz80UbVr9oZbbeUPDYfrt5+D2TTKZgZ5oGtv7+HiVO1s8kybVo9PiCQjnyaWCj3+eO0IG41rH7zqFleONP8YRsbXgdsU9yvv2QG4DJPstaKb7Ggou7Kd+XPRVQGCSXiavAM6RHUF8FDBvYp9ygoq+Kq5aL15SS/p8RQWAikeyFQIES3m8XFS8IBSM+5SsUbvfHvkAwxuWJ2eyrlAoqZZ451fR8kZV/itXwLEkdncGAomz8KPCo7orkAb1xQrkTj+hD+T6c3VZKw1guwP1sXr4OMrd/G3VohjnRLWiFfcAZPM1E70WsIl0U2xlz0T6Jhu9wLF/BuBQl5XpqLBTSo9/cQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCPo0UaDVW4bM5rleresQ1FJKM+u/sZGnaaaxcEv4AEatU3QqMRuqpr5ITIXhJ7f5/X3YjfkTM1CV2bJHYXgUW/hFqscPkJxacv6ZNnBnBNth4veLoVH2675iJd6ge/+LopyWCfyFF6lGk+mTL8ATCRRPvOTcezy+7NxdArmCqnJLvPhVDpw+Ppza6ydOt8FBIqiA4L9gKlZSJ4fRN0uqReCnfJFcYwSUiVExm5B2NCu0ojqZGR5byHHlcLHAR0XsnIEgp8156yow3NeaQ/Bemz1hR75XYdtE+FNr01OSoTMJZjxnIZvniICOMXLvBuP27TmPeBMalZ0hlf6rlsc/Ac</certificate>
+        <consumerKey>3MVG9M00uNbhCYzCxYaqXa7edjSmShmBS0T9fBXtKbweW2aO38UPtNJE6BLknAw_zsp6y3m19bj5W.lsSXx3Y</consumerKey>
+        <isAdminApproved>false</isAdminApproved>
+        <isClientCredentialEnabled>false</isClientCredentialEnabled>
+        <isCodeCredentialEnabled>false</isCodeCredentialEnabled>
+        <isCodeCredentialPostOnly>false</isCodeCredentialPostOnly>
+        <isConsumerSecretOptional>false</isConsumerSecretOptional>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+        <isNamedUserJwtEnabled>false</isNamedUserJwtEnabled>
+        <isPkceRequired>true</isPkceRequired>
+        <isSecretRequiredForRefreshToken>true</isSecretRequiredForRefreshToken>
+        <scopes>Api</scopes>
+        <scopes>Web</scopes>
+        <scopes>Full</scopes>
+        <scopes>RefreshToken</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>ENFORCE</ipRelaxation>
+        <refreshTokenPolicy>infinite</refreshTokenPolicy>
+    </oauthPolicy>
+</ConnectedApp>

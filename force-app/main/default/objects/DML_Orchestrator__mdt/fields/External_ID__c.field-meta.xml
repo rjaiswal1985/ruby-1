@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_ID__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>External Id field to consider on objects</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>External ID</label>
+    <metadataRelationshipControllingField>DML_Orchestrator__mdt.SObject__c</metadataRelationshipControllingField>
+    <referenceTo>EntityParticle</referenceTo>
+    <relationshipLabel>Reltio_DML_Orchestrator</relationshipLabel>
+    <relationshipName>Reltio_DML_Orchestrator</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

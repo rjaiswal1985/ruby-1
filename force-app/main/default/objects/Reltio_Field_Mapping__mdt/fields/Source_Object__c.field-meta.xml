@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Source_Object__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII</complianceGroup>
+    <description>Source Object</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Source Object</inlineHelpText>
+    <label>Source Object</label>
+    <required>true</required>
+    <securityClassification>Public</securityClassification>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Master</fullName>
+                <default>true</default>
+                <label>Master</label>
+            </value>
+            <value>
+                <fullName>EInvoice</fullName>
+                <default>false</default>
+                <label>EInvoice</label>
+            </value>
+            <value>
+                <fullName>Phone</fullName>
+                <default>false</default>
+                <label>Phone</label>
+            </value>
+            <value>
+                <fullName>Email</fullName>
+                <default>false</default>
+                <label>Email</label>
+            </value>
+            <value>
+                <fullName>SocialMedia</fullName>
+                <default>false</default>
+                <label>SocialMedia</label>
+            </value>
+            <value>
+                <fullName>Education</fullName>
+                <default>false</default>
+                <label>Education</label>
+            </value>
+            <value>
+                <fullName>License</fullName>
+                <default>false</default>
+                <label>License</label>
+            </value>
+            <value>
+                <fullName>Roles</fullName>
+                <default>false</default>
+                <label>Roles</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

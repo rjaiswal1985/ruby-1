@@ -1,0 +1,3 @@
+<apex:page StandardController="AccountContactRelation">
+This is VF page placeholder to test the button feature and other cutomization . 
+</apex:page>

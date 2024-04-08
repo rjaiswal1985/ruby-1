@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>From_Organization_Status__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>To Store the status of From Organization status</description>
+    <externalId>false</externalId>
+    <formula>TEXT(From_Account__r.Status__c)</formula>
+    <label>From Organization Status</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

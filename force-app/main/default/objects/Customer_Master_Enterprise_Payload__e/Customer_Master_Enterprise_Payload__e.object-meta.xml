@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Customer Master Enterprise Payload</description>
+    <eventType>HighVolume</eventType>
+    <label>Customer Master Enterprise Payload</label>
+    <pluralLabel>Customer Master Enterprise Payload</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+</CustomObject>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This permission set group is for service managers which comprises of service base permission set and additional permission sets which is to be assigned to higher management</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Service Manager Permission Set Group</label>
+    <permissionSets>Dashboard_Access_Permission_Set</permissionSets>
+    <permissionSets>Service_Address_Book</permissionSets>
+    <permissionSets>Service_Base_Permission_Set</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

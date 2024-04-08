@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Additional_Info_JSON__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Field to store additional info as serialised JSON while logging the exception</description>
+    <externalId>false</externalId>
+    <label>Additional Info JSON</label>
+    <length>131072</length>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

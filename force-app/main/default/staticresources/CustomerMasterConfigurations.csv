@@ -1,0 +1,13 @@
+Configuration_Type__c,Constant_Description__c,Constant_value__c,Name
+Constant,this is for class service while defining Organization- Organization relationships,AccountRelationshipService,AccountRelationshipService
+Constant,Primary email tagging at main organization and person layer,Primary Email,PRIMARYEMAIL
+Constant,Primary phone tagging at main organization and person layer,Primary Phone,PRIMARYPHONE
+Constant,HCO-HCO relationship service,ReltioHCOHCOService,ReltioHCOHCOService
+Constant,HCO service related attributes,ReltioHCOService,ReltioHCOService
+Constant,HCP-HCO relationship service,ReltioHCPHCOService,ReltioHCPHCOService
+Constant,HCP service,ReltioHCPService,ReltioHCPService
+Constant,For all attributes corresponding to on boarding,attributes,attributes
+Constant,"While creating relationships, this is the end object details",endObjectDetails,endObjectDetails
+Constant,This is for all object names,object,object
+Constant,"in relationship, this stores the start object information",startObjectDetails,startObjectDetails
+Constant,"in relationship, this stores the start object information",Parent,ISAFFILIATED

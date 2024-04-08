@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>E_Invoice_Preference__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>GDPR</complianceGroup>
+    <description>The field contains invoice format preference of customer</description>
+    <externalId>false</externalId>
+    <label>E-Invoice Preference</label>
+    <required>false</required>
+    <securityClassification>Restricted</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>E-invoice XML Embedded in PDF</fullName>
+                <default>false</default>
+                <label>E-invoice XML Embedded in PDF</label>
+            </value>
+            <value>
+                <fullName>E-invoice PDF</fullName>
+                <default>false</default>
+                <label>E-invoice PDF</label>
+            </value>
+            <value>
+                <fullName>E-invoice XML</fullName>
+                <default>false</default>
+                <label>E-invoice XML</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

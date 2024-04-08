@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Line_of_Business__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>Line of business of the practitioner</description>
+    <externalId>false</externalId>
+    <label>Line of Business</label>
+    <required>false</required>
+    <securityClassification>Restricted</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Invisalign</fullName>
+                <default>false</default>
+                <label>Invisalign</label>
+            </value>
+            <value>
+                <fullName>iTero</fullName>
+                <default>false</default>
+                <label>iTero</label>
+            </value>
+            <value>
+                <fullName>DentaXrai</fullName>
+                <default>false</default>
+                <label>DentaXrai</label>
+            </value>
+            <value>
+                <fullName>exocad</fullName>
+                <default>false</default>
+                <label>Exocad</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

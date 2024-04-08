@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_Event_Type__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>type of event</description>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Order Event Type</label>
+    <length>15</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

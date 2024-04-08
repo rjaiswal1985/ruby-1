@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Constants</fullName>
+    <columns>NAME</columns>
+    <columns>Constant_value__c</columns>
+    <columns>Constant_Description__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Constant_value__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Constants</label>
+</ListView>

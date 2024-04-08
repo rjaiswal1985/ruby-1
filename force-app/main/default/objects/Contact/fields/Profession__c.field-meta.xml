@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Profession__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>This field stores the profession to which person belongs</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field stores the profession to which person belongs</inlineHelpText>
+    <label>Profession</label>
+    <required>false</required>
+    <securityClassification>Restricted</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Doctor</fullName>
+                <default>false</default>
+                <label>Doctor</label>
+            </value>
+            <value>
+                <fullName>Dental Hygienist</fullName>
+                <default>false</default>
+                <label>Dental Hygienist</label>
+            </value>
+            <value>
+                <fullName>Dental Assistant</fullName>
+                <default>false</default>
+                <label>Dental Assistant</label>
+            </value>
+            <value>
+                <fullName>Dental Technician</fullName>
+                <default>false</default>
+                <label>Dental Technician</label>
+            </value>
+            <value>
+                <fullName>Office Administrator</fullName>
+                <default>false</default>
+                <label>Office Administrator</label>
+            </value>
+            <value>
+                <fullName>Finance Personnel</fullName>
+                <default>false</default>
+                <label>Finance Personnel</label>
+            </value>
+            <value>
+                <fullName>Receptionist</fullName>
+                <default>false</default>
+                <label>Receptionist</label>
+            </value>
+            <value>
+                <fullName>Marketing Personnel</fullName>
+                <default>false</default>
+                <label>Marketing Personnel</label>
+            </value>
+            <value>
+                <fullName>IT Personnel</fullName>
+                <default>false</default>
+                <label>IT Personnel</label>
+            </value>
+            <value>
+                <fullName>Sales Personnel</fullName>
+                <default>false</default>
+                <label>Sales Personnel</label>
+            </value>
+            <value>
+                <fullName>General Manager</fullName>
+                <default>false</default>
+                <label>General Manager</label>
+            </value>
+            <value>
+                <fullName>Treatment Coordinator</fullName>
+                <default>false</default>
+                <label>Treatment Coordinator</label>
+            </value>
+            <value>
+                <fullName>Customer Support Personnel</fullName>
+                <default>false</default>
+                <label>Customer Support Personnel</label>
+            </value>
+            <value>
+                <fullName>Purchasing Personnel</fullName>
+                <default>false</default>
+                <label>Purchasing Personnel</label>
+            </value>
+            <value>
+                <fullName>Operation Personnel</fullName>
+                <default>false</default>
+                <label>Operation Personnel</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

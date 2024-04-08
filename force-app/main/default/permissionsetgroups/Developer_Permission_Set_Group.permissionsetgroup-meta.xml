@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This permission set group is to be assigned to the developers which has developer level access permission sets for debugging the reported issues</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Developer Permission Set Group</label>
+    <permissionSets>Enterprise_IT</permissionSets>
+    <permissionSets>UCB_Super_User_Access</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

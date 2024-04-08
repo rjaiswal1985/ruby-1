@@ -1,0 +1,26 @@
+<template>
+    <lightning-card title="Replay Mechanism" icon-name="custom:custom14">
+        <div class="slds-m-around_medium">
+            <lightning-input label="Replay ID" type="number" onchange={handleReplayIdChange} min="0.0" required></lightning-input>
+            <!--<lightning-input label="Platform Event Name" value={selectedEventName} onchange={handleEventNameChange}></lightning-input>-->
+            <lightning-combobox
+                name="platformEventDropdown"
+                label="Select a Channel"
+                value={selectedEventName}
+                options={platformEvents}
+                onchange={handleEventNameChange}
+                required>
+            </lightning-combobox>
+        </div>
+        <lightning-button variant="Success" label="Replay" onclick={subscribeToChannel} disabled={isSubscribed} class="slds-m-left_x-small"></lightning-button>
+        <lightning-card title={title}>
+            <template if:true={showPayload}>
+                <div class="slds-m-around_medium">
+                    <template if:true={requiredEvent}>
+                        <div>{requiredEvent}</div>
+                    </template>
+                </div>
+            </template>
+        </lightning-card>
+    </lightning-card>
+</template>

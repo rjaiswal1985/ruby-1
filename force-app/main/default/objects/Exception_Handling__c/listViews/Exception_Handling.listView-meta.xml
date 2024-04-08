@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Exception_Handling</fullName>
+    <columns>NAME</columns>
+    <columns>Transaction_Id__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>Component_Name__c</columns>
+    <columns>Module__c</columns>
+    <columns>Additional_Info_JSON__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>Exception Handling</label>
+</ListView>

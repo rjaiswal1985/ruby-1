@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>salesforce.alerts@aligntech.com</contactEmail>
+    <description>To establish the connections with DevOps tools</description>
+    <label>DevOps Connection</label>
+    <oauthConfig>
+        <callbackUrl>http://localhost:1717/OauthRedirect</callbackUrl>
+        <certificate>MIIDajCCAlICCQDG3xerffGYiTANBgkqhkiG9w0BAQsFADB3MQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTERMA8GA1UEBwwIU2FuIEpvc2UxGDAWBgNVBAoMD0FsaWdudGVjaG5vbG9neTELMAkGA1UECwwCSVQxGTAXBgNVBAMMEGRldk9wc2Nvbm5lY3Rpb24wHhcNMjMwOTA0MTAzMjIzWhcNMjkwMjI0MTAzMjIzWjB3MQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTERMA8GA1UEBwwIU2FuIEpvc2UxGDAWBgNVBAoMD0FsaWdudGVjaG5vbG9neTELMAkGA1UECwwCSVQxGTAXBgNVBAMMEGRldk9wc2Nvbm5lY3Rpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV2r42SGdDn3HK+II9x++uXY8QPzB1FVnCFmozZlj/xzzn96UjhTCa1zyV7K8bvIfG5PrxfriS1LD6lqy6RYIkBbgLiPYALTsKzTH++1KVguU+9RrLWTSGt9DsIa03W3DS1+sOLUAn9cGTSChLHrOvWL6scAJH1MZ6KupmFLQLinSlH9APU+SdUHzOAegKjqCLfQh+duxLif4eNiLT6pUDusYI6sTcXfFMrmV7iP7bO5Rq0xvkbWCMPRj4JfIHGrLZK/lPfQYT3TdSqAJgnhOPH1Svio6nu4zRekHYoWCUjOBlDgYmMeAh7ayrRq9s3U32683kLzoDUGpM0Ne7/mehAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAKXm4eHsPlDws1TFJfIARyrsgWe+BvXfbho1Y0cp8KF5VXzFwgzWZiKtbVefr3WWppbp2JQa0NLLiZ6PQb1bARbwL61HRaLqVHiTEJ3kbQAEU0fjKBpScxFdUQn/JNNhlzfV+a8MdMqZHBqt26Yv4h3UmoPzqdpzpxVvGIEL2keK4IAatkWjflTINKur4LmqgsMO3IpOcSH8UzpJxqk0qP9UyxPmjnHiVCcU6r6l203k/91ngy8lYcylmY0XQ3vyCM8mkKJxLF6gy01WjCXJhiL51774sHei8h4/HlBw6tdaNwiP0TXWt2WRNDyC5kEvE9vMVxhlgJkg+Ey7z9MvQKg=</certificate>
+        <consumerKey>3MVG9M00uNbhCYzCxYaqXa7edjSmShmBS0T9feTqYIEFhl8w._xoU6RbwpD_gXLVFTrRAjWPfQ3yZ8wvDSqD0</consumerKey>
+        <isAdminApproved>true</isAdminApproved>
+        <isClientCredentialEnabled>false</isClientCredentialEnabled>
+        <isCodeCredentialEnabled>false</isCodeCredentialEnabled>
+        <isCodeCredentialPostOnly>false</isCodeCredentialPostOnly>
+        <isConsumerSecretOptional>false</isConsumerSecretOptional>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+        <isNamedUserJwtEnabled>false</isNamedUserJwtEnabled>
+        <isPkceRequired>false</isPkceRequired>
+        <isSecretRequiredForRefreshToken>false</isSecretRequiredForRefreshToken>
+        <scopes>Api</scopes>
+        <scopes>Web</scopes>
+        <scopes>Full</scopes>
+        <scopes>RefreshToken</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>ENFORCE</ipRelaxation>
+        <refreshTokenPolicy>zero</refreshTokenPolicy>
+    </oauthPolicy>
+    <permissionSetName>DevOps Permission</permissionSetName>
+</ConnectedApp>

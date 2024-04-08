@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status_Reason__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>This field stores status reason if there is any change in HCO-HCO relationship</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field stores status reason if there is any change in HCO-HCO relationship</inlineHelpText>
+    <label>Status Reason</label>
+    <required>false</required>
+    <securityClassification>Restricted</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Requested by Customer</fullName>
+                <default>false</default>
+                <label>Requested by Customer</label>
+            </value>
+            <value>
+                <fullName>Align Decision</fullName>
+                <default>false</default>
+                <label>Align Decision</label>
+            </value>
+            <value>
+                <fullName>Business Establishment And Acquisition</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Business Establishment And Acquisition</label>
+            </value>
+            <value>
+                <fullName>Business Sale</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Business Sale</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

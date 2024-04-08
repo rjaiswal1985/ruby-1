@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Relationship_Type__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description>This field stores relationship type for HCO-HCP relationship</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field stores relationship type for HCO-HCP relationship</inlineHelpText>
+    <label>Relationship Type</label>
+    <required>false</required>
+    <securityClassification>Restricted</securityClassification>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Owner</fullName>
+                <default>false</default>
+                <label>Owner</label>
+            </value>
+            <value>
+                <fullName>Employee</fullName>
+                <default>false</default>
+                <label>Employee</label>
+            </value>
+            <value>
+                <fullName>Student</fullName>
+                <default>false</default>
+                <label>Student</label>
+            </value>
+            <value>
+                <fullName>Member</fullName>
+                <default>false</default>
+                <label>Member</label>
+            </value>
+            <value>
+                <fullName>IndependentContractor</fullName>
+                <default>false</default>
+                <label>IndependentContractor</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

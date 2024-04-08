@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <description>LATAM iTero Service Agent</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>LATAM iTero Service Agent</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>LATAM_iTero_Service_Manager</parentRole>
+</Role>

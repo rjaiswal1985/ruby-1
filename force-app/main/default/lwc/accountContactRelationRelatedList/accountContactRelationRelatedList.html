@@ -1,0 +1,101 @@
+<template>
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="standard:relationship">
+                        </lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <template if:false={objectApiName}>
+                                    <nav role="navigation" aria-label="Breadcrumbs">
+                                        <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                                            <li class="slds-breadcrumb__item">
+                                                <a href={recordHomeURL}>{recordHome}</a>
+                                            </li>
+                                            <li class="slds-breadcrumb__item">
+                                                <a href={recordUrl}>{recordName}</a>
+                                            </li>
+                                        </ol>
+                                    </nav>
+                                </template>
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate">
+                                        <template lwc:if={objectApiName}>
+                                            <lightning-formatted-url value={viewAllUrl} target="_self" label={title}>
+                                            </lightning-formatted-url>
+                                        </template>
+                                        <template lwc:else>
+                                            {title}
+                                        </template>
+                                    </span>
+                                </h1>
+                            </div>
+                        </div>
+                        <template lwc:if={isCreatable}>
+                            <div class="slds-float_right">
+                                <template lwc:if={objectApiName}>
+                                    <lightning-button-menu icon-size="x-small" onselect={handleActionsMenuSelect}>
+                                        <lightning-menu-item label="Add Relationship"></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </template>
+                                <template lwc:else>
+                                    <lightning-button label="Add Relationship" onclick={handleActionsMenuSelect}>
+                                    </lightning-button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <template lwc:if={hasRecords}>
+        <article class="slds-card">
+            <template lwc:if={objectApiName}>
+                <template for:each={records} for:item="record">
+                    <div key={record.Id}>
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="2" padding="around-small">
+                                <lightning-icon icon-name="standard:contact" title={record.recordName}>
+                                </lightning-icon>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="9" padding="x-around-small">
+                                <lightning-formatted-url value={record.recordLink} target="_blank"
+                                    label={record.recordName}></lightning-formatted-url><br>
+                                    {record.RoleName} : {record.Roles} <br>
+                                    {record.RelationName} : {record.Relationship_Type__c} <br>
+                                    {record.StatusName} : {record.Status__c} <br>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="1" padding="around-small">
+                                <div class="slds-float_right">
+                                    <lightning-button-menu icon-size="x-small" data-id={record.record}
+                                        onselect={handleRowAction}>
+                                        <lightning-menu-item label="View relationship" value="view">
+                                        </lightning-menu-item>
+                                        <template lwc:if={isUpdatable}>
+                                            <lightning-menu-item label="Edit relationship" value="edit">
+                                            </lightning-menu-item>
+                                        </template>
+                                    </lightning-button-menu>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <br>
+                    </div>
+                </template>
+                <footer class="slds-card__footer">
+                    <lightning-formatted-url value={viewAllUrl} target="_self" label="View All">
+                    </lightning-formatted-url>
+                </footer>
+            </template>
+            <template lwc:else>
+                <lightning-datatable key-field="Id" data={records} columns={columns} hide-checkbox-column="true"
+                    onrowaction={handleRowAction} show-row-number-column="true"></lightning-datatable>
+            </template>
+        </article>
+    </template>
+</template>

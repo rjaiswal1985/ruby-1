@@ -1,0 +1,16 @@
+<aura:component controller="CM_SobjectController" implements="lightning:actionOverride,force:hasRecordId,force:hasSObjectName,lightning:isUrlAddressable,force:lightningQuickAction">
+    <aura:attribute name="redirectObject" type="Object" /> 
+    <aura:handler name="init" value="{! this }" action="{! c.init }" />  
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.init}"/>
+    <aura:if isTrue="{!v.redirectObject.sobjectId}"> 
+        <c:mdmRedirectLwc redirectObject="{!v.redirectObject}"></c:mdmRedirectLwc>
+    </aura:if>
+    <aura:html tag="style">
+    .slds-backdrop {
+    background: rgba(43, 40, 38, 0) !important;  
+    }
+    .slds-fade-in-open {
+    display:none !important;
+   }
+</aura:html>   
+</aura:component>
