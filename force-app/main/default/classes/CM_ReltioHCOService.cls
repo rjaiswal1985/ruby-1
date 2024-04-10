@@ -30,8 +30,8 @@ public with sharing class CM_ReltioHCOService {
         final Map < String, Account > accountMap = new Map < String, Account > ();
 
         Account account = new Account();
-        if (key2value.containsKey('Account')) {
-            account = CM_AccountService.upsertAccount(key2value.get('Account'));
+        if (key2value.containsKey(ACCOUNTSTRING)) {
+            account = CM_AccountService.upsertAccount(key2value.get(ACCOUNTSTRING));
         }
 
         if (key2value.containsKey('Organization_Communication__c')) {
@@ -47,7 +47,7 @@ public with sharing class CM_ReltioHCOService {
         //update phone and email in the Account from Customer Communication
         account = getAccountList(account, cusCommunication.values());
         accountMap.put(account.MDM_Id__c, account);
-        resultMap.put('Account', accountMap);
+        resultMap.put(ACCOUNTSTRING, accountMap);
 
         return resultMap;
     }
