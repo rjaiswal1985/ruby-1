@@ -66,7 +66,7 @@ public with sharing class CM_ReltioHCOHCPService {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
             }
             for(AccountContactRelation relationship: acc.AccountContactRelations) {
-                upsertOldMap.get(ACCCONRELATION).put(relationship.Account.MDM_Id__c+relationship.Contact.MDM_Id__c,relationship); 
+                upsertOldMap.get('AccountContactRelation').put(relationship.Account.MDM_Id__c+relationship.Contact.MDM_Id__c,relationship); 
             }
         }
         return upsertOldMap;

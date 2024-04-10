@@ -2037,10 +2037,6 @@
         <enabled>true</enabled>
     </pageAccesses>
     <tabVisibilities>
-        <tab>Account_Relationship__c</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
         <tab>Exception_Handling__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>

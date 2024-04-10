@@ -17,6 +17,7 @@ public with sharing class CM_AccountUpdateCaptureTriggerHandler extends UCB_Trig
      */
     public override void afterTrigger(UCB_Trigger.TriggerContext trgCtx) {
         try {
+            system.debug('trigger.new==>>'+trgCtx.newList);
             CM_AccountUpdateCaptureTriggerHelper.accountContactRelations(trgCtx.newList);
         } catch (Exception excp) {
             system.debug('Account CDC==>>'+excp.getMessage());

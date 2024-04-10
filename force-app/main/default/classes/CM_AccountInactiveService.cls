@@ -12,12 +12,14 @@
 ***********************************************************************************************************************/
 public with sharing class CM_AccountInactiveService {
         
-    public static void updteContwithActiveAccnt(Map<String,List<Id>> accMap) {
+    public static List<Contact> updteContwithActiveAccnt(Map<String,List<Id>> accMap) {
         
         final List<Contact> contUpdateLst;
 		final List<Id> accIds; 
         final List<Contact> conOwnerLst;
+        final List<Contact> conNonOwnerLst;
         final List<Contact> conLst;
+        final Set<Id> conOwnrSet;
         String lastRelAccount;
         String lastRelOwnerAccount;
         
@@ -29,15 +31,25 @@ public with sharing class CM_AccountInactiveService {
         
         conOwnerLst = [Select Id,
                            (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner' order by startdate asc LIMIT 1)
-                           from Contact where AccountId IN :accIds  WITH SECURITY_ENFORCED ];
-            
+                           from Contact where AccountId IN :accIds  WITH SECURITY_ENFORCED ]; 
+        for(Contact cont : conOwnerLst) {
+            for(AccountContactRelation accConRel : cont.AccountContactRelations) {
+                conOwnrSet.add(accConRel.AccountID);
+            }    
+        }            
        
-        conLst = [Select Id,
+        conNonOwnerLst = [Select Id,
                            (Select accountId,Relationship_Type__c from AccountContactRelations order by startdate asc LIMIT 1)
                            from Contact where AccountId IN :accIds  WITH SECURITY_ENFORCED ];    
        
-        
-        
+       for(Contact con : conNonOwnerLst) {
+            for(AccountContactRelation accConRel : con.AccountContactRelations) {
+                if(!conOwnrSet.contains(accConRel.AccountID)) {
+                	conLst.add(con);    
+                }
+            }    
+        }
+        conLst.addAll(conOwnerLst);
         for(Contact con : conLst) {
             system.debug('con==>>'+con);                   
 			lastRelAccount=null;
@@ -54,15 +66,17 @@ public with sharing class CM_AccountInactiveService {
                 }
             }
             cont.accountId = String.isempty(lastRelAccount)?lastRelAccount:lastRelAccount;
+            //cont.accountId = String.isempty(lastRelOwnerAccount)?lastRelAccount:lastRelOwnerAccount;
             //contactmap.put(con.Id,cont);
             contUpdateLst.add(cont);
             system.debug('contUpdateLst==>>'+contUpdateLst);
      	}
+        return contUpdateLst;
         /* system.debug('@contactmap@'+contactmap);
 		system.debug('@accConRelation@'+accConRelation);
 		upsertMap.put('Contact',contactmap);
-		CM_DMLSaveResult.upsertRecords(upsertMap, false); */
-        UCB_DMLUtility.updateRecords(contUpdateLst,false);  
+		CM_DMLSaveResult.upsertRecords(upsertMap, false); 
+        UCB_DMLUtility.updateRecords(contUpdateLst,false); */ 
     }    
     private CM_AccountInactiveService() {}
 }
