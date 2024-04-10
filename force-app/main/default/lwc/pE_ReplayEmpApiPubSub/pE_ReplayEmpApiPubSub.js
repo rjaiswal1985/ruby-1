@@ -8,11 +8,16 @@ export default class PE_ReplayEmpApiPubSub extends LightningElement {
     selectedEventName;
     platformEvents = [];
     replayId = -1; // Set to -1 to get all events
+    eventUUID = '';
 
     subscription = {};
     requiredEvent={};
     handleReplayIdChange(event){
         this.replayId = event.target.value;
+    }
+
+    handleEventUUIDChange(event){
+        this.eventUUID = event.target.value;
     }
 
     handleEventNameChange(event) {
@@ -35,7 +40,7 @@ export default class PE_ReplayEmpApiPubSub extends LightningElement {
             // Handle incoming events
             console.log('Received event payload: ', JSON.stringify(response));
             // Check if the condition to unsubscribe is met
-            if (response.data.event.replayId==this.replayId) {
+            if (response.data.event.replayId==this.replayId && response.data.event.eventUUID == this.eventUUID) {
                 this.requiredEvent = JSON.stringify(response);
                 console.log('Received Filtered event payload: ', this.requiredEvent);
                 this.unsubscribeFromChannel();
@@ -56,7 +61,7 @@ export default class PE_ReplayEmpApiPubSub extends LightningElement {
         const channelName = '/event/' + this.selectedEventName;
         this.title = "Below is the message sent to the "+this.selectedEventName+" Channel";
         // Subscribe to the channel
-        subscribe(channelName, this.replayId-1, messageCallback)
+        subscribe(channelName, this.replayId == -1 ? -2 : this.replayId, messageCallback)
             .then(response => {
                 this.subscription = response;
                 subscribeCallback(response);

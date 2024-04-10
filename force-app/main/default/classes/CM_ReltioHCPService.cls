@@ -11,6 +11,14 @@
  * 1.0             Sruthi M                   07/11/2023          Contact Creation Service 
  ***********************************************************************************************************************/
 public with sharing class CM_ReltioHCPService {
+    /* Contact String */
+    final static string CONTACTSTRING = 'Contact';
+    /* Contact Communication String */
+    final static string PERCOMMUNICATION = 'Person_Communication__c';
+    /* Education Detail String */
+    final static string EDUDETAILS = 'Educational_Detail__c';
+    /* Education Detail String */
+    final static string LICINFORMATION = 'License_Information__c';
     /**    
      * @description :  Method to parse input json and get Contact data
      * Parameters : input json, process name from platfrom event
@@ -25,30 +33,30 @@ public with sharing class CM_ReltioHCPService {
      */
     public static Map < String, Map < String, Sobject >> upsertHCPSelector(Map < String, Map < String, Map < String, Object >>> key2value) {
         final Map < String, Map < String, Sobject >> resultMap = new Map < String, Map < String, Sobject >> ();
-        Contact contact = CM_ContactService.upsertContact(key2value.get('Contact'));
+        Contact contact = CM_ContactService.upsertContact(key2value.get(CONTACTSTRING));
         Map < String, Person_Communication__c > commInfoMap = new Map < String, Person_Communication__c > ();
         final Map < String, Contact > contactMap = new Map < String, Contact > ();
 
         //person communication information
-        if (key2value.containsKey('Person_Communication__c')) {
-            commInfoMap = CM_PersonCommunicationService.upsertHCPcommunicationInfo(key2value.get('Person_Communication__c'), contact);
-            resultMap.put('Person_Communication__c', commInfoMap);
+        if (key2value.containsKey(PERCOMMUNICATION)) {
+            commInfoMap = CM_PersonCommunicationService.upsertHCPcommunicationInfo(key2value.get(PERCOMMUNICATION), contact);
+            resultMap.put(PERCOMMUNICATION, commInfoMap);
         }
 
-        if (key2value.containsKey('Educational_Detail__c')) {
-            final Map < String, Educational_Detail__c > hcpEduMap = CM_EducationalDetailsService.upsertEducationalDetails(key2value.get('Educational_Detail__c'), contact);
-            resultMap.put('Educational_Detail__c', hcpEduMap);
+        if (key2value.containsKey(EDUDETAILS)) {
+            final Map < String, Educational_Detail__c > hcpEduMap = CM_EducationalDetailsService.upsertEducationalDetails(key2value.get(EDUDETAILS), contact);
+            resultMap.put(EDUDETAILS, hcpEduMap);
         }
 
-        if (key2value.containsKey('License_Information__c')) {
-            final Map < String, License_Information__c > hcpLicenseInfoMap = CM_LicenseInformationService.upsertLicenseInformationDetails(key2value.get('License_Information__c'), contact);
-            resultMap.put('License_Information__c', hcpLicenseInfoMap);
+        if (key2value.containsKey(LICINFORMATION)) {
+            final Map < String, License_Information__c > hcpLicenseInfoMap = CM_LicenseInformationService.upsertLicenseInformationDetails(key2value.get(LICINFORMATION), contact);
+            resultMap.put(LICINFORMATION, hcpLicenseInfoMap);
         }
 
         //update phone and email in the contact from Communication Information
         contact = getContactList(contact, commInfoMap.values());
         contactMap.put(contact.MDM_Id__c, contact);
-        resultMap.put('Contact', contactMap);
+        resultMap.put(CONTACTSTRING, contactMap);
         return resultMap;
     }
     /**     
@@ -74,27 +82,31 @@ public with sharing class CM_ReltioHCPService {
         contact.Native_Address__Street__s  = CM_ReltioHandlerService.addressLine(contact.Native_Address__Street__s ,contact.Native_Address_Line_4__c,false);
         return contact;
     }
+    /**    
+ * @description :  Method to get the Old Contact Map
+ * Parameters : Map of new Records
+ */
     public  static Map<String, Map < String, Sobject >> getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
-        final Set<String> recordId = upsertNewMap.get('Contact').keyset();
+        final Set<String> recordId = upsertNewMap.get(CONTACTSTRING).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
-        upsertOldMap.put('Contact',new Map <String, Sobject>());  
-        upsertOldMap.put('Educational_Detail__c',new Map <String, Sobject>());  
-        upsertOldMap.put('Person_Communication__c',new Map <String, Sobject>());  
-        upsertOldMap.put('License_Information__c',new Map <String, Sobject>()); 
+        upsertOldMap.put(CONTACTSTRING,new Map <String, Sobject>());  
+        upsertOldMap.put(EDUDETAILS,new Map <String, Sobject>());  
+        upsertOldMap.put(PERCOMMUNICATION,new Map <String, Sobject>());  
+        upsertOldMap.put(LICINFORMATION,new Map <String, Sobject>()); 
         for(Contact con : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,Account.MDM_Id__c,
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Educational_Details__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Person_Communications__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from License_Informations__r) 
             from Contact where MDM_Id__c = :recordId with SECURITY_ENFORCED]) {
-            upsertOldMap.get('Contact').put(con.MDM_Id__c,con);
+            upsertOldMap.get(CONTACTSTRING).put(con.MDM_Id__c,con);
             for(Educational_Detail__c education : con.Educational_Details__r) {
-                upsertOldMap.get('Educational_Detail__c').put(education.MDM_Id__c,education);  
+                upsertOldMap.get(EDUDETAILS).put(education.MDM_Id__c,education);  
             }
             for(Person_Communication__c communication: con.Person_Communications__r) {
-                upsertOldMap.get('Person_Communication__c').put(communication.MDM_Id__c,communication); 
+                upsertOldMap.get(PERCOMMUNICATION).put(communication.MDM_Id__c,communication); 
             }
             for(License_Information__c licence: con.License_Informations__r) {
-                upsertOldMap.get('License_Information__c').put(licence.MDM_Id__c,licence); 
+                upsertOldMap.get(LICINFORMATION).put(licence.MDM_Id__c,licence); 
             }
         }
         return upsertOldMap;

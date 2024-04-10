@@ -11,8 +11,10 @@
  * 1.0             Rohit Jaiswal                   20/10/2023          Acount Account relationship service
  ***********************************************************************************************************************/
 public with sharing class CM_ReltioHCORelationshipService {
-    /* type of Asset event */
+    /* Account String */
     final static string ACCOUNTSTRING = 'Account';
+    /* Account Relationship String */
+    final static string ACCRELATION = 'Account_Relationship__c';
     /**     
      * @description : method to get Account-Account relationship data
      */
@@ -20,7 +22,7 @@ public with sharing class CM_ReltioHCORelationshipService {
         Map < String, Map < String, Sobject >> upsertMap = new Map < String, Map < String, Sobject >> ();
         Map < String, Map < String, Map < String, Object >>> key2value = CM_JSONParser.objectJsonParsers(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOPHCO));
 
-        final CM_AccountRelationshipService.AccountRelation accRelationship = CM_AccountRelationshipService.upsertAccountRelationship(key2value.get('Account_Relationship__c'));
+        final CM_AccountRelationshipService.AccountRelation accRelationship = CM_AccountRelationshipService.upsertAccountRelationship(key2value.get(ACCRELATION));
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap, upsertMap);
 
         key2value = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO));
@@ -36,12 +38,12 @@ public with sharing class CM_ReltioHCORelationshipService {
      */
     public static Map<String, Map < String, Sobject >> getOldHCOHCOMap(Map <String, Map < String, Sobject >> upsertNewMap) {
         final Set<String> recordIds = upsertNewMap.get(ACCOUNTSTRING).keyset();
-        final Set<String> accRelIds = upsertNewMap.get('Account_Relationship__c').keyset();
+        final Set<String> accRelIds = upsertNewMap.get(ACCRELATION).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put(ACCOUNTSTRING,new Map <String, Sobject>());  
         upsertOldMap.put('Organization_Communication__c',new Map <String, Sobject>());  
         upsertOldMap.put('Organization_E_Invoice__c',new Map <String, Sobject>());  
-        upsertOldMap.put('Account_Relationship__c',new Map <String, Sobject>()); 
+        upsertOldMap.put(ACCRELATION,new Map <String, Sobject>()); 
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r),
@@ -56,10 +58,10 @@ public with sharing class CM_ReltioHCORelationshipService {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
             }
             for(Account_Relationship__c relationship: acc.Account_Relationships__r) {
-                upsertOldMap.get('Account_Relationship__c').put(relationship.MDM_Id__c,relationship); 
+                upsertOldMap.get(ACCRELATION).put(relationship.MDM_Id__c,relationship); 
             }
             for(Account_Relationship__c relationship: acc.Account_Relationships1__r) {
-                upsertOldMap.get('Account_Relationship__c').put(relationship.MDM_Id__c,relationship); 
+                upsertOldMap.get(ACCRELATION).put(relationship.MDM_Id__c,relationship); 
             }
         }
         return upsertOldMap;

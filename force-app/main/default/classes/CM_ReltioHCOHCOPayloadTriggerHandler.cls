@@ -37,7 +37,7 @@ public with sharing class CM_ReltioHCOHCOPayloadTriggerHandler extends UCB_Trigg
         }
         final Map <String, Map < String, Sobject >> upsertOldMap =CM_ReltioHCORelationshipService.getOldHCOHCOMap(upsertNewMap);
         upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);
-        List<Sobject> toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
+        final List<Sobject> toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
         final Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS, CM_ReltioConstants.RELTIOHCOPHCO);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects));
         UCB_LoggerService.logger(new UCB_Log(CM_ReltioConstants.RELTIOHCOPHCO, 'dmlWrapMap', JSON.serialize(dmlWrapMap)),false);

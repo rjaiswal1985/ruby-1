@@ -26,6 +26,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_AccountInactiveService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_AccountOwnerBatchHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -51,10 +55,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CM_AccountService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CM_AccountUpdateCaptureService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

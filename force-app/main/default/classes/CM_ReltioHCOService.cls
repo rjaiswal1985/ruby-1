@@ -13,6 +13,10 @@
 public with sharing class CM_ReltioHCOService {
     /* Account String */
     final static string ACCOUNTSTRING = 'Account';
+    /* Org Communication String */
+    final static string ORGCOMMUNICATION = 'Organization_Communication__c';
+    /* Org Communication String */
+    final static string ORGINVOICE = 'Organization_E_Invoice__c';
     /**    
      * @description :  Method to parse input json and get Account data
      * @Parameters : input json, process name from platfrom event
@@ -34,14 +38,14 @@ public with sharing class CM_ReltioHCOService {
             account = CM_AccountService.upsertAccount(key2value.get(ACCOUNTSTRING));
         }
 
-        if (key2value.containsKey('Organization_Communication__c')) {
-            cusCommunication = CM_CustomerInformationService.upsertCommInformation(key2value.get('Organization_Communication__c'), account);
-            resultMap.put('Organization_Communication__c', cusCommunication);
+        if (key2value.containsKey(ORGCOMMUNICATION)) {
+            cusCommunication = CM_CustomerInformationService.upsertCommInformation(key2value.get(ORGCOMMUNICATION), account);
+            resultMap.put(ORGCOMMUNICATION, cusCommunication);
         }
 
-        if (key2value.containsKey('Organization_E_Invoice__c')) {
-            final Map < String, Organization_E_Invoice__c > cosInvoiceMap = CM_CustomerInvoiceService.upsertCustomerInvoice(key2value.get('Organization_E_Invoice__c'), account);
-            resultMap.put('Organization_E_Invoice__c', cosInvoiceMap);
+        if (key2value.containsKey(ORGINVOICE)) {
+            final Map < String, Organization_E_Invoice__c > cosInvoiceMap = CM_CustomerInvoiceService.upsertCustomerInvoice(key2value.get(ORGINVOICE), account);
+            resultMap.put(ORGINVOICE, cosInvoiceMap);
         }
 
         //update phone and email in the Account from Customer Communication
@@ -74,23 +78,27 @@ public with sharing class CM_ReltioHCOService {
         account.Native_Address__Street__s  = CM_ReltioHandlerService.addressLine(account.Native_Address__Street__s ,account.Native_Address_Line_4__c,false);
 
         return account;
-    }   
+    } 
+    /**    
+    * @description :  Method to get map of old Account
+    * @Parameters : New map of Account
+    */  
     public  static Map<String, Map < String, Sobject >> getOldAccountMap(Map <String, Map < String, Sobject >> upsertNewMap) {
-        Set<String> recordId = upsertNewMap.get(ACCOUNTSTRING).keyset();
+        final Set<String> recordId = upsertNewMap.get(ACCOUNTSTRING).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put(ACCOUNTSTRING,new Map <String, Sobject>());  
-        upsertOldMap.put('Organization_Communication__c',new Map <String, Sobject>());  
-        upsertOldMap.put('Organization_E_Invoice__c',new Map <String, Sobject>());  
+        upsertOldMap.put(ORGCOMMUNICATION,new Map <String, Sobject>());  
+        upsertOldMap.put(ORGINVOICE,new Map <String, Sobject>());  
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r) 
                         from Account where MDM_Id__c = :recordId with SECURITY_ENFORCED]) {
             upsertOldMap.get(ACCOUNTSTRING).put(acc.MDM_Id__c,acc);
             for(Organization_Communication__c communication: acc.Organization_Communications__r) {
-                upsertOldMap.get('Organization_Communication__c').put(communication.MDM_Id__c,communication);  
+                upsertOldMap.get(ORGCOMMUNICATION).put(communication.MDM_Id__c,communication);  
             }
             for(Organization_E_Invoice__c invoice: acc.Organization_E_Invoices__r) {
-                upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
+                upsertOldMap.get(ORGINVOICE).put(invoice.MDM_Id__c,invoice); 
             }
         }
         return upsertOldMap;

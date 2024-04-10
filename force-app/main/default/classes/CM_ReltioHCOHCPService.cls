@@ -11,8 +11,10 @@
 * 1.0             Rohit Jaiswal                   20/10/2023         Account Contact Relationship service class 
 ***********************************************************************************************************************/
 public with sharing class CM_ReltioHCOHCPService {
-    /* type of Asset event */
+    /* Account String */
     final static string ACCOUNTSTRING = 'Account';
+    /* Account Contact String */
+    final static string ACCCONRELATION = 'AccountContactRelation';
     /**
     * @description : Method to parses input json and get Account Contact relationship data     
     * @Parameters : input json, process name from platfrom event
@@ -23,7 +25,7 @@ public with sharing class CM_ReltioHCOHCPService {
         Map<String,Map<String,Sobject>> returnMap = new  Map<String,Map<String,Sobject>>();
 
         Map<String,Map<String,Map<String,Object>>> key2value =  CM_JSONParser.objectJsonParsers(inputJson,process2Metadata.get(CM_ReltioConstants.RELTIOHCPHCO));   
-        final CM_AccountContactRelationshipService.AccountRelation accRelationship = CM_AccountContactRelationshipService.upsertAccountRelationship(key2value.get('AccountContactRelation'));        
+        final CM_AccountContactRelationshipService.AccountRelation accRelationship = CM_AccountContactRelationshipService.upsertAccountRelationship(key2value.get(ACCCONRELATION));        
         upsertNewMap= CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap,upsertNewMap);
  
         key2value = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCO) );
@@ -39,14 +41,18 @@ public with sharing class CM_ReltioHCOHCPService {
         accRelation.contact2Account = accRelationship.contact2Account;
         return accRelation;
     }
+    /**
+    * @description : Method to get old Map of Account
+    * @Parameters : New map of the record received
+    */
     public  static Map<String, Map < String, Sobject >> getOldHCOHCPMap(Map <String, Map < String, Sobject >> upsertNewMap) {
         final Set<String> recordIds = upsertNewMap.get(ACCOUNTSTRING).keyset();
-        final Set<String> relationIds = upsertNewMap.get('AccountContactRelation').keyset();
+        final Set<String> relationIds = upsertNewMap.get(ACCCONRELATION).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put(ACCOUNTSTRING,new Map <String, Sobject>());  
         upsertOldMap.put('Organization_Communication__c',new Map <String, Sobject>());  
         upsertOldMap.put('Organization_E_Invoice__c',new Map <String, Sobject>());  
-        upsertOldMap.put('AccountContactRelation',new Map <String, Sobject>()); 
+        upsertOldMap.put(ACCCONRELATION,new Map <String, Sobject>()); 
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r),
@@ -60,11 +66,15 @@ public with sharing class CM_ReltioHCOHCPService {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
             }
             for(AccountContactRelation relationship: acc.AccountContactRelations) {
-                upsertOldMap.get('AccountContactRelation').put(relationship.Account.MDM_Id__c+relationship.Contact.MDM_Id__c,relationship); 
+                upsertOldMap.get(ACCCONRELATION).put(relationship.Account.MDM_Id__c+relationship.Contact.MDM_Id__c,relationship); 
             }
         }
         return upsertOldMap;
     }
+    /**
+    * @description : Method to get old Map of Contact
+    * @Parameters : New map of the record received
+    */
     public  static Map<String, Map < String, Sobject >> getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
         final Set<String> recordIds = upsertNewMap.get('Contact').keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
@@ -90,6 +100,10 @@ public with sharing class CM_ReltioHCOHCPService {
         }
         return upsertOldMap;
     }
+    /**
+    * @description : Method to update Account on Contact record if not associated with Account
+    * @Parameters : List of New Account and Contact with account
+    */
     public static Map<String,Sobject> upsertContacttMap(List<Contact> contactNewList,Map<String,String> conwithAccount,Map<String,  String> contact2Account) {
         final Map<String,Sobject> contactMap = new Map<String,Sobject>();
         for(Contact con : contactNewList) {
@@ -100,6 +114,10 @@ public with sharing class CM_ReltioHCOHCPService {
         }         
         return contactMap;
     }
+    /**
+    * @description : Method to get Map of Contact with Account
+    * @Parameters : New map of the record received
+    */
     public static Map<String,String> conwithAccount(List<Contact> contactOldList) {
         final Map<String,String> conwithAccount = new Map<String,String>();
         for(Contact con : contactOldList) {
