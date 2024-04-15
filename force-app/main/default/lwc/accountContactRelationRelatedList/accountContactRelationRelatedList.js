@@ -81,7 +81,7 @@ export default class AccountContactRelationsRelatedList extends LightningElement
                 label: {
                     fieldName: 'recordName'
                 },
-                target: '_blank'
+                target: '_self'
             }
         },
         {
@@ -133,7 +133,7 @@ export default class AccountContactRelationsRelatedList extends LightningElement
             tempRecord.Roles = obj.fields.Roles.value;
             tempRecord.RoleName ='Role';
             tempRecord.RelationName ='Relationship Type';
-            tempRecord.StatusName ='Status';
+            tempRecord.StatusName =objectApiName === 'Account' ? 'Person Status': 'Organization Status' ;
 
             tempRecord = objectApiName === 'Account' ? this.accountObject(tempRecord,obj) : this.contactObject(tempRecord,obj) ;
             tempRecord.record = JSON.stringify(tempRecord);
@@ -184,7 +184,7 @@ export default class AccountContactRelationsRelatedList extends LightningElement
         const row = event.detail.row?event.detail.row:JSON.parse(event.currentTarget.dataset.id);
         switch (actionName) {
             case 'view':
-                window.open('/lightning/r/AccountContactRelation/' + row.Id + '/view?0.source=alohaHeader', '_blank');
+                window.open('/lightning/r/AccountContactRelation/' + row.Id + '/view?0.source=alohaHeader', '_self');
                 break;
             case 'edit':
                 window.open(OrgPersonEditURL.replace('MDM_Id',row.MDM_Id__c).replace('crossWalk_Id',row.Id), '_blank');

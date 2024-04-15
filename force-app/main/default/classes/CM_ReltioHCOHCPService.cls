@@ -19,12 +19,14 @@ public with sharing class CM_ReltioHCOHCPService {
     * @description : Method to parses input json and get Account Contact relationship data     
     * @Parameters : input json, process name from platfrom event
     */
-    public static AccountRelation upsertHCOHCPService(String inputJson, Map<String,CM_ReltioHandlerService.SobjectData> process2Metadata) {
-        final AccountRelation accRelation = new AccountRelation();
+    public static CM_ReltioHandlerService.OBJECTPARSER upsertHCOHCPService(String inputJson, Map<String,CM_ReltioHandlerService.SobjectData> process2Metadata) {
+        final CM_ReltioHandlerService.OBJECTPARSER  objParser= new CM_ReltioHandlerService.OBJECTPARSER() ;
         Map<String,Map<String,Sobject>> upsertNewMap = new  Map<String,Map<String,Sobject>>();
-        Map<String,Map<String,Sobject>> returnMap = new  Map<String,Map<String,Sobject>>();
+        Map<String,Map<String,Sobject>> returnMap = new  Map<String,Map<String,Sobject>>() ;
 
-        Map<String,Map<String,Map<String,Object>>> key2value =  CM_JSONParser.objectJsonParsers(inputJson,process2Metadata.get(CM_ReltioConstants.RELTIOHCPHCO));   
+        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCPHCO));
+        Map < String, Map < String, Map < String, Object >>> key2value = parser.key2value;
+
         final CM_AccountContactRelationshipService.AccountRelation accRelationship = CM_AccountContactRelationshipService.upsertAccountRelationship(key2value.get(ACCCONRELATION));        
         upsertNewMap= CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap,upsertNewMap);
  
@@ -36,16 +38,22 @@ public with sharing class CM_ReltioHCOHCPService {
         key2value = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCP) );
         returnMap = CM_ReltioHCPService.upsertHCPSelector(key2value);
         upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(returnMap,upsertNewMap); 
-        
-        accRelation.upsertNewMap = upsertNewMap;
-        accRelation.contact2Account = accRelationship.contact2Account;
-        return accRelation;
+
+        objParser.resultMap=upsertNewMap;
+        objParser.apiType=parser.apiType;
+        return objParser;
     }
     /**
     * @description : Method to get old Map of Account
     * @Parameters : New map of the record received
     */
     public  static Map<String, Map < String, Sobject >> getOldHCOHCPMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+        final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
+        upsertOldMap.putall(getOldAccountMap(upsertNewMap));
+        upsertOldMap.putall(getOldContactMap(upsertNewMap));
+        return upsertOldMap;
+    }
+    private  static Map<String, Map < String, Sobject >> getOldAccountMap(Map <String, Map < String, Sobject >> upsertNewMap) {
         final Set<String> recordIds = upsertNewMap.get(ACCOUNTSTRING).keyset();
         final Set<String> relationIds = upsertNewMap.get(ACCCONRELATION).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
@@ -75,7 +83,7 @@ public with sharing class CM_ReltioHCOHCPService {
     * @description : Method to get old Map of Contact
     * @Parameters : New map of the record received
     */
-    public  static Map<String, Map < String, Sobject >> getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+    private  static Map<String, Map < String, Sobject >> getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
         final Set<String> recordIds = upsertNewMap.get('Contact').keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put('Contact',new Map <String, Sobject>());  
@@ -126,13 +134,6 @@ public with sharing class CM_ReltioHCOHCPService {
             }
         }   
         return conwithAccount;
-    }
-    /*Acount Relation wrapper */
-    public class AccountRelation {
-        /* Map of upserted record */
-        public Map<String,Map<String,Sobject>> upsertNewMap;
-        /* Contact 2 Account Map */
-        public Map<String,  String> contact2Account ;
     }
     private CM_ReltioHCOHCPService() {}
 }

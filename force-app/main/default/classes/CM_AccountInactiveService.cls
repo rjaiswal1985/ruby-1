@@ -11,72 +11,65 @@
 * 1.0             Sruthi M                   04/04/2024             Account Inactivation Service class
 ***********************************************************************************************************************/
 public with sharing class CM_AccountInactiveService {
-        
-    public static List<Contact> updteContwithActiveAccnt(Map<String,List<Id>> accMap) {
-        
-        final List<Contact> contUpdateLst;
-		final List<Id> accIds; 
-        final List<Contact> conOwnerLst;
-        final List<Contact> conNonOwnerLst;
-        final List<Contact> conLst;
-        final Set<Id> conOwnrSet;
-        String lastRelAccount;
-        String lastRelOwnerAccount;
+    /* Account status inactive */
+    final static string ACCOUNT_INACTIVE = 'Account Inactive'; 
+    /* Null Value */
+    final static string NULL_VALUE = null;  
+    /* Relation Type Owner */
+    final static string RELATED_OWNER = 'Owner'; 
+    
+    /**
+* @description : This method gets details of account service to invoke 
+* and account Ids from changeEvent 
+* @parameters : Map of account service and account IDs
+*/  
+    public static List<Contact> getContwithActiveAccnt(Map<String,List<Id>> accMap) {        
+        final List<Contact> contUpdateLst = new List<Contact>();
+        final Map<Id,Id> conAccMap = new Map<Id,Id>();
+        final List<Id> accIds; 		         
+        final List<Contact> conLst = new List<Contact>();        
+        final Set<Id> conOwnrSet = new Set<Id>();        
+        Contact contRec;
         
         for(String str : accMap.keySet()) {
-            if(str == 'Account Inactive') {
-            	accIds = accMap.get(str);		    
+            if(str == ACCOUNT_INACTIVE) {
+                accIds = accMap.get(str);		    
             }            
         }
         
-        conOwnerLst = [Select Id,
-                           (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner' order by startdate asc LIMIT 1)
-                           from Contact where AccountId IN :accIds  WITH SECURITY_ENFORCED ]; 
-        for(Contact cont : conOwnerLst) {
-            for(AccountContactRelation accConRel : cont.AccountContactRelations) {
-                conOwnrSet.add(accConRel.AccountID);
-            }    
-        }            
-       
-        conNonOwnerLst = [Select Id,
-                           (Select accountId,Relationship_Type__c from AccountContactRelations order by startdate asc LIMIT 1)
-                           from Contact where AccountId IN :accIds  WITH SECURITY_ENFORCED ];    
-       
-       for(Contact con : conNonOwnerLst) {
-            for(AccountContactRelation accConRel : con.AccountContactRelations) {
-                if(!conOwnrSet.contains(accConRel.AccountID)) {
-                	conLst.add(con);    
-                }
-            }    
-        }
-        conLst.addAll(conOwnerLst);
-        for(Contact con : conLst) {
-            system.debug('con==>>'+con);                   
-			lastRelAccount=null;
-            lastRelOwnerAccount= null;
-          	Contact cont = new Contact();
-            cont.Id = con.Id;
-            cont.accountId = null;
-            for(AccountContactRelation relation : con.AccountContactRelations){
-            	if(String.isempty(lastRelAccount)){
-                	lastRelAccount=relation.accountId;    
-                }
-                if(relation.Relationship_Type__c=='Owner' && String.isEmpty(lastRelOwnerAccount)) { 
-                	lastRelOwnerAccount=relation.accountId;  
-                }
-            }
-            cont.accountId = String.isempty(lastRelAccount)?lastRelAccount:lastRelAccount;
-            //cont.accountId = String.isempty(lastRelOwnerAccount)?lastRelAccount:lastRelOwnerAccount;
-            //contactmap.put(con.Id,cont);
-            contUpdateLst.add(cont);
-            system.debug('contUpdateLst==>>'+contUpdateLst);
-     	}
+        for(Contact cont : [Select Id,
+                            (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner'
+                             AND Account.Status__c='Active' order by startdate asc LIMIT 1) from Contact
+                            where AccountId IN :accIds  WITH SECURITY_ENFORCED ]) { 
+                                for(AccountContactRelation reltn : cont.AccountContactRelations) {
+                                    if(reltn.Relationship_Type__c == RELATED_OWNER) {
+                                        conOwnrSet.add(cont.Id);
+                                        conLst.add(cont);
+                                        conAccMap.put(cont.Id,reltn.AccountId);
+                                    }    
+                                }    
+                            }  
+        
+        for(Contact con: [Select Id,
+                          (Select accountId,Relationship_Type__c from AccountContactRelations order by startdate asc LIMIT 1)
+                          from Contact where AccountId IN :accIds AND ID NOT IN:conAccMap.keySet() WITH SECURITY_ENFORCED] ) {       
+                              for(AccountContactRelation rels : con.AccountContactRelations) {
+                                  conAccMap.put(con.Id,rels.AccountID);
+                                  conLst.add(con);
+                              }	               
+                          }
+        for(Contact con: conLst) {
+            contRec = new Contact();
+            contRec.Id = con.Id;
+            contRec.accountId = NULL_VALUE;
+            contRec.accountId = conAccMap.get(con.Id);
+            contUpdateLst.add(contRec);
+        }                              
         return contUpdateLst;
-        /* system.debug('@contactmap@'+contactmap);
-		system.debug('@accConRelation@'+accConRelation);
-		upsertMap.put('Contact',contactmap);
-		CM_DMLSaveResult.upsertRecords(upsertMap, false); 
-        UCB_DMLUtility.updateRecords(contUpdateLst,false); */ 
-    }    
+    }
+    
+    /**
+* @description : constructor  
+*/  
     private CM_AccountInactiveService() {}
 }

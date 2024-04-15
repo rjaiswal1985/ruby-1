@@ -2,33 +2,44 @@
 * Name: CM_AccountUpdateCaptureTriggerHelper
 * Copyright © Align Tech
 * ========================================================================================================================
-* Purpose: Helper for CM_AccountDataCaptureTrigger
+* Purpose: Helper for Account data change events
 * TestClass : CM_AccountUpdateCaptureTriggerHelper
 * ========================================================================================================================
 * History
 *
 * VERSION         AUTHOR                          DATE                DETAIL
-* 1.0             Sruthi M                   02/04/2024             Helper for CRM Enterprise events
+* 1.0             Sruthi M                   02/04/2024             Helper for Account data change events
 ***********************************************************************************************************************/
 public with sharing class CM_AccountUpdateCaptureTriggerHelper {
-    
-    public static void accountContactRelations(List<Account> accLst) {
+    /* Account status inactive */
+    final static string INACTIVE_STATUS = 'Inactive';   
+    /**
+* @description : This method gets the account Ids from changeEvent invokes 
+* corresponding account inactive service
+* @parameters : list of AccountChangeEvents
+*/  
+    public static void accountContactRelations(List<AccountChangeEvent> chgEvntLst) {
         
-        //final Map < String, Map < String, Sobject >> upsertMap = new Map < String, Map < String, Sobject >> ();
-        final List<Id> accIds = new List<Id>();
-        final List<Contact> contUpdateLst;
+        final List<Id> accIds;
+        final List<Contact> contUpdateLst;        
         final Map < String, List<Id> > inactveAccMap = new Map < String, List<Id> > ();
-        for(Account acc : accLst) {
-            if(acc.Status__c == 'Inactive'){
-            	accIds.add(acc.Id);    
-            }            
+        List<Database.UpsertResult> upsertResults;
+        
+        for(AccountChangeEvent ace : chgEvntLst) {                        
+            if(ace.Status__c == INACTIVE_STATUS) {
+                accIds = ace.ChangeEventHeader.getRecordIds();   
+            }                        
         }
         if(!accIds.isEmpty() && accIds.size()!=null) {
-        	inactveAccMap.put('Account Inactive',accIds);    
-        }
-        
-        contUpdateLst = CM_AccountInactiveService.updteContwithActiveAccnt(inactveAccMap);
-		UCB_DMLUtility.updateRecords(contUpdateLst,false);
+            inactveAccMap.put('Account Inactive',accIds);    
+        }         
+        contUpdateLst = CM_AccountInactiveService.getContwithActiveAccnt(inactveAccMap);                        
+        upsertResults = UCB_DMLUtility.upsertRecords(contUpdateLst,false,System.AccessLevel.SYSTEM_MODE); 
+        UCB_LoggerService.logger(new UCB_Log('Contact update with Active Account', 'DML Upsert Result', JSON.Serialize(upsertResults)),false);  
+        UCB_LoggerService.publishLogs(); 
     }
+    /**
+* @description : constructor  
+*/
     private CM_AccountUpdateCaptureTriggerHelper() {}
 }

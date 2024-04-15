@@ -23,9 +23,12 @@ public with sharing class CM_ReltioHCPService {
      * @description :  Method to parse input json and get Contact data
      * Parameters : input json, process name from platfrom event
      */
-    public static Map < String, Map < String, Sobject >> upsertHCPServices(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {        
-        final Map < String, Map < String, Map < String, Object >>> key2value = CM_JSONParser.objectJsonParsers(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCP));
-        return upsertHCPSelector(key2value);
+    public static CM_ReltioHandlerService.OBJECTPARSER upsertHCPServices(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {        
+        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCP));
+        final CM_ReltioHandlerService.OBJECTPARSER objParser = new CM_ReltioHandlerService.OBJECTPARSER() ;
+        objParser.resultMap=upsertHCPSelector(parser.key2value);
+        objParser.apiType=parser.apiType;
+        return objParser;
     }
 
     /**     

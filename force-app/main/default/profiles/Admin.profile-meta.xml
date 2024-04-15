@@ -54,6 +54,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_AccountRelationshipTriggerHelperTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_AccountService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -283,6 +287,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>PlatformEventFailureCallback</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UCB_ActionOverrideController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

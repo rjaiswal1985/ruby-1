@@ -11,16 +11,18 @@
  * 1.0             Rohit Jaiswal                   20/10/2023          JSON Parser to handle platform event data
  ***********************************************************************************************************************/
 public with sharing class CM_JSONParser {
-    /**
+     /**
      * @description : parses the JSON returns sobject data
      */
-    public static Map<String, Map<String, Map<String, Object>>> objectJsonParsers(String inputJson, CM_ReltioHandlerService.SobjectData sobjectData) {
+    public static CM_ReltioHandlerService.JSPARSER objectJsonParser(String inputJson, CM_ReltioHandlerService.SobjectData sobjectData) {
+        final CM_ReltioHandlerService.JSPARSER parser= new CM_ReltioHandlerService.JSPARSER();
         UCB_LoggerService.logger(new UCB_Log('ReltioParser', 'Deserialization started.', inputJson), false);
         final Map<String, Object> requestObject = (Map<String, Object>)(JSON.deserializeUntyped(inputJson));
         final Map<String, Object> objectJson = (Map<String, Object>)requestObject.get(CM_ReltioConstants.OBJECTSTRING);
-        return attibuteParsers(objectJson, sobjectData);
+        parser.key2value = attibuteParsers(objectJson, sobjectData);
+        parser.apiType=(String)requestObject.get('type');
+        return parser;
     }
-
     /**
      * @description : Method to parse attributes data in JSON & map object fields using custom metadata
      */

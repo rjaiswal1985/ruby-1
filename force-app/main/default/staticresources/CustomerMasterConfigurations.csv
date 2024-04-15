@@ -11,3 +11,5 @@ Constant,"While creating relationships, this is the end object details",endObjec
 Constant,This is for all object names,object,object
 Constant,"in relationship, this stores the start object information",startObjectDetails,startObjectDetails
 Constant,"in relationship, this stores the start object information",Parent,ISAFFILIATED
+Constant,"in relationship, this stores the start object information",Entity_Updated,ENTITYUPDATED
+Constant,"in relationship, this stores the start object information",ASSETCREATED,ASSETCREATED

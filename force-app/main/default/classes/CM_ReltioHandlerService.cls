@@ -94,5 +94,21 @@ public with sharing class CM_ReltioHandlerService {
         /*  map of source to target field*/
         public Map < String, String > srceFld2TargField;
     }
+    /*Acount Relation wrapper */
+    public class JSPARSER {
+        /* Map of upserted record */
+        public Map<String, Map<String, Map<String, Object>>> key2Value;
+        /* Contact 2 Account Map */
+        public String apiType;
+    }
+    /*Acount Relation wrapper */
+    public class OBJECTPARSER {
+        /* Map of upserted record */
+        public Map < String, Map < String, Sobject >> resultMap;
+        /* Contact 2 Account Map */
+        public String apiType;
+        /* Contact 2 Account Map */
+        public Map<String,  String> contact2Account ;
+    }
     private CM_ReltioHandlerService() {}
 }

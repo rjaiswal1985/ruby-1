@@ -1,26 +1,31 @@
 /***********************************************************************************************************************
- * Name: CM_AccountUpdateCaptureTriggerHandler
- * Copyright © Align Tech
- * ========================================================================================================================
- * Purpose: CM_AccountUpdateCaptureTriggerHandler
- * TestClass : CM_AccountUpdateCaptureTriggerHandler
- * ========================================================================================================================
- * History
- *
- * VERSION         AUTHOR                          DATE                DETAIL
- * 1.0             Rohit Jaiswal                   20/10/2023          Subscriber for CRM Enterprise trigger handler
- ***********************************************************************************************************************/
+* Name: CM_AccountUpdateCaptureTriggerHandler
+* Copyright © Align Tech
+* ========================================================================================================================
+* Purpose: Handler/Subscriber for Account Change event
+* TestClass : CM_AccountUpdateCaptureTriggerHandler_Test
+* ========================================================================================================================
+* History
+*
+* VERSION         AUTHOR                          DATE                DETAIL
+* 1.0             Sruthi M                   02/04/2024          Subscriber for Account Change event
+***********************************************************************************************************************/
 public with sharing class CM_AccountUpdateCaptureTriggerHandler extends UCB_TriggerVirtual {
-    /**
-     * Variable name method names 
-     * @description : After insert trigger handlers
-     */
+    /**     
+*@description : After insert trigger handler
+*/
     public override void afterTrigger(UCB_Trigger.TriggerContext trgCtx) {
-        try {
-            system.debug('trigger.new==>>'+trgCtx.newList);
+        final List<UCB_CustomExceptionWrapper> excpLst;
+        final UCB_CustomExceptionWrapper custExcp;  
+        try {            
             CM_AccountUpdateCaptureTriggerHelper.accountContactRelations(trgCtx.newList);
-        } catch (Exception excp) {
-            system.debug('Account CDC==>>'+excp.getMessage());
+        } catch (Exception excp) {                        
+            custExcp = new UCB_CustomExceptionWrapper();
+            excpLst = new List<UCB_CustomExceptionWrapper>();
+            custExcp.module = 'Account Change Event';
+            custExcp.exceptn =  excp;                       
+            excpLst.add(custExcp);            
+            UCB_ExceptionService.logException(excpLst);
         }
     }
 }

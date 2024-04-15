@@ -30,16 +30,25 @@ public with sharing class CM_ReltioHCOHCOPayloadTriggerHandler extends UCB_Trigg
      */
     public static void reltioPayloadTriggerService(List < Reltio_CM_HCO_HCO_Inbound_Payload__e > masterRecord) {
         Map <String, Map < String, Sobject >> upsertNewMap = new Map < String, Map < String, Sobject >> ();
-        Map <String, Map < String, Sobject >> upsertMapService = new Map < String, Map < String, Sobject >> ();
+        Map <String, Map < String, Sobject >> upsertOldMap;
+        Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap = new Map <String,CM_DMLSaveResult.DMLWrapper>();
+        
+        List<Sobject> toBeDelSobjects = new List<Sobject>();
+        CM_ReltioHandlerService.OBJECTPARSER objParser;
+        
         for (Reltio_CM_HCO_HCO_Inbound_Payload__e event: masterRecord) {
-            upsertMapService = CM_ReltioHCORelationshipService.upsertHCOHCOService(event.Input_Json__c, PROCESS);
-            upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(upsertMapService, upsertNewMap);
+            objParser = CM_ReltioHCORelationshipService.upsertHCOHCOService(event.Input_Json__c, PROCESS);
+            upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(objParser.resultMap, upsertNewMap);
         }
-        final Map <String, Map < String, Sobject >> upsertOldMap =CM_ReltioHCORelationshipService.getOldHCOHCOMap(upsertNewMap);
+
+        upsertOldMap = new Map <String, Map < String, Sobject >>();
+        upsertOldMap =CM_ReltioHCORelationshipService.getOldHCOHCOMap(upsertNewMap);
         upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);
-        final List<Sobject> toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
-        final Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS, CM_ReltioConstants.RELTIOHCOPHCO);
+        toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
+
+        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS, CM_ReltioConstants.RELTIOHCOPHCO);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects));
+
         UCB_LoggerService.logger(new UCB_Log(CM_ReltioConstants.RELTIOHCOPHCO, 'dmlWrapMap', JSON.serialize(dmlWrapMap)),false);
         UCB_LoggerService.publishLogs();  
     }

@@ -39,6 +39,12 @@ public with sharing class CM_ReltioConstants {
     public static final String OBJECTSTRING = PAYLOADSETTING.get('object').Constant_value__c;
     /* String for object       */
     public static final String ISAFFILIATED = PAYLOADSETTING.get('ISAFFILIATED').Constant_value__c;
+     /* String for object       */
+     public static final String ENTITYUPDATED = PAYLOADSETTING.get('ENTITYUPDATED').Constant_value__c;
+     /* String for Value       */
+     public static final String ASSETCREATED = PAYLOADSETTING.get('ASSETCREATED').Constant_value__c;
+     /* String for Value       */
+     public static final String ORDERCREATED = PAYLOADSETTING.get('ORDERCREATED').Constant_value__c;
     /* String for VALUE       */
     public static final String VALUE = 'value';
     /* String for VALUE       */

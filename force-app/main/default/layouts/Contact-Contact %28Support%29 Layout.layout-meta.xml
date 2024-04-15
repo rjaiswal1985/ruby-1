@@ -9,7 +9,6 @@
     <excludeButtons>CreateSalesSummaries</excludeButtons>
     <excludeButtons>CreateSurveyInvitation</excludeButtons>
     <excludeButtons>DataDotComClean</excludeButtons>
-    <excludeButtons>Delete</excludeButtons>
     <excludeButtons>DisableCustomerPortal</excludeButtons>
     <excludeButtons>EnableCustomerPortal</excludeButtons>
     <excludeButtons>LoginToNetworkAsUser</excludeButtons>
@@ -288,6 +287,14 @@
         <fields>Value__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>Person_Communication__c.Contact__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>Educational_Detail__c.Contact__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>License_Information__c.Contact__c</relatedList>
     </relatedLists>
     <relatedObjects>AccountId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

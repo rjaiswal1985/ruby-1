@@ -1,0 +1,4 @@
+<aura:component controller="UCB_ActionOverrideController" implements="force:hasRecordId,force:hasSObjectName,lightning:actionOverride,lightning:hasPageReference">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    {!v.body}
+</aura:component>

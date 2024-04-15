@@ -18,9 +18,12 @@ public with sharing class CM_ReltioHCORelationshipService {
     /**     
      * @description : method to get Account-Account relationship data
      */
-    public static Map < String, Map < String, Sobject >> upsertHCOHCOService(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {
+    public static CM_ReltioHandlerService.OBJECTPARSER upsertHCOHCOService(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {
+        final CM_ReltioHandlerService.OBJECTPARSER  objParser= new CM_ReltioHandlerService.OBJECTPARSER() ;
+
         Map < String, Map < String, Sobject >> upsertMap = new Map < String, Map < String, Sobject >> ();
-        Map < String, Map < String, Map < String, Object >>> key2value = CM_JSONParser.objectJsonParsers(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOPHCO));
+        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOPHCO));
+        Map < String, Map < String, Map < String, Object >>> key2value = parser.key2value;
 
         final CM_AccountRelationshipService.AccountRelation accRelationship = CM_AccountRelationshipService.upsertAccountRelationship(key2value.get(ACCRELATION));
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap, upsertMap);
@@ -31,7 +34,10 @@ public with sharing class CM_ReltioHCORelationshipService {
         key2value = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO));
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(CM_ReltioHCOService.upsertHCOSelector(key2value), upsertMap);
 
-        return upsertMap;
+        objParser.resultMap=upsertMap;
+        objParser.apiType=parser.apiType;
+
+        return objParser;
     }
     /**     
      * @description : get old Map of the Account
@@ -47,8 +53,7 @@ public with sharing class CM_ReltioHCORelationshipService {
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r),
-                        (Select Id,MDM_Id__c,To_Account__r.MDM_Id__c,From_Account__r.MDM_Id__c,TimeStamp_Decimal__c from Account_Relationships__r where MDM_Id__c=:accRelIds),
-                        (Select Id,MDM_Id__c,To_Account__r.MDM_Id__c,From_Account__r.MDM_Id__c,TimeStamp_Decimal__c from Account_Relationships1__r where MDM_Id__c=:accRelIds) 
+                        (Select Id,MDM_Id__c,To_Account__r.MDM_Id__c,From_Account__r.MDM_Id__c,TimeStamp_Decimal__c from Account_Relationships__r where MDM_Id__c=:accRelIds)
                         from Account where MDM_Id__c = :recordIds with SECURITY_ENFORCED]) {
             upsertOldMap.get(ACCOUNTSTRING).put(acc.MDM_Id__c,acc);
             for(Organization_Communication__c communication: acc.Organization_Communications__r) {
@@ -57,10 +62,8 @@ public with sharing class CM_ReltioHCORelationshipService {
             for(Organization_E_Invoice__c invoice: acc.Organization_E_Invoices__r) {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
             }
+            UCB_LoggerService.logger(new UCB_Log(CM_ReltioConstants.RELTIOHCOPHCO, 'acc.Account_Relationships__r', JSON.serialize(acc.Account_Relationships__r)),false);
             for(Account_Relationship__c relationship: acc.Account_Relationships__r) {
-                upsertOldMap.get(ACCRELATION).put(relationship.MDM_Id__c,relationship); 
-            }
-            for(Account_Relationship__c relationship: acc.Account_Relationships1__r) {
                 upsertOldMap.get(ACCRELATION).put(relationship.MDM_Id__c,relationship); 
             }
         }

@@ -17,7 +17,8 @@ public with sharing class CM_AccountRelationshipTriggerHandler extends UCB_Trigg
     public override void afterTrigger(UCB_Trigger.TriggerContext trgCtx) {
         try {            
             CM_AccountRelationshipTriggerHelper.publishEvent(trgCtx.newList);
-        } catch(Exception excp) {              
+        } catch(Exception excp) {       
+            System.debug('rohit');
             CM_LoggerInitializationUtil.replayService(excp,'CM_AccountRelationshipTriggerHandler');  
         }
     }
