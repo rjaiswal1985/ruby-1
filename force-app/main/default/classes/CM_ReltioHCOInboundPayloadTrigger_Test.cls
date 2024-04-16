@@ -38,6 +38,9 @@ public with sharing class CM_ReltioHCOInboundPayloadTrigger_Test {
         system.debug('@1rohit1@'+acclist.size());
         system.debug('@1rohit2@'+invoices.size());
         system.debug('@1rohit3@'+comminications.size());
+        for(Exception_Handling__c exp:[Select Id,Additional_Info_JSON__c,Module__c,Component_Name__c,Name from Exception_Handling__c where Module__c!=null]) {
+            System.debug('@rohit@'+exp);
+        }
         System.assertEquals(acclist.size(),1,'Account Created');
         System.assertEquals(invoices.size(),1,'Invoice Created');
         System.assertEquals(comminications.size(),3,'Communication Created');
