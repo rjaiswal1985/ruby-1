@@ -27,7 +27,9 @@ public with sharing class CRM_AssetTriggerHandler extends UCB_TriggerVirtual {
                 UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Publish Asset platformevent', 'CRM_AssetTriggerHandler','Published Asset platformevent' )});
             	UCB_LoggerService.publishLogs();
             }            
-        } catch(Exception excp) {                          
+        } catch(Exception excp) { 
+            system.debug('excp==>>'+excp.getMessage());
+            system.debug('excp==>>'+excp.getStackTraceString());
         	custExcp = new UCB_CustomExceptionWrapper();
             excpLst = new List<UCB_CustomExceptionWrapper>();
             custExcp.module = 'Asset Owner Update';

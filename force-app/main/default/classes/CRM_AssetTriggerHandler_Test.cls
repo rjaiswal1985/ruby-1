@@ -1,15 +1,15 @@
 /***********************************************************************************************************************
- * Name: CRM_AssetTriggerHandler_Test
- * Copyright © Align Tech
- * ========================================================================================================================
- * Purpose: Handles the triggered events on Asset
- * TestClass : CRM_AssetTriggerHandler_Test
- * ========================================================================================================================
- * History
- *
- * VERSION         AUTHOR                          DATE                DETAIL
- * 1.0             Sruthi M                        12/03/2024          Test Class
- ***********************************************************************************************************************/
+* Name: CRM_AssetTriggerHandler_Test
+* Copyright © Align Tech
+* ========================================================================================================================
+* Purpose: Handles the triggered events on Asset
+* TestClass : CRM_AssetTriggerHandler_Test
+* ========================================================================================================================
+* History
+*
+* VERSION         AUTHOR                          DATE                DETAIL
+* 1.0             Sruthi M                        12/03/2024          Test Class
+***********************************************************************************************************************/
 @isTest
 public class CRM_AssetTriggerHandler_Test{
     /* Association cause */
@@ -19,8 +19,8 @@ public class CRM_AssetTriggerHandler_Test{
     /* Name field */
     final static String NAME_FLD = 'Name';
     /**
-     * @description: testdata set up
-     */
+* @description: testdata set up
+*/
     @TestSetup
     static void createTestData(){
         final Profile srvceProfID = [SELECT Id
@@ -39,7 +39,7 @@ public class CRM_AssetTriggerHandler_Test{
                                WHERE Name = 'Service_Base_Permission_Set'][0].Id
         );
         update userLst1[3];
-
+        
         System.RunAs(new user(
             ID = UserInfo.getUserID()
         )){
@@ -47,174 +47,108 @@ public class CRM_AssetTriggerHandler_Test{
             final List<User> userLst = [select id, Username
                                         from user
                                         where Username like '%test123456789@mycompany%'];
-            final List<Account> accLst = UCB_TestDataFactory.createSObjectList('Account', new Map<String, Object>{ 'Name' => 'Test Acc', 'Operating_Units__c' => '4050_Exocad_America' }, 5);
-
-            final List<Order> ordLst = UCB_TestDataFactory.createSObjectList('Order', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[1].Id, accLst[2].Id }, 'OwnerId' => new List<ID>{ userLst[0].Id, userLst[0].Id, userLst[0].Id }, 'EffectiveDate' => new List<Date>{ TODAY, TODAY, TODAY }, 'Status' => new List<string>{ 'Draft', 'Draft', 'Draft' } }, 3);
+            //final List<Account> accLst = UCB_TestDataFactory.createSObjectList('Account', new Map<String, Object>{ 'Name' => 'Test Acc', 'Operating_Units__c' => '4050_Exocad_America' }, 5);
+            
+            //final List<Order> ordLst = UCB_TestDataFactory.createSObjectList('Order', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[1].Id, accLst[2].Id }, 'OwnerId' => new List<ID>{ userLst[0].Id, userLst[0].Id, userLst[0].Id }, 'EffectiveDate' => new List<Date>{ TODAY, TODAY, TODAY }, 'Status' => new List<string>{ 'Draft', 'Draft', 'Draft' } }, 3);
+            
+            final Territory2Model trtyModel = (Territory2Model)UCB_TestDataFactory.createSObject('Territory2Model',new Map<String,Object>{
+                'DeveloperName' => 'TestModel',NAME_FLD=>'TestModel'},true);            
+            
+            final List<Territory2Type> terriType = [SELECT id, DeveloperName from Territory2Type LIMIT 1];                    
+            
+            final List<Territory2> terrLst = UCB_TestDataFactory.createSObjectList('Territory2',new Map<String,Object>{
+                'DeveloperName' => new List<String>{'TestExocadAmericas','TestExocadGmbh','TestInvisalignAmerica'},'Territory2ModelId' => new List<Id>{trtyModel.Id,trtyModel.Id,trtyModel.Id}, NAME_FLD=> new List<String>{'TestExocadAmericas','TestExocadGmbh','TestInvisalignAmerica'},
+                    'Territory2TypeId'=> new List<Id>{terriType[0].Id,terriType[0].Id,terriType[0].Id},'Business_unit__c' => new List<String>{'exocad','exocad','invisalign'} },3);             
+            
+            UCB_TestDataFactory.createSObjectList('UserTerritory2Association',new Map<String,Object>{
+                'RoleInTerritory2' =>new List<String>{'Primary Owner', 'Primary Owner'},'Territory2ID' =>new List<Id>{terrLst[0].Id, terrLst[1].Id},'UserId'=> new List<Id>{userLst[0].Id,userLst[3].Id} },2);
+            
         }
     }
-
+    
     /*
-     * @description : Create Asset, check asset owner updated
-     */
+* @description : Create Asset, check asset owner updated
+*/
     @isTest
     static void createExocadAsset(){
-
-        final List<Account> accLst = [select id, Name, ownerID
-                                      from Account
-                                      where name like '%Test%'];
-
-        final List<User> userLst2 = [select id, Username
-                                     from user
-                                     where Username like '%test123456789@mycompany%'];
-
-        final List<order> ordLst = [select id, ownerid
-                                    from order
-                                    where status = 'Draft'];
+        final List<User> userLst = [select id, Username
+                                    from user
+                                    where Username like '%test123456789@mycompany%'];
+        final List<Account> accLst = UCB_TestDataFactory.createSObjectList('Account', new Map<String, Object>{ 'Name' => 'Test Acc', 
+            'Operating_Units__c' => '4050_Exocad_America',
+            'OwnerId' => userLst[0].Id }, 5);
+        
+        final List<Order> ordLst = UCB_TestDataFactory.createSObjectList('Order', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[1].Id, accLst[2].Id }, 
+            'OwnerId' => new List<ID>{ userLst[0].Id, userLst[0].Id, userLst[0].Id }, 
+                'EffectiveDate' => new List<Date>{ TODAY, TODAY, TODAY }, 
+                    'Status' => new List<string>{ 'Draft', 'Draft', 'Draft' } }, 3);
+        
+        
+        
+        /*final List<order> ordLst = [select id, ownerid
+from order
+where status = 'Draft'];*/
         system.debug('ordLst==>>' + ordLst);
-
+        
         Test.startTest();
-        UCB_TestDataFactory.createSObjectList('Asset', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[1].Id, accLst[2].Id }, 'Order__c' => new List<ID>{ ordLst[0].Id, ordLst[1].Id, ordLst[2].Id }, 'Status' => new List<string>{ 'Purchased', 'Purchased', 'Purchased' } }, 3);
+        
+        UCB_TestDataFactory.createSObjectList('Asset', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[1].Id, accLst[2].Id }, 
+            'Order__c' => new List<ID>{ ordLst[0].Id, ordLst[1].Id, ordLst[2].Id }, 
+                'Status' => new List<string>{ 'Purchased', 'Purchased', 'Purchased' } }, 3);
+        
         Test.stopTest();
         final List<Asset> assetLst = [select id, ownerid, Order__c
                                       from Asset
                                       where status = 'Purchased'];
         system.debug('assetLst==>>' + assetLst);
-        //System.assertEquals(assetLst[0].ownerId, ordLst[0].ownerId,'Asset owner updated');
+        System.assertEquals(assetLst[0].ownerId, ordLst[0].ownerId,'Asset owner updated');
     }
-
+    
     /*
-     * @description : Create Asset, to check Exception
-     */
+* @description : Create Asset, check asset owner updated
+*/
     @isTest
-    static void createAsset2(){
-
-        final List<Account> accLst = [select id, Name, ownerID
-                                      from Account
-                                      where name like '%Test%'];
-
-        final List<User> userLst2 = [select id, Username
-                                     from user
-                                     where Username like '%test123456789@mycompany%'];
-
-        final List<order> ordLst = [select id, ownerid
-                                    from order
-                                    where status = 'Draft'];
-        system.debug('ordLst==>>' + ordLst);
-
-        Test.startTest();
-        try{
-            UCB_TestDataFactory.createSObjectList('Asset', new Map<String, Object>{ 'Order__c' => new List<ID>{ ordLst[0].Id, ordLst[0].Id, ordLst[0].Id }, 'Status' => new List<string>{ 'Installed', 'Installed', 'Installed' } }, 3);
-        } Catch (Exception excp){
-            //system.assert(excp.getMessage().contains('Every asset needs an organization, a person, or both.'),'Excpetion caught');
-            system.assert(excp.getMessage().contains('Unable to insert "Asset" records:'), 'Excpetion caught');
-            //system.assertEquals(excp.getMessage(),'Unable to insert "Asset" records:','Excpetion caught');
-        }
-        Test.stopTest();
-        final List<Asset> assetLst = [select id, ownerid
-                                      from Asset
-                                      where status = 'Installed'];
-        system.debug('assetLst==>>' + assetLst);
-        System.assertEquals(0, assetLst.size(), 'Asset not created');
-    }
-
-    /*
-     * @description : Create Asset, check asset owner updated
-     */
-    @isTest
-    static void platformEventException(){
-        try{
-            final List<Account> accLst = [select id, Name, ownerID
-                                          from Account
-                                          where name like '%Test%'];
-            system.debug('accLst==>>' + accLst);
-            final List<User> userLst2 = [select id, Username
-                                         from user
-                                         where Username like '%test123456789@mycompany%'];
-            system.debug('no of users==>>' + userLst2.size());
-            final List<order> ordLst = [select id, ownerid
-                                        from order
-                                        where status = 'Draft'];
-            system.debug('ordLst==>>' + ordLst);
-            final List<Asset> asstLst = UCB_TestDataFactory.createSObjectList('Asset', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[0].Id, accLst[0].Id }, 'Order__c' => new List<ID>{ ordLst[0].Id, ordLst[0].Id, ordLst[0].Id }, 'Status' => new List<string>{ 'Installed', 'Installed', 'Installed' } }, 3, false);
-
-            List<AccountShare> accShareLst = new List<AccountShare>();
-            for (Account acc : accLst){
-                AccountShare accShare = new AccountShare();
-                accShare.AccountId = acc.Id;
-                accShare.AccountAccessLevel = 'Read';
-                accShare.UserOrGroupId = userLst2[3].Id;
-                accShare.RowCause = 'manual';
-                accShare.OpportunityAccessLevel = 'Read';
-                accShareLst.add(accShare);
+    static void platformEventException(){     
+            final List<User> userLst = [select id, Username
+                                        from user
+                                        where Username like '%test123456789@mycompany%'];
+            system.debug('userLst==>>'+userLst);
+            
+            final List<Account> accLst = UCB_TestDataFactory.createSObjectList('Account', new Map<String, Object>{ 'Name' => 'Test Acc', 
+                'Operating_Units__c' => '4050_Exocad_America',
+                'OwnerId' => userLst[3].Id }, 5);
+            system.debug('accLst==>>'+accLst);
+            
+            final List<Order> ordLst = UCB_TestDataFactory.createSObjectList('Order', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[1].Id, accLst[2].Id }, 
+                'OwnerId' => new List<ID>{ userLst[3].Id, userLst[3].Id, userLst[3].Id }, 
+                    'EffectiveDate' => new List<Date>{ TODAY, TODAY, TODAY }, 
+                        'Status' => new List<string>{ 'Draft', 'Draft', 'Draft' } }, 3);
+            
+            system.debug('ordLst==>>'+ordLst);    
+            
+            System.RunAs(new user(ID = UserInfo.getUserID())) {                                        
+                
+                final List<Territory2> terrLst = [select id,DeveloperName,Territory2TypeId,Business_unit__c from Territory2 where DeveloperName like 'Test%'];                 
+                
+                UCB_TestDataFactory.createSObjectList('ObjectTerritory2Association',new Map<String,Object>{
+                    'ObjectID' => new List<Id>{accLst[0].Id,accLst[1].Id,accLst[2].Id,accLst[3].Id,accLst[4].Id} ,
+                        'Territory2ID' => new List<Id>{terrLst[0].Id,terrLst[0].Id,terrLst[0].Id,terrLst[0].Id,terrLst[0].Id}, 
+                            'AssociationCause'=> new List<String>{ASC_CAUSE,ASC_CAUSE,ASC_CAUSE,ASC_CAUSE,ASC_CAUSE}},5);                                                                          
             }
-            insert accShareLst;
+            final List<Asset> asstLst = UCB_TestDataFactory.createSObjectList('Asset', new Map<String, Object>{ 'AccountId' => new List<ID>{ accLst[0].Id, accLst[0].Id, accLst[0].Id }, 
+                'Order__c' => new List<ID>{ ordLst[0].Id, ordLst[0].Id, ordLst[0].Id }, 
+                    'Status' => new List<string>{ 'Installed', 'Installed', 'Installed' } }, 3, false);
+            
             Test.startTest();
-            //Test.setMock(CRM_AssetService.class, new MockAssetService());
-            //UCB_Trigger.TriggerContext trgCtx ;
-            //CRM_AssetTriggerHandler.afterTrigger(trgCtx);
-            //CRM_AssetTriggerHandler asstTgr = new CRM_AssetTriggerHandler();
-            //asstTgr.trgContextStr = 'TestCreateAssetsExcp';
-            system.runAs(userLst2[3]){
-
+            system.runAs(userLst[3]){
                 insert asstLst;
             }
-
+            List<Asset> asstLst2 = [select id,ownerId from Asset where Status='Installed'];
+            system.debug('asstLst2==>>'+asstLst2);
             Test.stopTest();
-        } Catch (Exception excp){
-            system.debug('user access excp==>>' + excp.getMessage());
-        }
-        final List<Exception_Handling__c> excpLst = [select id, Module__c
-                                                     from Exception_Handling__c
-                                                     where Module__c = 'Asset Owner Update'];
-        system.debug('excpLst==>>' + excpLst);
+         final List<Exception_Handling__c> excpLst = [select id,Module__c from Exception_Handling__c where Module__c = 'Asset Owner Update']; 
+         system.debug('excpLst==>>'+excpLst); 
+         Assert.areEqual(excpLst.size(),1,'Exception thrown');
     }
-
-    public class MockAssetService{
-        public void publishAssetEvent(List<Asset> assetLst, String trigContext){
-            throw new CustomException('Simulated Exception');
-        }
-
-    }
-
-    public class CustomException extends Exception{
-    }
-
-    /*
-     * @description : check platform event failure callback
-     */
-    @isTest
-    static void exocadAssetPlatformEventFailure(){
-
-        final List<Account> accLst = [select id, Name, ownerID
-                                      from Account
-                                      where name like '%Test%'];
-        final List<Order> ordLst = [select id, ownerID
-                                    from Order
-                                    where Status = 'Draft'];
-        final List<User> userLst2 = [select id, Username
-                                     from user
-                                     where Username like '%test123456789@mycompany%'];
-
-        final List<Asset> asstLst = UCB_TestDataFactory.createSObjectList('Asset', new Map<String, Object>{ 'Name' => 'Test Asset', 'AccountId' => accLst[0].Id, 'Order__c' => ordLst[0].Id, 'Status' => 'Draft' }, 30);
-
-        final List<CRM_Asset_Event__e> asstEvntLst = UCB_TestDataFactory.createSObjectList('CRM_Asset_Event__e', new Map<String, Object>{ 'Order_ID__c' => ordLst[1].Id, 'Asset_ID__c' => asstLst[2].Id, 'Asset_Event_Type__c' => 'Create_Asset' }, 5, false);
-        system.debug('asstEvntLst==>>' + asstEvntLst);
-
-        //Test.startTest();
-        //PlatformEventFailureCallback callbck = new PlatformEventFailureCallback();
-        Database.SaveResult[] sr = EventBus.publish(asstEvntLst);
-        //Test.getEventBus().deliver();
-        Test.getEventBus().fail();
-        //Test.stopTest();
-        for (Database.SaveResult sr1 : sr){
-            if (sr1.isSuccess()){
-                System.debug('Successfully enqueued event.');
-            } else{
-                for (Database.Error err : sr1.getErrors()){
-                    System.debug('Error returned: ' + err.getStatusCode() + ' - ' + err.getMessage());
-                }
-            }
-        }
-    }
-
+            
 }
