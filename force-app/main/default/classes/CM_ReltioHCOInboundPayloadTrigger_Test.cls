@@ -24,7 +24,7 @@ public with sharing class CM_ReltioHCOInboundPayloadTrigger_Test {
         final List<Organization_E_Invoice__c> invoices = new List<Organization_E_Invoice__c>();
         final List<Organization_Communication__c> comminications = new List<Organization_Communication__c>();
         Test.startTest();  
-        final Exception_Handling__c dataFacatory = [Select Request__c from Exception_Handling__c where Process_Name__c='HCO1' limit 1];
+        final Exception_Handling__c dataFacatory = [Select Request__c from Exception_Handling__c where Process_Name__c='HCOTestData' limit 1];
         system.debug('@dataFacatory@'+dataFacatory);
         final Reltio_CM_HCO_Inbound_Payload__e payload = (Reltio_CM_HCO_Inbound_Payload__e) System.JSON.deserialize(dataFacatory.Request__c, Reltio_CM_HCO_Inbound_Payload__e.class);
         payloads.add(payload);
@@ -35,10 +35,10 @@ public with sharing class CM_ReltioHCOInboundPayloadTrigger_Test {
             invoices.addall(acc.Organization_E_Invoices__r);
             comminications.addAll(acc.Organization_Communications__r);
         }
-        system.debug('@1rohit1@'+acclist.size());
-        system.debug('@1rohit2@'+invoices.size());
-        system.debug('@1rohit3@'+comminications.size());
-        for(Exception_Handling__c exp:[Select Id,Additional_Info_JSON__c,Module__c,Component_Name__c,Name from Exception_Handling__c where Module__c!=null]) {
+        system.debug('@rohit1@'+acclist.size());
+        system.debug('@rohit2@'+invoices.size());
+        system.debug('@rohit3@'+comminications.size());
+        for(Exception_Handling__c exp:[Select Id,Additional_Info_JSON__c,Module__c,Component_Name__c,Name from Exception_Handling__c]) {
             System.debug('@rohit@'+exp);
         }
         System.assertEquals(acclist.size(),1,'Account Created');
@@ -52,9 +52,14 @@ public with sharing class CM_ReltioHCOInboundPayloadTrigger_Test {
         final List<Organization_E_Invoice__c> invoices = new List<Organization_E_Invoice__c>();
         final List<Organization_Communication__c> comminications = new List<Organization_Communication__c>();
         Reltio_CM_HCO_Inbound_Payload__e payload;
+        String request;
         Test.startTest();
-        for(Exception_Handling__c dataFacatory : [Select Request__c from Exception_Handling__c  limit 20] ) {
-            payload = (Reltio_CM_HCO_Inbound_Payload__e) System.JSON.deserialize(dataFacatory.Request__c, Reltio_CM_HCO_Inbound_Payload__e.class);
+        final Exception_Handling__c dataFacatory = [Select Request__c from Exception_Handling__c where Process_Name__c='HCOTestData' limit 1];
+        for(Integer i=0; i<2; i++) {
+            request = dataFacatory.Request__c;
+            request.replaceAll('HCO1','HCO'+i);
+            system.debug('@request@'+request);
+            payload = (Reltio_CM_HCO_Inbound_Payload__e) System.JSON.deserialize(request, Reltio_CM_HCO_Inbound_Payload__e.class);
             payloads.add(payload);
         }
         EventBus.publish(payloads);
