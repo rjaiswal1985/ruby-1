@@ -34,7 +34,7 @@ public with sharing class CM_CompareOldNewRecords {
         final List<Sobject> toBeDelSobjects = new List<Sobject>();
         for (String obj : upsertOldMap.keySet()) {
             for(String mdmId: upsertOldMap.get(obj).keySet()) {
-                if(!upsertNewMap.containsKey(obj) || (upsertNewMap.containsKey(obj) && !upsertOldMap.get(obj).containsKey(mdmId))) { 
+                if(!upsertNewMap.containsKey(obj) || (upsertNewMap.containsKey(obj) && !upsertNewMap.get(obj).containsKey(mdmId))) { 
                     toBeDelSobjects.add(upsertOldMap.get(obj).get(mdmId));
                 }                
             }            

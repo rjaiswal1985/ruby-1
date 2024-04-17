@@ -46,8 +46,8 @@ public with sharing class CM_ReltioHCPInboundPayloadTriggerHandler extends UCB_T
         
         if(entiryUpdated) {
             upsertOldMap =CM_ReltioHCPService.getOldContactMap(upsertNewMap);
-            upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);
             toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
+            upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);            
         }
 
         dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS, CM_ReltioConstants.RELTIOHCP);

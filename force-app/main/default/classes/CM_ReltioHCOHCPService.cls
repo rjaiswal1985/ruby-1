@@ -38,7 +38,8 @@ public with sharing class CM_ReltioHCOHCPService {
         key2value = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCP) );
         returnMap = CM_ReltioHCPService.upsertHCPSelector(key2value);
         upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(returnMap,upsertNewMap); 
-
+        
+        objParser.contact2Account=accRelationship.contact2Account;
         objParser.resultMap=upsertNewMap;
         objParser.apiType=parser.apiType;
         return objParser;

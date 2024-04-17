@@ -49,8 +49,8 @@ public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_T
         if(entiryUpdated) {
             upsertOldMap = new Map <String, Map < String, Sobject >>();
             upsertOldMap =CM_ReltioHCOService.getOldAccountMap(upsertNewMap);
-            upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);
             toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
+            upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);            
         }
 
         dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS, CM_ReltioConstants.RELTIOHCO);

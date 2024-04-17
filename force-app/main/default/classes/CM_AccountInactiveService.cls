@@ -12,7 +12,9 @@
 ***********************************************************************************************************************/
 public with sharing class CM_AccountInactiveService {
     /* Account status inactive */
-    final static string ACCOUNT_INACTIVE = 'Account Inactive'; 
+    final static string ACCOUNT_INACTIVE = 'Account Inactive';
+    /* Process to Associate Contact with Account */
+    final static string ASSC_CONT_ACCT = 'Associate ContAcct'; 
     /* Null Value */
     final static string NULL_VALUE = null;  
     /* Relation Type Owner */
@@ -28,11 +30,11 @@ public with sharing class CM_AccountInactiveService {
         final Map<Id,Id> conAccMap = new Map<Id,Id>();
         final List<Id> accIds; 		         
         final List<Contact> conLst = new List<Contact>();        
-        final Set<Id> conOwnrSet = new Set<Id>();        
+        final Set<Id> conNonOwnrSet = new Set<Id>();        
         Contact contRec;
         
         for(String str : accMap.keySet()) {
-            if(str == ACCOUNT_INACTIVE) {
+            if(str == ACCOUNT_INACTIVE || str == ASSC_CONT_ACCT) {
                 accIds = accMap.get(str);		    
             }            
         }
@@ -41,15 +43,22 @@ public with sharing class CM_AccountInactiveService {
                             (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner'
                              AND Account.Status__c='Active' order by startdate asc LIMIT 1) from Contact
                             where AccountId IN :accIds  WITH SECURITY_ENFORCED ]) { 
-                                for(AccountContactRelation reltn : cont.AccountContactRelations) {
+                                /* for(AccountContactRelation reltn : cont.AccountContactRelations) {
                                     if(reltn.Relationship_Type__c == RELATED_OWNER) {
                                         conOwnrSet.add(cont.Id);
                                         conLst.add(cont);
                                         conAccMap.put(cont.Id,reltn.AccountId);
                                     }    
-                                }    
+                                } */ 
+                                if(cont.AccountContactRelations.size() == 1) {
+                                	conAccMap.put(cont.Id,cont.AccountContactRelations[0].AccountId);    
+                                }
+                                else{
+                                	conNonOwnrSet.add(cont.Id);    
+                                }
                             }  
         
+        if(!conNonOwnrSet.isEmpty() && conNonOwnrSet.size() != null) {
         for(Contact con: [Select Id,
                           (Select accountId,Relationship_Type__c from AccountContactRelations order by startdate asc LIMIT 1)
                           from Contact where AccountId IN :accIds AND ID NOT IN:conAccMap.keySet() WITH SECURITY_ENFORCED] ) {       
@@ -58,11 +67,13 @@ public with sharing class CM_AccountInactiveService {
                                   conLst.add(con);
                               }	               
                           }
-        for(Contact con: conLst) {
+        }    
+        //for(Contact con: conLst) {
+        for(Id conId: conAccMap.keySet()) {
             contRec = new Contact();
-            contRec.Id = con.Id;
+            contRec.Id = conId;
             contRec.accountId = NULL_VALUE;
-            contRec.accountId = conAccMap.get(con.Id);
+            contRec.accountId = conAccMap.get(conId);
             contUpdateLst.add(contRec);
         }                              
         return contUpdateLst;
