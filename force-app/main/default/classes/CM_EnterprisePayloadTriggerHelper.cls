@@ -70,7 +70,7 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
         if(!accIds.isEmpty() && accIds.size()!=null) {
         	accMap.put('Associate ContAcct',accIds);    
         }
-        
+        system.debug('accMap==>>'+accMap);
         /* String lastRelAccount;
         String lastRelOwnerAccount;
          for(Contact con : [Select Id,
@@ -94,6 +94,7 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
             contactmap.put(con.Id,cont);
         } */
         contUpdtLst = CM_AccountInactiveService.getContwithActiveAccnt(accMap);
+        system.debug('contUpdtLst==>>'+contUpdtLst);
         for(Contact cont : contUpdtLst) {
         	contactmap.put(cont.Id,cont);    
         }

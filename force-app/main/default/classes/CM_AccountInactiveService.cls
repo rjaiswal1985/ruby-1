@@ -57,7 +57,8 @@ public with sharing class CM_AccountInactiveService {
                                 	conNonOwnrSet.add(cont.Id);    
                                 }
                             }  
-        
+        system.debug('conNonOwnrSet==>>'+conNonOwnrSet);
+        system.debug('conAccMap==>>'+conAccMap);
         if(!conNonOwnrSet.isEmpty() && conNonOwnrSet.size() != null) {
         for(Contact con: [Select Id,
                           (Select accountId,Relationship_Type__c from AccountContactRelations order by startdate asc LIMIT 1)
@@ -67,7 +68,9 @@ public with sharing class CM_AccountInactiveService {
                                   conLst.add(con);
                               }	               
                           }
-        }    
+        }   
+        system.debug('conNonOwnrSet==>>'+conNonOwnrSet);
+        system.debug('conAccMap==>>'+conAccMap);
         //for(Contact con: conLst) {
         for(Id conId: conAccMap.keySet()) {
             contRec = new Contact();
