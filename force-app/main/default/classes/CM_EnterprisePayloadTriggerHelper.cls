@@ -61,16 +61,16 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
         final List<Id> conIdLists = new List<Id>();
         final List<Id> accIds = new List<Id>();
         final Map < String, Sobject > contactmap = new Map < String, Sobject > ();
-        final Map < String, List<Id> > accMap = new Map < String, List<Id> >();
+        final Map < String, List<Id> > contMap = new Map < String, List<Id> >();
+        final Set<Id> conIdSet = new Set<Id>();
         final List<Contact> contUpdtLst;
         for(AccountContactRelation relation : accConRelations) {
-            //conIdLists.add(relation.contactId);
-            accIds.add(relation.AccountId);
+            conIdSet.add(relation.contactId);            
         }
-        if(!accIds.isEmpty() && accIds.size()!=null) {
-        	accMap.put('Associate ContAcct',accIds);    
+        if(!conIdLists.isEmpty() && conIdLists.size()!=null) {
+        	contMap.put('Associate ContAcct',conIdLists);    
         }
-        system.debug('accMap==>>'+accMap);
+        system.debug('accMap==>>'+contMap);
         /* String lastRelAccount;
         String lastRelOwnerAccount;
          for(Contact con : [Select Id,
@@ -93,7 +93,8 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
             cont.accountId = String.isempty(lastRelAccount)?lastRelAccount:lastRelAccount;
             contactmap.put(con.Id,cont);
         } */
-        contUpdtLst = CM_AccountInactiveService.getContwithActiveAccnt(accMap);
+        //contUpdtLst = CM_AccountInactiveService.getContwithActiveAccnt(contMap);
+        contUpdtLst = CM_AssociateActiveAccountonContact.getContwithActiveAccnt(conIdSet);
         system.debug('contUpdtLst==>>'+contUpdtLst);
         for(Contact cont : contUpdtLst) {
         	contactmap.put(cont.Id,cont);    

@@ -25,60 +25,30 @@ public with sharing class CM_AccountInactiveService {
 * and account Ids from changeEvent 
 * @parameters : Map of account service and account IDs
 */  
-    public static List<Contact> getContwithActiveAccnt(Map<String,List<Id>> accMap) {        
-        final List<Contact> contUpdateLst = new List<Contact>();
+    public static List<Contact> directRelAccountInactivated(Map<String,List<Id>> accMap) {        
+        final List<Contact> contUpdateLst; 
         final Map<Id,Id> conAccMap = new Map<Id,Id>();
         final List<Id> accIds; 		         
         final List<Contact> conLst = new List<Contact>();        
         final Set<Id> conNonOwnrSet = new Set<Id>();        
         Contact contRec;
-        
+        final Set<Id> directContSet = new Set<Id>();
         for(String str : accMap.keySet()) {
-            if(str == ACCOUNT_INACTIVE || str == ASSC_CONT_ACCT) {
+            if(str == ACCOUNT_INACTIVE ) {
                 accIds = accMap.get(str);		    
             }            
         }
-        
-        for(Contact cont : [Select Id,
-                            (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner'
-                             AND Account.Status__c='Active' order by startdate asc LIMIT 1) from Contact
-                            where AccountId IN :accIds  WITH SECURITY_ENFORCED ]) { 
-                                /* for(AccountContactRelation reltn : cont.AccountContactRelations) {
-                                    if(reltn.Relationship_Type__c == RELATED_OWNER) {
-                                        conOwnrSet.add(cont.Id);
-                                        conLst.add(cont);
-                                        conAccMap.put(cont.Id,reltn.AccountId);
-                                    }    
-                                } */ 
-                                if(cont.AccountContactRelations.size() == 1) {
-                                	conAccMap.put(cont.Id,cont.AccountContactRelations[0].AccountId);    
-                                }
-                                else{
-                                	conNonOwnrSet.add(cont.Id);    
-                                }
-                            }  
-        system.debug('conNonOwnrSet==>>'+conNonOwnrSet);
-        system.debug('conAccMap==>>'+conAccMap);
-        if(!conNonOwnrSet.isEmpty() && conNonOwnrSet.size() != null) {
-        for(Contact con: [Select Id,
-                          (Select accountId,Relationship_Type__c from AccountContactRelations order by startdate asc LIMIT 1)
-                          from Contact where AccountId IN :accIds AND ID NOT IN:conAccMap.keySet() WITH SECURITY_ENFORCED] ) {       
-                              for(AccountContactRelation rels : con.AccountContactRelations) {
-                                  conAccMap.put(con.Id,rels.AccountID);
-                                  conLst.add(con);
-                              }	               
-                          }
-        }   
-        system.debug('conNonOwnrSet==>>'+conNonOwnrSet);
-        system.debug('conAccMap==>>'+conAccMap);
-        //for(Contact con: conLst) {
-        for(Id conId: conAccMap.keySet()) {
-            contRec = new Contact();
-            contRec.Id = conId;
-            contRec.accountId = NULL_VALUE;
-            contRec.accountId = conAccMap.get(conId);
-            contUpdateLst.add(contRec);
-        }                              
+        for(Account acct : [Select Id,
+                           (Select accountId,contactId,Relationship_Type__c from AccountContactRelations where IsDirect= true)
+                           from Account where Id IN :accIds WITH SECURITY_ENFORCED]) {
+                               for(AccountContactRelation reltn : acct.AccountContactRelations) {
+                                	directContSet.add(reltn.contactID);   
+                               }                               
+            
+        }
+        system.debug('directContSet==>>'+directContSet);
+        contUpdateLst = CM_AssociateActiveAccountonContact.getContwithActiveAccnt(directContSet);
+        system.debug('contUpdateLst==>>'+contUpdateLst);
         return contUpdateLst;
     }
     

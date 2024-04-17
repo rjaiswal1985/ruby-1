@@ -3,6 +3,7 @@
         <div class="slds-m-around_medium">
             <lightning-input label="Replay ID" type="number" onchange={handleReplayIdChange} min="0.0" required></lightning-input>
             <lightning-input label="Event UUID" type="text" onchange={handleEventUUIDChange} required></lightning-input>
+            <!--<lightning-input label="Platform Event Name" value={selectedEventName} onchange={handleEventNameChange}></lightning-input>-->
             <lightning-combobox
                 name="platformEventDropdown"
                 label="Select a Channel"
@@ -12,7 +13,8 @@
                 required>
             </lightning-combobox>
         </div>
-        <lightning-button variant="Success" label="Replay" onclick={subscribeToChannel} disabled={isSubscribed} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="success" label="View Payload" onclick={viewPayload} disabled={isSubscribed} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label="Submit" onclick={submitPayload} disabled={disableSubmitButton} class="slds-m-left_x-small"></lightning-button>
         <lightning-card title={title}>
             <template if:true={showPayload}>
                 <div class="slds-m-around_medium">
