@@ -58,15 +58,15 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <content>MDMRedirect</content>
-        <formFactor>Large</formFactor>
+        <content>UCB_ActionOverride</content>
+        <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>LightningComponent</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <content>MDMRedirect</content>
-        <formFactor>Small</formFactor>
+        <content>UCB_ActionOverride</content>
+        <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>LightningComponent</type>
     </actionOverrides>
@@ -90,15 +90,15 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <content>MDMRedirect</content>
-        <formFactor>Small</formFactor>
+        <content>UCB_ActionOverride</content>
+        <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>LightningComponent</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <content>MDMRedirect</content>
-        <formFactor>Large</formFactor>
+        <content>UCB_ActionOverride</content>
+        <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>LightningComponent</type>
     </actionOverrides>

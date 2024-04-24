@@ -2,7 +2,7 @@
 * Name: CM_AccountInactiveService
 * Copyright © Align Tech
 * ========================================================================================================================
-* Purpose: Helper for CM_AccountDataCaptureTrigger
+* Purpose: Service class invoked on account inactivation
 * TestClass : CM_AccountUpdateCaptureService
 * ========================================================================================================================
 * History
@@ -13,43 +13,32 @@
 public with sharing class CM_AccountInactiveService {
     /* Account status inactive */
     final static string ACCOUNT_INACTIVE = 'Account Inactive';
-    /* Process to Associate Contact with Account */
-    final static string ASSC_CONT_ACCT = 'Associate ContAcct'; 
-    /* Null Value */
-    final static string NULL_VALUE = null;  
-    /* Relation Type Owner */
-    final static string RELATED_OWNER = 'Owner'; 
     
     /**
-* @description : This method gets details of account service to invoke 
-* and account Ids from changeEvent 
-* @parameters : Map of account service and account IDs
+* @description : Based on the process name 'account inactivation' from input parameter,
+* this method invokes corresponding services & updates contacts with active account
+* @parameters : Map of service name and account IDs from account change event
 */  
-    public static List<Contact> directRelAccountInactivated(Map<String,List<Id>> accMap) {        
-        final List<Contact> contUpdateLst; 
-        final Map<Id,Id> conAccMap = new Map<Id,Id>();
-        final List<Id> accIds; 		         
-        final List<Contact> conLst = new List<Contact>();        
-        final Set<Id> conNonOwnrSet = new Set<Id>();        
-        Contact contRec;
+    public static void accountInactivationProcess(List<Id> accIds) {        
+        final List<Id> inActiveAccIds = new List<Id>(); 		                                             
         final Set<Id> directContSet = new Set<Id>();
-        for(String str : accMap.keySet()) {
-            if(str == ACCOUNT_INACTIVE ) {
-                accIds = accMap.get(str);		    
-            }            
-        }
-        for(Account acct : [Select Id,
-                           (Select accountId,contactId,Relationship_Type__c from AccountContactRelations where IsDirect= true)
-                           from Account where Id IN :accIds WITH SECURITY_ENFORCED]) {
-                               for(AccountContactRelation reltn : acct.AccountContactRelations) {
-                                	directContSet.add(reltn.contactID);   
-                               }                               
-            
-        }
-        system.debug('directContSet==>>'+directContSet);
-        contUpdateLst = CM_AssociateActiveAccountonContact.getContwithActiveAccnt(directContSet);
-        system.debug('contUpdateLst==>>'+contUpdateLst);
-        return contUpdateLst;
+        
+        /*for(AccountContactRelation acctCont : [Select AccountId,contactId
+                            from AccountContactRelation where IsDirect= true AND
+                           		AccountId IN :accIds WITH SECURITY_ENFORCED]) {                               
+        	directContSet.add(acctCont.contactID);                                                                             
+        }*/
+        Map<Id, Contact> contMap = new Map<ID, Contact>([SELECT Id,AccountId,Status__c
+                                                          FROM Contact where AccountId IN :accIds 
+                                                         AND Status__c='Active' WITH SECURITY_ENFORCED]);
+        /*for(Contact Cont : [Select Id,AccountId,Status__c
+                            from Contact where AccountId IN :accIds WITH SECURITY_ENFORCED]) {                            		                              
+        	directContSet.add(cont.Id);                                                                             
+        }*/
+        system.debug('contMap==>>'+contMap);
+        if(contMap != null && !contMap.isEmpty()) {
+        	CM_AssociateActiveAccountonContact.updateContwithActiveAccnt(contMap.keySet());    
+        }        
     }
     
     /**

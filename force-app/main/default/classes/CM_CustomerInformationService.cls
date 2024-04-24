@@ -14,8 +14,8 @@ public with sharing class CM_CustomerInformationService {
     /**
      * @description : returns list of Customer communication information of Account
      */
-    public static Map < String, Organization_Communication__c > upsertCommInformation(Map < String, Map < String, Object >> objParser, Account account) {
-        //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(RELTIOHCO,'Customer Informeation creation Service','Customer Information Creation Service started')});
+    public static Map < String, Organization_Communication__c > upsertCommInformation(Map < String, Map < String, Object >> objParser, Account account,String masterRecordId) {
+        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Customer Information Creation Service started'));  
         final Map < String, Organization_Communication__c > cusInformMap = new Map < String, Organization_Communication__c > ();
         Map < String, Object > key2values = new Map < String, Object > ();
         Organization_Communication__c cusInformation;
@@ -30,7 +30,7 @@ public with sharing class CM_CustomerInformationService {
             }
             cusInformMap.put(objectKey, cusInformation);
         }
-        //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(RELTIOHCO,'Customer Informeation creation Service','Customer Information Creation Service ended')});
+        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Customer Information Creation Service completed.'));  
         return cusInformMap;
     }
     private CM_CustomerInformationService() {}

@@ -1,79 +1,100 @@
+/***********************************************************************************************************************
+* Name: UCB_LoggerService
+* Copyright © Align Tech
+* ========================================================================================================================
+* Purpose: Service to log the transactions
+* TestClass : UCB_LoggerServiceTest
+* ========================================================================================================================
+* History
+*
+* VERSION         AUTHOR                          DATE                DETAIL
+* 1.0             Rohit Jaiswal                   22/04/2024          GSF-1139 - Logger Framework
+***********************************************************************************************************************/
 public with sharing class CM_LoggerUtil {
     /**
-     * 
+     * @description : property to capture list of logEvents
      */
-    private static final Integer FIELD_LIMIT = 100;
+    public static List<CM_Log> logEvents;
     /**
-     * 
-     */
-    private static CM_Log logWrapper;
-    /** 
-     * 
-    */
-    private static List<Map<Object,Object>> logDetails;
-    /**
-     * 
+     * @desciption : initialiser block to instantiate the list of events
      */
     static {
-        logDetails = new List<Map<Object,Object>>();
-    }
-    public static void logger(CM_Log log,Boolean publishNow) {
-        if(logWrapper==null) {
-            logWrapper = log;
-        }
-        if(publishNow) {
-            logDetails.add(log.details);
-            publishLogs();
-        } else {
-            logger(log);
-        }
+        logEvents = new List<CM_Log>(); 
     }
     /**
-     * 
+     * @description : private constructor to avoid creating instance of the class
+     */
+    @testVisible
+    private CM_LoggerUtil() {
+    }
+    /**
+     * @description : method to make logs
      */
     public static void logger(CM_Log log) {
-        if(logWrapper == null) {
-            logWrapper = log;
-            logDetails.add(log.details);
-        } else {
-            if(splitLogs(log.details)) {
-                System.debug('--! Finalised Log '+finaliseLog());
-                UCB_LoggerService.logger(new List<UCB_Log>{finaliseLog()});
-                clearHistory();
-                logWrapper = log;
-                logDetails.add(log.details);
-            } else {
-                logDetails.add(log.details);
-                System.debug('---! Added to List '+logDetails);
-            }
+        logEvents.add(log);
+    }
+    /**
+     * @description : method to make logs
+     */
+    public static void publishLogs(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event) {
+        final Map<String,List<LOGWRAPPER>> moduleLog = new Map<String,List<LOGWRAPPER>>();
+        LOGWRAPPER logger ;
+        CM_ReltioHandlerService.EVENTDETAILS eventDetail;        
+        for(CM_Log log : logEvents) {
+            if(!moduleLog.containsKey(log.message)) {
+                moduleLog.put(log.message,new List<LOGWRAPPER>());   
+            } 
+            logger = new LOGWRAPPER();
+            eventDetail = mdmId2Event.get(log.mdmId);
+            logger.replayID =eventDetail.ReplayId; 
+            logger.eventUUId =eventDetail.EventUuid;
+            logger.module = module;
+            logger.mdmId =log.mdmId; 
+            logger.timeStamp =log.timestamp;
+            logger.message =log.message;
+            moduleLog.get(log.message).add(logger);       
         }
-    }
-    public static void publishLogs() {
-        UCB_LoggerService.logger(finaliseLog(),true);
-        clearHistory();
-    }
-    /**
-     * 
-     */
-    private static Boolean splitLogs(Map<Object,Object> details) {
-        final Integer previousLogSize = JSON.serialize(logDetails).length();
-        final Integer curentLogSize = JSON.serialize(details).length();
-		System.debug('---! Previous '+previousLogSize);
-		System.debug('---! curentLogSize '+curentLogSize);
-        return FIELD_LIMIT <= (previousLogSize+curentLogSize);
-    }
-    /** 
-     *
-    */
-    private static void clearHistory() {
-        logDetails.clear();
-        logWrapper=null;
+        for(String log: moduleLog.keySet()) {
+            UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
+        }         
     }
     /**
-     * 
+     * @description : method to make logs
      */
-    private static UCB_Log finaliseLog() {
-        logWrapper.ucbLog.message = JSON.serialize(logDetails);
-        return logWrapper.ucbLog;
+    public static void dmlLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
+        final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();
+        CM_ReltioHandlerService.EVENTDETAILS event ;
+        LOGWRAPPER logger;    
+        UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(dmlWrapMap)),false);    
+        UCB_LoggerService.logger(new UCB_Log(module, 'mdmId2Event', JSON.serialize(mdmId2Event)),false); 
+        UCB_LoggerService.logger(new UCB_Log(module, 'mdmId2parent', JSON.serialize(mdmId2parent)),false); 
+        for(String mdmId: dmlWrapMap.keyset()) {
+            logger = new LOGWRAPPER();
+            logger.mdmId = mdmId; 
+            logger.module = mdmId2parent.get(mdmId); 
+            event=mdmId2Event.get(logger.module);
+            logger.replayID =event.ReplayId; 
+            logger.eventUUId =event.EventUuid; 
+            logger.module = module; 
+            logger.timeStamp =dmlWrapMap.get(mdmId).timeStamp;
+            logger.message =JSON.serialize(dmlWrapMap.get(mdmId));
+            moduleLog.add(logger);
+        }
+        UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
+    }
+    /*Acount Relation wrapper */
+    private class LOGWRAPPER {
+        /* Map of upserted record */
+        String replayID ;
+        /* Contact 2 Account Map */
+        String eventUUId;
+        /* Contact 2 Account Map */
+        String timeStamp; 
+        /* Contact 2 Account Map */
+        String mdmId; 
+        /* Contact 2 Account Map */
+        String message; 
+        /* Contact 2 Account Map */
+        String module; 
     }
 }

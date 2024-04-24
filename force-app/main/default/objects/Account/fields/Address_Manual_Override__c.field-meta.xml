@@ -26,6 +26,16 @@
                 <default>false</default>
                 <label>No</label>
             </value>
+            <value>
+                <fullName>true</fullName>
+                <default>false</default>
+                <label>true</label>
+            </value>
+            <value>
+                <fullName>false</fullName>
+                <default>false</default>
+                <label>false</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

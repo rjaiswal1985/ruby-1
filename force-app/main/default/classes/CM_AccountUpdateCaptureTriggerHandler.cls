@@ -3,7 +3,7 @@
 * Copyright © Align Tech
 * ========================================================================================================================
 * Purpose: Handler/Subscriber for Account Change event
-* TestClass : CM_AccountUpdateCaptureTriggerHandler_Test
+* TestClass : CM_AccountUpdateCaptureTrigger_Test
 * ========================================================================================================================
 * History
 *

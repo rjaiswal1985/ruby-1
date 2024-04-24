@@ -11,6 +11,10 @@
  * 1.0             Rohit Jaiswal                   20/10/2023          JSON Parser to handle platform event data
  ***********************************************************************************************************************/
 public with sharing class CM_JSONParser {
+    /*********Map of MD Ids  */
+    private static Map<String,String> mdmId2parent;
+    /*********Map of MD Ids  */
+    private static String masterRecordId;
      /**
      * @description : parses the JSON returns sobject data
      */
@@ -19,43 +23,50 @@ public with sharing class CM_JSONParser {
         UCB_LoggerService.logger(new UCB_Log('ReltioParser', 'Deserialization started.', inputJson), false);
         final Map<String, Object> requestObject = (Map<String, Object>)(JSON.deserializeUntyped(inputJson));
         final Map<String, Object> objectJson = (Map<String, Object>)requestObject.get(CM_ReltioConstants.OBJECTSTRING);
-        parser.key2value = attibuteParsers(objectJson, sobjectData);
+        final CM_ReltioHandlerService.ATTRIBUTEPARSER attriParser = attibuteParsers(objectJson, sobjectData,(String)objectJson.get('mdmId'));
+        parser.key2value = attriParser.key2value;
         parser.apiType=(String)requestObject.get('type');
+        parser.mdmId2parent = attriParser.mdmId2parent;  
+        parser.masterRecordId = masterRecordId;    
+        CM_LoggerUtil.logger(new CM_Log('ReltioParser', masterRecordId, 'Deserialization completed.'));  
         return parser;
     }
     /**
      * @description : Method to parse attributes data in JSON & map object fields using custom metadata
      */
-    public static Map<String, Map<String, Map<String, Object>>> attibuteParsers(Map<String, Object> objectJson, CM_ReltioHandlerService.SobjectData sobjectData) {
+    public static CM_ReltioHandlerService.ATTRIBUTEPARSER attibuteParsers(Map<String, Object> objectJson, CM_ReltioHandlerService.SobjectData sobjectData,String masterRecordId ) {
+        final CM_ReltioHandlerService.ATTRIBUTEPARSER attriParser = new CM_ReltioHandlerService.ATTRIBUTEPARSER();
         final Map<String, List<Reltio_Field_Mapping__mdt>> sObj2CusMetadata = sobjectData.sObj2CusMetadata;
         final Map<String, String> srceFld2TargField = sobjectData.srceFld2TargField;
         Map<String, Map<String, Object>> outputObject = new Map<String, Map<String, Object>>();
         final Map<String, Map<String, Map<String, Object>>> key2value = new Map<String, Map<String, Map<String, Object>>>();
         final Map<String, Object> attributeJson = (Map<String, Object>)objectJson.get(CM_ReltioConstants.ATTRIBUTES);
         String targetField;
-
+        mdmId2parent= new Map<String,String>();
         for (String type : sObj2CusMetadata.keyset()) {
             targetField = srceFld2TargField.get(type);
             outputObject = new Map<String, Map<String, Object>>();
             if (type == CM_ReltioConstants.MASTER) {
-                outputObject = getParentObject(objectJson, attributeJson, sObj2CusMetadata.get(CM_ReltioConstants.MASTER));
+                outputObject = getParentObject(objectJson, attributeJson, sObj2CusMetadata.get(CM_ReltioConstants.MASTER),masterRecordId);
             } else if (attributeJson.containsKey(type) ) {
-                outputObject = getCustomObject(attributeJson, type, sObj2CusMetadata.get(type) );
-            }
+                outputObject = getCustomObject(attributeJson, type, sObj2CusMetadata.get(type),masterRecordId );                
+            }  
             if (!outputObject.isEmpty() && !String.isEmpty(targetField)) {                
                 if (!key2value.containsKey(targetField)) {
                     key2value.put(targetField, new Map<String, Map<String, Object>>());
                 }
                 key2value.get(targetField).putall(outputObject);
             }
-        }
-        return key2value;
+        } 
+        attriParser.mdmId2parent=mdmId2parent;
+        attriParser.key2value=key2value;
+        return attriParser;
     }
 
     /**
      * @description : Method to parse JSON to get ParentObject data based on the service
      */
-    private static Map<String, Map<String, Object>> getParentObject(Map<String, Object> objectJson, Map<String, Object> attributeJson, List<Reltio_Field_Mapping__mdt> sObj2CusMetadata) {
+    private static Map<String, Map<String, Object>> getParentObject(Map<String, Object> objectJson, Map<String, Object> attributeJson, List<Reltio_Field_Mapping__mdt> sObj2CusMetadata,String masterRecordId) {
         final Map<String, Map<String, Object>> outputObject = new Map<String, Map<String, Object>>();
         final Map<String, Object> field2value = new Map<String, Object>();
         String fieldKey;
@@ -63,6 +74,7 @@ public with sharing class CM_JSONParser {
             fieldKey = String.isEmpty(mapping.Target_Field__c) ? mapping.Source_Parameter__c: mapping.Target_Field__r.QualifiedApiName;
             field2value.put(fieldKey, mapping.Source_Field__c== CM_ReltioConstants.OBJECTSTRING ? getObjectValue(objectJson ,mapping):getParseValues(attributeJson, mapping));
         }
+        mdmId2parent.put((String) field2value.get(CM_ReltioConstants.MDMID),masterRecordId);
         outputObject.put((String) field2value.get(CM_ReltioConstants.MDMID), field2value);
         return outputObject;
     }
@@ -70,7 +82,7 @@ public with sharing class CM_JSONParser {
     /**
      * @description : Method to parse JSON to get ChildObjects data based on the service
      */
-    private static Map<String, Map<String, Object>> getCustomObject(Map<String, Object> attributeJson, String type, List<Reltio_Field_Mapping__mdt> sObj2CusMetadata) {
+    private static Map<String, Map<String, Object>> getCustomObject(Map<String, Object> attributeJson, String type, List<Reltio_Field_Mapping__mdt> sObj2CusMetadata,String masterRecordId) {
         final Map<String, Map<String, Object>> outputObject = new Map<String, Map<String, Object>>();
         Map<String, Object> field2value;
         for (Object childRecord : getObjectMap(attributeJson, type, 'value')) {
@@ -78,6 +90,7 @@ public with sharing class CM_JSONParser {
             for (Reltio_Field_Mapping__mdt mapping : sObj2CusMetadata) {
                 field2value.put(mapping.Target_Field__r.QualifiedApiName, getParseValues((Map<String, Object>)childRecord, mapping));
             }
+            mdmId2parent.put((String) field2value.get(CM_ReltioConstants.MDMID),masterRecordId);
             outputObject.put((String) field2value.get(CM_ReltioConstants.MDMID), field2value);
         }
         return outputObject;

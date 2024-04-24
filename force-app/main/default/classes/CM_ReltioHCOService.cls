@@ -24,30 +24,32 @@ public with sharing class CM_ReltioHCOService {
     public static CM_ReltioHandlerService.OBJECTPARSER upsertHCOServices(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {
         final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCO));
         final CM_ReltioHandlerService.OBJECTPARSER objParser = new CM_ReltioHandlerService.OBJECTPARSER() ;
-        objParser.resultMap=upsertHCOSelector(parser.key2value);
+        objParser.resultMap=upsertHCOSelector(parser.key2value,parser.masterRecordId);
         objParser.apiType=parser.apiType;
+        objParser.mdmId2parent=parser.mdmId2parent;
+        objParser.masterRecordId=parser.masterRecordId;
         return objParser;
     }
     /**     
      * @description : Retrieves data of Account and related Sobjects
      */
-    public static Map < String, Map < String, Sobject >> upsertHCOSelector(Map < String, Map < String, Map < String, Object >>> key2value) {
+    public static Map < String, Map < String, Sobject >> upsertHCOSelector(Map < String, Map < String, Map < String, Object >>> key2value,String masterRecordId) {
         final Map < String, Map < String, Sobject >> resultMap = new Map < String, Map < String, Sobject >> ();
         Map < String, Organization_Communication__c > cusCommunication = new Map < String, Organization_Communication__c > ();
         final Map < String, Account > accountMap = new Map < String, Account > ();
 
         Account account = new Account();
         if (key2value.containsKey(ACCOUNTSTRING)) {
-            account = CM_AccountService.upsertAccount(key2value.get(ACCOUNTSTRING));
+            account = CM_AccountService.upsertAccount(key2value.get(ACCOUNTSTRING),masterRecordId);
         }
 
         if (key2value.containsKey(ORGCOMMUNICATION)) {
-            cusCommunication = CM_CustomerInformationService.upsertCommInformation(key2value.get(ORGCOMMUNICATION), account);
+            cusCommunication = CM_CustomerInformationService.upsertCommInformation(key2value.get(ORGCOMMUNICATION), account,masterRecordId);
             resultMap.put(ORGCOMMUNICATION, cusCommunication);
         }
 
         if (key2value.containsKey(ORGINVOICE)) {
-            final Map < String, Organization_E_Invoice__c > cosInvoiceMap = CM_CustomerInvoiceService.upsertCustomerInvoice(key2value.get(ORGINVOICE), account);
+            final Map < String, Organization_E_Invoice__c > cosInvoiceMap = CM_CustomerInvoiceService.upsertCustomerInvoice(key2value.get(ORGINVOICE), account,masterRecordId);
             resultMap.put(ORGINVOICE, cosInvoiceMap);
         }
 

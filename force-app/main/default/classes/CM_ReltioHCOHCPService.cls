@@ -21,27 +21,36 @@ public with sharing class CM_ReltioHCOHCPService {
     */
     public static CM_ReltioHandlerService.OBJECTPARSER upsertHCOHCPService(String inputJson, Map<String,CM_ReltioHandlerService.SobjectData> process2Metadata) {
         final CM_ReltioHandlerService.OBJECTPARSER  objParser= new CM_ReltioHandlerService.OBJECTPARSER() ;
+        CM_ReltioHandlerService.ATTRIBUTEPARSER attriParser = new CM_ReltioHandlerService.ATTRIBUTEPARSER();
         Map<String,Map<String,Sobject>> upsertNewMap = new  Map<String,Map<String,Sobject>>();
         Map<String,Map<String,Sobject>> returnMap = new  Map<String,Map<String,Sobject>>() ;
+        Map < String, Map < String, Map < String, Object >>> key2value = new Map < String, Map < String, Map < String, Object >>>();
 
         final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCPHCO));
-        Map < String, Map < String, Map < String, Object >>> key2value = parser.key2value;
+        key2value = parser.key2value;
+        objParser.apiType=parser.apiType;
+        objParser.mdmId2parent=parser.mdmId2parent;
+        objParser.masterRecordId=parser.masterRecordId;
 
         final CM_AccountContactRelationshipService.AccountRelation accRelationship = CM_AccountContactRelationshipService.upsertAccountRelationship(key2value.get(ACCCONRELATION));        
         upsertNewMap= CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap,upsertNewMap);
- 
-        key2value = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCO) );
-        returnMap = CM_ReltioHCOService.upsertHCOSelector(key2value);
+        UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','upsertMap1',JSON.serialize(accRelationship.resultMap))});   
+
+        attriParser = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId );
+        returnMap = CM_ReltioHCOService.upsertHCOSelector(attriParser.key2value,parser.masterRecordId);
+        UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','returnMap',JSON.serialize(returnMap))});  
         upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(returnMap,upsertNewMap);
+        objParser.mdmId2parent.putall(attriParser.mdmId2parent);
+         
 
-
-        key2value = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCP) );
-        returnMap = CM_ReltioHCPService.upsertHCPSelector(key2value);
+        attriParser = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCP),parser.masterRecordId);
+        returnMap = CM_ReltioHCPService.upsertHCPSelector(attriParser.key2value,parser.masterRecordId);
+        UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','returnMap',JSON.serialize(returnMap))});   
         upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(returnMap,upsertNewMap); 
+        objParser.mdmId2parent.putall(attriParser.mdmId2parent);
         
         objParser.contact2Account=accRelationship.contact2Account;
         objParser.resultMap=upsertNewMap;
-        objParser.apiType=parser.apiType;
         return objParser;
     }
     /**
@@ -91,7 +100,7 @@ public with sharing class CM_ReltioHCOHCPService {
         upsertOldMap.put('Educational_Detail__c',new Map <String, Sobject>());  
         upsertOldMap.put('Person_Communication__c',new Map <String, Sobject>());  
         upsertOldMap.put('License_Information__c',new Map <String, Sobject>()); 
-        for(Contact con : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,Account.MDM_Id__c,
+        for(Contact con : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,Account.MDM_Id__c,Account.Status__c,
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Educational_Details__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Person_Communications__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from License_Informations__r) 
@@ -130,7 +139,7 @@ public with sharing class CM_ReltioHCOHCPService {
     public static Map<String,String> conwithAccount(List<Contact> contactOldList) {
         final Map<String,String> conwithAccount = new Map<String,String>();
         for(Contact con : contactOldList) {
-            if(con.AccountId!=null ) {
+            if(con.AccountId!=null && con.Account.Status__c=='Active') {
                 conwithAccount.put(con.MDM_Id__c,con.Account.MDM_Id__c);   
             }
         }   

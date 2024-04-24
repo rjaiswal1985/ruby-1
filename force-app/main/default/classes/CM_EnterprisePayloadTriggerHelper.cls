@@ -12,9 +12,8 @@
  ***********************************************************************************************************************/
 public with sharing class CM_EnterprisePayloadTriggerHelper {
     /**********Metadat Records.************ */
-    final Static Map <String, CM_ReltioHandlerService.SobjectData > accountRelation = CM_ReltioHandlerService.metadataRecords(CM_ReltioConstants.ACCRELALIONSERV);
-    /**********Metadat Records.************ */
-    final Static Map <String, CM_ReltioHandlerService.SobjectData > accConRelation = CM_ReltioHandlerService.metadataRecords(CM_ReltioConstants.ACCCONRELALIONS);
+    final Static Map <String, CM_ReltioHandlerService.SobjectData > ACCOUNTRELATION = CM_ReltioHandlerService.metadataRecords(CM_ReltioConstants.ACCRELALIONSERV);
+    
     /**      
      * @description : Method to handle enterprise payload event data
      */
@@ -47,7 +46,7 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
             accountMap = upsertAccountRelation(relationship,accountMap);
         }
         upsertMap.put('Account',accountMap);
-        CM_DMLSaveResult.upsertRecords(upsertMap, accountRelation, CM_ReltioConstants.ACCRELALIONSERV);
+        CM_DMLSaveResult.upsertRecords(upsertMap, ACCOUNTRELATION.get(CM_ReltioConstants.ACCRELALIONSERV).dmlMaps);
     }
     private static Map < String, Account > upsertAccountRelation(Account_Relationship__c relationship,Map < String, Account > accountMap) {
         final Account account = new Account();
@@ -57,50 +56,11 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
         return accountMap;
     }
     private static void accountContactRelations(List<AccountContactRelation> accConRelations) {
-        final Map < String, Map < String, Sobject >> upsertMap = new Map < String, Map < String, Sobject >> ();
-        final List<Id> conIdLists = new List<Id>();
-        final List<Id> accIds = new List<Id>();
-        final Map < String, Sobject > contactmap = new Map < String, Sobject > ();
-        final Map < String, List<Id> > contMap = new Map < String, List<Id> >();
-        final Set<Id> conIdSet = new Set<Id>();
-        final List<Contact> contUpdtLst;
+        final Set<Id> conIdSet = new Set<Id>();        
         for(AccountContactRelation relation : accConRelations) {
             conIdSet.add(relation.contactId);            
         }
-        if(!conIdLists.isEmpty() && conIdLists.size()!=null) {
-        	contMap.put('Associate ContAcct',conIdLists);    
-        }
-        system.debug('accMap==>>'+contMap);
-        /* String lastRelAccount;
-        String lastRelOwnerAccount;
-         for(Contact con : [Select Id,
-            (Select accountId,Relationship_Type__c from AccountContactRelations  order by startdate asc)
-            from Contact where Id = :conIdLists  WITH SECURITY_ENFORCED ]) {
-            system.debug('@rohit1@'+con);
-            lastRelAccount=null;
-            lastRelOwnerAccount= null;
-            Contact cont = new Contact();
-            cont.Id = con.Id;
-            cont.accountId = null;
-            for(AccountContactRelation relation : con.AccountContactRelations){
-                if(String.isempty(lastRelAccount)){
-                    lastRelAccount=relation.accountId;    
-                }
-                if(relation.Relationship_Type__c=='Owner' && String.isEmpty(lastRelOwnerAccount)) { 
-                    lastRelOwnerAccount=relation.accountId;  
-                }
-            }
-            cont.accountId = String.isempty(lastRelAccount)?lastRelAccount:lastRelAccount;
-            contactmap.put(con.Id,cont);
-        } */
-        //contUpdtLst = CM_AccountInactiveService.getContwithActiveAccnt(contMap);
-        contUpdtLst = CM_AssociateActiveAccountonContact.getContwithActiveAccnt(conIdSet);
-        system.debug('contUpdtLst==>>'+contUpdtLst);
-        for(Contact cont : contUpdtLst) {
-        	contactmap.put(cont.Id,cont);    
-        }
-        upsertMap.put('Contact',contactmap);
-        CM_DMLSaveResult.upsertRecords(upsertMap, accConRelation, CM_ReltioConstants.ACCCONRELALIONS);
+        CM_AssociateActiveAccountonContact.updateContwithActiveAccnt(conIdSet);
     }
     private CM_EnterprisePayloadTriggerHelper() {}
 }

@@ -14,8 +14,7 @@ public with sharing class CM_DMLSaveResult {
     /**
      * @description : Method to upsert records with external Id based on the service
      */
-    public static Map<String,DMLWrapper> upsertRecords(Map < String, Map < String, Sobject >> upsertMap, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata, String process) {
-        final Map < Integer, DML_Orchestrator__mdt > dmlMap = process2Metadata.get(process).dmlMaps;
+    public static Map<String,DMLWrapper> upsertRecords(Map < String, Map < String, Sobject >> upsertMap, Map < Integer, DML_Orchestrator__mdt > dmlMap) {
         final Map<String,DMLWrapper> dmlWrapMap = new Map<String,DMLWrapper>();
         for (Integer dmlCount = 1; dmlCount <= dmlMap.size(); dmlCount++) {
             dmlWrapMap.putall(upsertRecords(upsertMap, dmlMap.get(dmlCount)));
@@ -62,6 +61,7 @@ public with sharing class CM_DMLSaveResult {
             dmlWrap.record = records[recordCount];
             dmlWrap.upsertResult= upsertResultList[recordCount];
             dmlWrap.isDMLSucess = upsertResultList[recordCount].isSuccess();
+            dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWraps.add(dmlWrap);
             dmlWrapMap.put((String)dmlWrap.record.get('MDM_Id__c'),dmlWrap);
         }
@@ -76,6 +76,7 @@ public with sharing class CM_DMLSaveResult {
             dmlWrap.record = toBeDelSobjects[recordCount];
             dmlWrap.daeleteResult = deleteResults[recordCount];
             dmlWrap.isDMLSucess = deleteResults[recordCount].isSuccess();
+            dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWraps.add(dmlWrap);
             dmlWrapMap.put((String)dmlWrap.record.get('MDM_Id__c'),dmlWrap);
         }
@@ -85,6 +86,8 @@ public with sharing class CM_DMLSaveResult {
     public class DMLWrapper {
         /* List of input records */
         public SObject record;
+        /* List of input records */
+        public String timeStamp;
         /* List of Saveresult */
         public Database.UpsertResult upsertResult;
          /* List of Saveresult */

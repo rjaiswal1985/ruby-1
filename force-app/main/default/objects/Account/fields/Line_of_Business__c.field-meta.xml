@@ -34,7 +34,7 @@
             <value>
                 <fullName>exocad</fullName>
                 <default>false</default>
-                <label>Exocad</label>
+                <label>exocad</label>
             </value>
         </valueSetDefinition>
     </valueSet>

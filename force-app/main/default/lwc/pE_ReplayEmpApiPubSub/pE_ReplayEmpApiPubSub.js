@@ -54,6 +54,7 @@ export default class PE_ReplayEmpApiPubSub extends LightningElement {
             if (response.data.event.replayId==this.replayId || response.data.event.eventUUID == this.eventUUID) {
                 this.requiredEvent = JSON.stringify(response);
                 console.log('Received Filtered event payload: ', this.requiredEvent);
+                console.log('Test eventUUID: '+this.eventUUID)
                 this.unsubscribeFromChannel();
             }
             this.showPayload = true;

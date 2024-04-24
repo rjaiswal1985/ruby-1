@@ -37,7 +37,7 @@ public with sharing class CM_AccountContactRelationsTriggerHelper {
     /**    
     * @description : before event method of Account Contact relationship
     */
-    public static void afterUpdateEvent(List<AccountContactRelation> relationshipList,Map<Id,AccountContactRelation> oldRelationMap) {  
+    /*public static void afterUpdateEvent(List<AccountContactRelation> relationshipList,Map<Id,AccountContactRelation> oldRelationMap) {  
         final List < Customer_Master_Enterprise_Payload__e > payloadList = new List < Customer_Master_Enterprise_Payload__e > ();
         Customer_Master_Enterprise_Payload__e record;
         for (AccountContactRelation relationship: relationshipList) {
@@ -52,6 +52,6 @@ public with sharing class CM_AccountContactRelationsTriggerHelper {
         if(payloadList!=null && !payloadList.isEmpty()) {
             eventbus.publish(payloadList);
         } 
-    }
+    }*/
     private CM_AccountContactRelationsTriggerHelper() {} 
 }

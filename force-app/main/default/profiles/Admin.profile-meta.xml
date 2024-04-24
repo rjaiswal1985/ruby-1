@@ -14,6 +14,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_AccountContactRelationInactiveService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_AccountContactRelationsTriggerHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -70,6 +74,18 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_AccountUpdateCaptureTrigger_Test</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AcctContRelationCDC_TriggerHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AcctContRelation_CDC_TriggerHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_AssociateActiveAccountonContact</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -91,6 +107,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CM_DMLSaveResult</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_DMLSaveResult2</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -299,6 +319,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>UCB_LoggerService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UCB_MessageTriggerFactory</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <custom>false</custom>

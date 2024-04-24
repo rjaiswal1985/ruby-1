@@ -98,8 +98,12 @@ public with sharing class CM_ReltioHandlerService {
     public class JSPARSER {
         /* Map of upserted record */
         public Map<String, Map<String, Map<String, Object>>> key2Value;
-        /* Contact 2 Account Map */
+        /* apiType */
         public String apiType;
+        /* Contact 2 Account Map */
+        public Map<String,String> mdmId2parent;
+        /* master MDM Id */
+        public String masterRecordId;
     }
     /*Acount Relation wrapper */
     public class OBJECTPARSER {
@@ -109,6 +113,24 @@ public with sharing class CM_ReltioHandlerService {
         public String apiType;
         /* Contact 2 Account Map */
         public Map<String,  String> contact2Account ;
+        /* Contact 2 Account Map */
+        public Map<String,String> mdmId2parent;
+        /* master MDM Id */
+        public String masterRecordId;
+    }
+    /*Acount Relation wrapper */
+    public class ATTRIBUTEPARSER {
+        /* Map of upserted record */
+        public Map<String, Map<String, Map<String, Object>>> key2value;
+        /* Contact 2 Account Map */
+        public Map<String,String> mdmId2parent;
+    }
+    /*Acount Relation wrapper */
+    public class EVENTDETAILS {
+        /* Map of upserted record */
+        public String replayID ;
+        /* Contact 2 Account Map */
+        public String eventUUId;
     }
     private CM_ReltioHandlerService() {}
 }

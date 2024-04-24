@@ -10,6 +10,6 @@
 * VERSION         AUTHOR                          DATE                DETAIL
 * 1.0             Rohit Jaiswal                  07/10/2023          Inbound trigger handler
 ***********************************************************************************************************************/
-trigger CM_AccountContactRelationsTrigger on AccountContactRelation (before insert,before update,after update) {
+trigger CM_AccountContactRelationsTrigger on AccountContactRelation (before insert) {
     UCB_MessageTriggerFactory.createHandler(AccountContactRelation.SObjectType); 
 }

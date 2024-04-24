@@ -26,33 +26,35 @@ public with sharing class CM_ReltioHCPService {
     public static CM_ReltioHandlerService.OBJECTPARSER upsertHCPServices(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {        
         final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCP));
         final CM_ReltioHandlerService.OBJECTPARSER objParser = new CM_ReltioHandlerService.OBJECTPARSER() ;
-        objParser.resultMap=upsertHCPSelector(parser.key2value);
+        objParser.resultMap=upsertHCPSelector(parser.key2value,parser.masterRecordId);
         objParser.apiType=parser.apiType;
+        objParser.mdmId2parent=parser.mdmId2parent;
+        objParser.masterRecordId=parser.masterRecordId;
         return objParser;
     }
 
     /**     
      * @description : Retrieves data of Contact and related sobjects
      */
-    public static Map < String, Map < String, Sobject >> upsertHCPSelector(Map < String, Map < String, Map < String, Object >>> key2value) {
+    public static Map < String, Map < String, Sobject >> upsertHCPSelector(Map < String, Map < String, Map < String, Object >>> key2value,String masterRecordId) {
         final Map < String, Map < String, Sobject >> resultMap = new Map < String, Map < String, Sobject >> ();
-        Contact contact = CM_ContactService.upsertContact(key2value.get(CONTACTSTRING));
+        Contact contact = CM_ContactService.upsertContact(key2value.get(CONTACTSTRING),masterRecordId);
         Map < String, Person_Communication__c > commInfoMap = new Map < String, Person_Communication__c > ();
         final Map < String, Contact > contactMap = new Map < String, Contact > ();
 
         //person communication information
         if (key2value.containsKey(PERCOMMUNICATION)) {
-            commInfoMap = CM_PersonCommunicationService.upsertHCPcommunicationInfo(key2value.get(PERCOMMUNICATION), contact);
+            commInfoMap = CM_PersonCommunicationService.upsertHCPcommunicationInfo(key2value.get(PERCOMMUNICATION), contact,masterRecordId);
             resultMap.put(PERCOMMUNICATION, commInfoMap);
         }
 
         if (key2value.containsKey(EDUDETAILS)) {
-            final Map < String, Educational_Detail__c > hcpEduMap = CM_EducationalDetailsService.upsertEducationalDetails(key2value.get(EDUDETAILS), contact);
+            final Map < String, Educational_Detail__c > hcpEduMap = CM_EducationalDetailsService.upsertEducationalDetails(key2value.get(EDUDETAILS), contact,masterRecordId);
             resultMap.put(EDUDETAILS, hcpEduMap);
         }
 
         if (key2value.containsKey(LICINFORMATION)) {
-            final Map < String, License_Information__c > hcpLicenseInfoMap = CM_LicenseInformationService.upsertLicenseInformationDetails(key2value.get(LICINFORMATION), contact);
+            final Map < String, License_Information__c > hcpLicenseInfoMap = CM_LicenseInformationService.upsertLicenseInformationDetails(key2value.get(LICINFORMATION), contact,masterRecordId);
             resultMap.put(LICINFORMATION, hcpLicenseInfoMap);
         }
 
@@ -89,7 +91,8 @@ public with sharing class CM_ReltioHCPService {
  * @description :  Method to get the Old Contact Map
  * Parameters : Map of new Records
  */
-    public  static Map<String, Map < String, Sobject >> getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+    public  static QUERYRESULT getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+        final QUERYRESULT result= new QUERYRESULT();
         final Set<String> recordId = upsertNewMap.get(CONTACTSTRING).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put(CONTACTSTRING,new Map <String, Sobject>());  
@@ -102,17 +105,30 @@ public with sharing class CM_ReltioHCPService {
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from License_Informations__r) 
             from Contact where MDM_Id__c = :recordId with SECURITY_ENFORCED]) {
             upsertOldMap.get(CONTACTSTRING).put(con.MDM_Id__c,con);
+            //apiMdmIds.get(con.MDM_Id__c).add(con.MDM_Id__c);
             for(Educational_Detail__c education : con.Educational_Details__r) {
-                upsertOldMap.get(EDUDETAILS).put(education.MDM_Id__c,education);  
+                upsertOldMap.get(EDUDETAILS).put(education.MDM_Id__c,education);
+                //apiMdmIds.get(con.MDM_Id__c).add(education.MDM_Id__c);  
             }
             for(Person_Communication__c communication: con.Person_Communications__r) {
                 upsertOldMap.get(PERCOMMUNICATION).put(communication.MDM_Id__c,communication); 
+                //apiMdmIds.get(con.MDM_Id__c).add(communication.MDM_Id__c);
             }
             for(License_Information__c licence: con.License_Informations__r) {
                 upsertOldMap.get(LICINFORMATION).put(licence.MDM_Id__c,licence); 
+                //apiMdmIds.get(con.MDM_Id__c).add(licence.MDM_Id__c);
             }
         }
-        return upsertOldMap;
+        result.upsertOldMap = upsertOldMap;
+        //result.apiMdmIds = apiMdmIds;
+        return result;
+    }
+    /*Acount Relation wrapper */
+    public class QUERYRESULT {
+        /* Map of upserted record */
+        public Map <String, Map < String, Sobject >> upsertOldMap;
+        /* Contact 2 Account Map */
+        public Map<String,Set<String>> apiMdmIds;
     }
     private CM_ReltioHCPService() {}
 }

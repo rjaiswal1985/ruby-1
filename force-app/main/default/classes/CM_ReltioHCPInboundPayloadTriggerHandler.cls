@@ -29,31 +29,40 @@ public with sharing class CM_ReltioHCPInboundPayloadTriggerHandler extends UCB_T
     */
     public static void reltioPayloadTriggerService(List<Reltio_CM_HCP_Inbound_Payload__e > masterRecord) {  
         Map <String, Map < String, Sobject >> upsertNewMap = new Map < String, Map < String, Sobject >> ();
-        Map <String, Map < String, Sobject >> upsertOldMap;        
+        Map <String, Map < String, Sobject >> upsertOldMap;   
+            
         Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap = new Map <String,CM_DMLSaveResult.DMLWrapper>();
-
+        final Map<String,String> mdmId2parent = new Map<String,String>(); 
+        final Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event = new Map<String,CM_ReltioHandlerService.EVENTDETAILS>() ;
         List<Sobject> toBeDelSobjects = new List<Sobject>();
         CM_ReltioHandlerService.OBJECTPARSER objParser;
         Boolean entiryUpdated = false;
+        CM_ReltioHandlerService.EVENTDETAILS eventDetail;
 
         for (Reltio_CM_HCP_Inbound_Payload__e event: masterRecord) {
             objParser = CM_ReltioHCPService.upsertHCPServices(event.Input_Json__c, PROCESS);
             if(objParser.apiType==CM_ReltioConstants.ENTITYUPDATED && !entiryUpdated) {
                 entiryUpdated=true;
             }
+            eventDetail = new CM_ReltioHandlerService.EVENTDETAILS();
+            eventDetail.replayID = event.ReplayId;
+            eventDetail.eventUUId =event.eventUUId;
+            mdmId2Event.put(objParser.masterRecordId,eventDetail);
+            mdmId2parent.putall(objParser.mdmId2parent);
             upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(objParser.resultMap, upsertNewMap);
         }
-        
         if(entiryUpdated) {
-            upsertOldMap =CM_ReltioHCPService.getOldContactMap(upsertNewMap);
+            upsertOldMap = new Map <String, Map < String, Sobject >>();
+            final CM_ReltioHCPService.QUERYRESULT result =CM_ReltioHCPService.getOldContactMap(upsertNewMap);
+            upsertOldMap =result.upsertOldMap;
             toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
             upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);            
         }
-
-        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS, CM_ReltioConstants.RELTIOHCP);
-        dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects));
-
-        UCB_LoggerService.logger(new UCB_Log(CM_ReltioConstants.RELTIOHCP, 'dmlWrapMap', JSON.serialize(dmlWrapMap)),false);
-        UCB_LoggerService.publishLogs();  
-    }   
+        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCP,mdmId2Event); 
+        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCP).dmlMaps);
+        dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
+        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCP, mdmId2Event,dmlWrapMap,mdmId2parent); 
+         
+        UCB_LoggerService.publishLogs(); 
+    } 
 }

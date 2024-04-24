@@ -14,8 +14,8 @@ public with sharing class CM_ContactService {
     /**
     * @description : returns Contact data to upsert 
     */
-    public static Contact upsertContact(Map<String,Map<String,Object>> objParser) {
-        //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(RELTIOHCP,'Contact creation Service','Contact Creation Service started')}); 
+    public static Contact upsertContact(Map<String,Map<String,Object>> objParser,String masterRecordId) {
+        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Contact Creation Service started'));  
         final Contact contactRec = new Contact();         
         Map<String,  Object> objectMap = new Map<String,  Object>();
         for(String objectKey : objParser.keySet()) { 
@@ -24,7 +24,7 @@ public with sharing class CM_ContactService {
                 contactRec.put(key,objectMap.get(key)); 
             }
         }
-        //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(RELTIOHCP,'Contact creation Service','Contact Creation Service ended')});    
+        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Contact Creation Service completed.')); 
         return  contactRec;
     }   
     private CM_ContactService() {}

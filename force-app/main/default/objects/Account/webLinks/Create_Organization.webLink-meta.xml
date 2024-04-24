@@ -10,5 +10,5 @@
     <openType>replace</openType>
     <protected>false</protected>
     <requireRowSelection>true</requireRowSelection>
-    <url>https://customerprofile.qas.invisalign.com/dashboard/organization</url>
+    <url>https://customerprofile.qas.invisalign.com/dashboard/organization?source=sfdc</url>
 </WebLink>

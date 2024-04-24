@@ -14,8 +14,8 @@ public with sharing class CM_EducationalDetailsService {
     /**
      * @description : Method returns data about HCP Education 
      */
-    public static Map < String, Educational_Detail__c > upsertEducationalDetails(Map < String, Map < String, Object >> objParser, Contact reltdContact) {
-        //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(RELTIOHCP,'Education Details Creation Service','Education Details Creation Service Started')});
+    public static Map < String, Educational_Detail__c > upsertEducationalDetails(Map < String, Map < String, Object >> objParser, Contact reltdContact,String masterRecordId) {
+        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Education Details Creation Service Started'));
         final Map < String, Educational_Detail__c > hcpEduMap = new Map < String, Educational_Detail__c > ();
         Educational_Detail__c hcpEduDetails;
 
@@ -31,7 +31,7 @@ public with sharing class CM_EducationalDetailsService {
             }
             hcpEduMap.put(objectKey, hcpEduDetails);
         }
-        //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(RELTIOHCP,'Education Details Creation Service','Education Details Creation Service ended')});
+        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Education Details Creation Service Started'));
         return hcpEduMap;
     }
     private CM_EducationalDetailsService() {}

@@ -4,6 +4,18 @@
         <apexClass>CM_SobjectController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>UCB_ActionOverrideController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UCB_ActionOverride_ProcessIdentifier</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
+        <name>UCB_ActionOverride_Config__mdt</name>
+    </customMetadataTypeAccesses>
     <description>This is the base permission set to be assigned to all the Service Agents</description>
     <fieldPermissions>
         <editable>false</editable>

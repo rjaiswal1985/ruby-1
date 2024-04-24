@@ -9,7 +9,6 @@
     <length>100</length>
     <required>false</required>
     <securityClassification>Restricted</securityClassification>
-    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>
