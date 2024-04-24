@@ -17,7 +17,7 @@ public with sharing class CM_ReltioHCOHCPService {
     final static string ACCCONRELATION = 'AccountContactRelation';
     /**
     * @description : Method to parses input json and get Account Contact relationship data     
-    * @Parameters : input json, process name from platfrom event
+    * @Parameters : input json, process name from platfrom events
     */
     public static CM_ReltioHandlerService.OBJECTPARSER upsertHCOHCPService(String inputJson, Map<String,CM_ReltioHandlerService.SobjectData> process2Metadata) {
         final CM_ReltioHandlerService.OBJECTPARSER  objParser= new CM_ReltioHandlerService.OBJECTPARSER() ;
@@ -26,13 +26,13 @@ public with sharing class CM_ReltioHCOHCPService {
         Map<String,Map<String,Sobject>> returnMap = new  Map<String,Map<String,Sobject>>() ;
         Map < String, Map < String, Map < String, Object >>> key2value = new Map < String, Map < String, Map < String, Object >>>();
 
-        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCPHCO),parser.masterRecordId);
+        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCPHCO));
         key2value = parser.key2value;
         objParser.apiType=parser.apiType;
         objParser.mdmId2parent=parser.mdmId2parent;
         objParser.masterRecordId=parser.masterRecordId;
 
-        final CM_AccountContactRelationshipService.AccountRelation accRelationship = CM_AccountContactRelationshipService.upsertAccountRelationship(key2value.get(ACCCONRELATION));        
+        final CM_AccountContactRelationshipService.AccountRelation accRelationship = CM_AccountContactRelationshipService.upsertAccountRelationship(key2value.get(ACCCONRELATION),parser.masterRecordId);        
         upsertNewMap= CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap,upsertNewMap);
 
         attriParser = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId);

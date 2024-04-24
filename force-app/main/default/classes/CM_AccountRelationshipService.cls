@@ -45,6 +45,7 @@ public with sharing class CM_AccountRelationshipService {
         accRelationship.startObjDetails = startObjDetails;
         accRelationship.endObjectDetails = endObjectDetails;
         CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service started')); 
+        return accRelationship;
     }
     /*Wrapper Class to handle the Account-Account Relation from inputJson start object, end object */
     public class AccountRelation {

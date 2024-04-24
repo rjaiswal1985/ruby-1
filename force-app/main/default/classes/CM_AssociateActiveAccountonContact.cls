@@ -2,7 +2,7 @@
 * Name: CM_AssociateActiveAccountonContact
 * Copyright © Align Tech
 * ========================================================================================================================
-* Purpose: Associates Account on Contact when Direct related account is inactivated
+* Purpose: Associates Active Account on Contact when Direct related Account is inactivated
 * TestClass : CM_AssociateActiveAccountonContact_Test
 * ========================================================================================================================
 * History
@@ -23,8 +23,6 @@ public with sharing class CM_AssociateActiveAccountonContact {
 */  
     public static void updateContwithActiveAccnt(Set<Id> contIdSet) {        
         final List<Contact> contUpdateLst = new List<Contact>();
-        final Map<Id,Id> conAccMap = new Map<Id,Id>();               
-        final Set<Id> OtherRelContIds = new Set<Id>(); 
         List<Database.UpsertResult> upsertResults;
         Contact contRec;       
         system.debug('contIdSet==>>'+contIdSet);
@@ -32,8 +30,7 @@ public with sharing class CM_AssociateActiveAccountonContact {
                             (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner'
                              AND Account.Status__c='Active' AND Status__c = 'Active' order by startdate asc LIMIT 1) from Contact
                             where ID IN :contIdSet WITH SECURITY_ENFORCED ]) { 
-        	if(cont.AccountContactRelations.size() == RELATIONS_COUNT) {
-            	//conAccMap.put(cont.Id,cont.AccountContactRelations[0].AccountId); 
+        	if(cont.AccountContactRelations.size() == RELATIONS_COUNT) {            	 
                 contIdSet.remove(cont.Id);
                 system.debug('contRec==>>'+contRec);
                 contRec = instantiateContwithAcct(cont.AccountContactRelations[0].AccountId,cont); //send accConRec to instantiate               
@@ -43,13 +40,6 @@ public with sharing class CM_AssociateActiveAccountonContact {
             } 
         }  
         
-        
-        /*for(Id conId : conAccMap.keySet()) {
-            if(contIdSet.contains(conId)) {
-            	contIdSet.remove(conId);    
-            }
-        }*/
-        //contIdSet.removeAll(conAccMap.keySet());
         system.debug('contIdSet==>>'+contIdSet);
         
         if(contIdSet != null && !contIdSet.isEmpty()) {            
@@ -67,16 +57,7 @@ public with sharing class CM_AssociateActiveAccountonContact {
                 	system.debug('contUpdateLst==>>'+contUpdateLst);
                 }	               
             }
-        }   
-        
-        system.debug('conAccMap==>>'+conAccMap);
-        
-       /* for(Id conId: conAccMap.keySet()) {        	
-            contRec = new Contact();
-            contRec.Id = conId;            
-            contRec.accountId = conAccMap.get(conId);
-            contUpdateLst.add(contRec);            
-        } */
+        }                   
         system.debug('contUpdateLst==>>'+contUpdateLst);
         upsertResults = UCB_DMLUtility.upsertRecords(contUpdateLst,false,System.AccessLevel.SYSTEM_MODE); 
         UCB_LoggerService.logger(new UCB_Log('Contact update with Active Account', 'DML Upsert Result', JSON.Serialize(upsertResults)),false);  
@@ -84,8 +65,7 @@ public with sharing class CM_AssociateActiveAccountonContact {
     }
     
     public static Contact instantiateContwithAcct(Id accntId, Contact cont) {    	
-    	Contact con = new Contact(Id=cont.Id,AccountID=accntId);
-        //cont.AccountId = accntId;                
+    	Contact con = new Contact(Id=cont.Id,AccountID=accntId);                       
         system.debug('contact instantiated==>>'+con);
         return con;
     }

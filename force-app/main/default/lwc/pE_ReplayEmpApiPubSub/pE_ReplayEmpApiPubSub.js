@@ -1,6 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 import { subscribe, unsubscribe, onError } from 'lightning/empApi';
 import getPlatformEvents from '@salesforce/apex/FetchPlatformEvents.getPlatformEvents';
+import processAndTriggerService from '@salesforce/apex/CM_ReltioPayloadHandler.processAndTriggerService';
 
 export default class PE_ReplayEmpApiPubSub extends LightningElement {
     title;
@@ -42,8 +43,14 @@ export default class PE_ReplayEmpApiPubSub extends LightningElement {
     }
 
     submitPayload() {
-        // Logic to submit the payload
-        // Example: invoke the subscriber and pass the message
+        // Call the Apex method to process and trigger the service
+        processAndTriggerService({ jsonPayload: this.requiredEvent })
+            .then(() => {
+                console.log('Payload processed and service triggered successfully.');
+            })
+            .catch(error => {
+                console.error('Error while processing payload:', error);
+            });
     }
 
     subscribeToChannel() {

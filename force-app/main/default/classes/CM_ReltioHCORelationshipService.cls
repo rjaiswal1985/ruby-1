@@ -13,10 +13,10 @@
 public with sharing class CM_ReltioHCORelationshipService {
     /* Account String */
     final static string ACCOUNTSTRING = 'Account';
-    /* Account Relationship String */
+    /* Account Relationship Strinsg */
     final static string ACCRELATION = 'Account_Relationship__c';
     /**     
-     * @description : method to get Account-Account relationship data
+     * @description : method to get Account-Account relationship datas
      */
     public static CM_ReltioHandlerService.OBJECTPARSER upsertHCOHCOService(String inputJson, Map < String, CM_ReltioHandlerService.SobjectData > process2Metadata) {
         final CM_ReltioHandlerService.OBJECTPARSER  objParser= new CM_ReltioHandlerService.OBJECTPARSER() ;
@@ -24,13 +24,13 @@ public with sharing class CM_ReltioHCORelationshipService {
         Map < String, Map < String, Sobject >> upsertMap = new Map < String, Map < String, Sobject >> ();
         Map < String, Map < String, Map < String, Object >>> key2value = new Map < String, Map < String, Map < String, Object >>>();
         
-        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOHCO));
+        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOPHCO));
         key2value = parser.key2value;
         objParser.apiType=parser.apiType;
         objParser.mdmId2parent=parser.mdmId2parent;
         objParser.masterRecordId=parser.masterRecordId;
 
-        final CM_AccountRelationshipService.AccountRelation accRelationship = CM_AccountRelationshipService.upsertAccountRelationship(key2value.get(ACCRELATION));
+        final CM_AccountRelationshipService.AccountRelation accRelationship = CM_AccountRelationshipService.upsertAccountRelationship(key2value.get(ACCRELATION),parser.masterRecordId);
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap, upsertMap);
         
         attriParser = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId);

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
-* Name: CM_AccountUpdateCaptureTriggerHandler
+* Name: CM_AccountChangeEventTriggerHandler
 * Copyright © Align Tech
 * ========================================================================================================================
 * Purpose: Handler/Subscriber for Account Change event
@@ -7,10 +7,10 @@
 * ========================================================================================================================
 * History
 *
-* VERSION         AUTHOR                          DATE                DETAIL
-* 1.0             Sruthi M                   02/04/2024          Subscriber for Account Change event
+* VERSION         AUTHOR               DATE                DETAIL
+* 1.0             Sruthi M             02/04/2024          Handler/Subscriber for Account Change event
 ***********************************************************************************************************************/
-public with sharing class CM_AccountUpdateCaptureTriggerHandler extends UCB_TriggerVirtual {
+public with sharing class CM_AccountChangeEventTriggerHandler extends UCB_TriggerVirtual {
     /**     
 *@description : After insert trigger handler
 */
@@ -18,7 +18,7 @@ public with sharing class CM_AccountUpdateCaptureTriggerHandler extends UCB_Trig
         final List<UCB_CustomExceptionWrapper> excpLst;
         final UCB_CustomExceptionWrapper custExcp;  
         try {            
-            CM_AccountUpdateCaptureTriggerHelper.accountContactRelations(trgCtx.newList);
+            CM_AccountChangeEventTriggerHelper.processAccountUpdates(trgCtx.newList);
         } catch (Exception excp) {                        
             custExcp = new UCB_CustomExceptionWrapper();
             excpLst = new List<UCB_CustomExceptionWrapper>();

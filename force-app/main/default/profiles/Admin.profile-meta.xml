@@ -19,6 +19,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_AccountChangeEventTriggerHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AccountChangeEventTriggerHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_AccountContactRelationInactiveService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -68,14 +76,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CM_AccountService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CM_AccountUpdateCaptureTriggerHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CM_AccountUpdateCaptureTriggerHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -212,6 +212,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CM_ReltioInboundPayloadTrigger_Test</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_ReltioPayloadHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

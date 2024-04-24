@@ -18,7 +18,7 @@ public with sharing class CM_ReltioConstants {
     /* String for ATTRIBUTES       */
     public static final String RELTIOHCPHCO = PAYLOADSETTING.get('ReltioHCPHCOService').Constant_value__c;
     /* String for ATTRIBUTES       */
-    public static final String RELTIOHCOHCO = PAYLOADSETTING.get('ReltioHCOHCOService').Constant_value__c;
+    public static final String RELTIOHCOPHCO = PAYLOADSETTING.get('ReltioHCOHCOService').Constant_value__c;
     /* String for ATTRIBUTES */
     public static final String RELTIOHCP = PAYLOADSETTING.get('ReltioHCPService').Constant_value__c;
     /* String for VALUE       */

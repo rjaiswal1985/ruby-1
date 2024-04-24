@@ -42,7 +42,7 @@
     </brandingSetProperty>
     <brandingSetProperty>
         <propertyName>OVERRIDE_LOADING_PAGE</propertyName>
-        <propertyValue>false</propertyValue>
+        <propertyValue>true</propertyValue>
     </brandingSetProperty>
     <masterLabel>Align Logo</masterLabel>
 </BrandingSet>
