@@ -36,14 +36,14 @@ public with sharing class CM_ReltioHCOHCPService {
         upsertNewMap= CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap,upsertNewMap);
         UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','upsertMap1',JSON.serialize(accRelationship.resultMap))});   
 
-        attriParser = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId );
+        attriParser = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId);
         returnMap = CM_ReltioHCOService.upsertHCOSelector(attriParser.key2value,parser.masterRecordId);
         UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','returnMap',JSON.serialize(returnMap))});  
         upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(returnMap,upsertNewMap);
         objParser.mdmId2parent.putall(attriParser.mdmId2parent);
          
 
-        attriParser = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCP),parser.masterRecordId);
+        attriParser = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails,process2Metadata.get(CM_ReltioConstants.RELTIOHCP),parser.masterRecordId );
         returnMap = CM_ReltioHCPService.upsertHCPSelector(attriParser.key2value,parser.masterRecordId);
         UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','returnMap',JSON.serialize(returnMap))});   
         upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(returnMap,upsertNewMap); 

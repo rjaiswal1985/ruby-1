@@ -26,11 +26,11 @@ public with sharing class CM_AccountContactRelationsTriggerHandler extends UCB_T
      * Variable name method names 
     * @description : After insert trigger handlers
     */
-    public override void afterTrigger(UCB_Trigger.TriggerContext trgCtx) {
+    /*public override void afterTrigger(UCB_Trigger.TriggerContext trgCtx) {
         try {      
             CM_AccountContactRelationsTriggerHelper.afterUpdateEvent(trgCtx.newList,(Map<Id,AccountContactRelation>)trgCtx.oldMap);
         } catch(Exception excp) {              
             CM_LoggerInitializationUtil.replayService(excp,'CM_AccountContactRelationsTriggerHandler');  
         }
-    }
+    }*/
 }

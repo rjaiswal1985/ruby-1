@@ -64,10 +64,7 @@ public with sharing class CM_LoggerUtil {
     public static void dmlLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
         final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();
         CM_ReltioHandlerService.EVENTDETAILS event ;
-        LOGWRAPPER logger;    
-        UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(dmlWrapMap)),false);    
-        UCB_LoggerService.logger(new UCB_Log(module, 'mdmId2Event', JSON.serialize(mdmId2Event)),false); 
-        UCB_LoggerService.logger(new UCB_Log(module, 'mdmId2parent', JSON.serialize(mdmId2parent)),false); 
+        LOGWRAPPER logger;   
         for(String mdmId: dmlWrapMap.keyset()) {
             logger = new LOGWRAPPER();
             logger.mdmId = mdmId; 

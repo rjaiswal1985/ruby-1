@@ -5,12 +5,21 @@
         <default>false</default>
         <visible>true</visible>
     </applicationVisibilities>
+    <applicationVisibilities>
+        <application>standard__OnlineSales</application>
+        <default>false</default>
+        <visible>true</visible>
+    </applicationVisibilities>
     <classAccesses>
         <apexClass>AccountTriggerHandler_check</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>AutocreatedRegHandler1706688280765</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AccountContactRelationInactiveService</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -23,6 +32,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CM_AccountContactRelationshipService</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AccountInactiveService</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -50,11 +63,11 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>CM_AccountService</apexClass>
+        <apexClass>CM_AccountRelationshipTriggerHelperTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>CM_AccountUpdateCaptureService</apexClass>
+        <apexClass>CM_AccountService</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -63,6 +76,22 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CM_AccountUpdateCaptureTriggerHelper</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AccountUpdateCaptureTrigger_Test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AcctContRelationCDC_TriggerHandler</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AcctContRelation_CDC_TriggerHelper</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CM_AssociateActiveAccountonContact</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -286,8 +315,16 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>UCB_ActionOverrideController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>UCB_LoggerService</apexClass>
         <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UCB_MessageTriggerFactory</apexClass>
+        <enabled>true</enabled>
     </classAccesses>
     <custom>true</custom>
     <fieldPermissions>
@@ -1878,10 +1915,6 @@
         <apexPage>AccountContactRelationTestpage</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
-    <tabVisibilities>
-        <tab>Account_Relationship__c</tab>
-        <visibility>Hidden</visibility>
-    </tabVisibilities>
     <tabVisibilities>
         <tab>Exception_Handling__c</tab>
         <visibility>DefaultOn</visibility>

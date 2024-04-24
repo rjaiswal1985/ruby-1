@@ -11,7 +11,8 @@
 * 1.0             Sruthi M                  02/04/2024          Account data change event
 ***********************************************************************************************************************/
 trigger CM_AcctContRelationCDC_Trigger on AccountContactRelationChangeEvent (after insert) {
-   //UCB_MessageTriggerFactory.createHandler(AccountContactRelationChangeEvent.SObjectType); 
-   system.debug('trigger.new==>>'+trigger.new);    
-    CM_AcctContRelation_CDC_TriggerHelper.accountContactRelations(trigger.new);
+    system.debug('trigger.new==>>'+trigger.new); 
+   UCB_MessageTriggerFactory.createHandler(AccountContactRelationChangeEvent.SObjectType); 
+      
+    //CM_AcctContRelation_CDC_TriggerHelper.accountContactRelations(trigger.new);
 }

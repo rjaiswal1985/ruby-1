@@ -32,16 +32,16 @@ public with sharing class CM_ReltioHCORelationshipService {
 
         final CM_AccountRelationshipService.AccountRelation accRelationship = CM_AccountRelationshipService.upsertAccountRelationship(key2value.get(ACCRELATION));
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(accRelationship.resultMap, upsertMap);
-        attriParser = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO)); 
-
+        
+        attriParser = CM_JSONParser.attibuteParsers(accRelationship.startObjDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId);
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(CM_ReltioHCOService.upsertHCOSelector(attriParser.key2value,parser.masterRecordId),upsertMap);
         objParser.mdmId2parent.putall(attriParser.mdmId2parent); 
-        attriParser = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO));
-
+        
+        attriParser = CM_JSONParser.attibuteParsers(accRelationship.endObjectDetails, process2Metadata.get(CM_ReltioConstants.RELTIOHCO),parser.masterRecordId);
         upsertMap = CM_ReltioHandlerService.upsertSobjectMap(CM_ReltioHCOService.upsertHCOSelector(attriParser.key2value,parser.masterRecordId), upsertMap);
         objParser.mdmId2parent.putall(attriParser.mdmId2parent);
-        objParser.resultMap=upsertMap;
         
+        objParser.resultMap=upsertMap;        
         return objParser;
     }
     /**     

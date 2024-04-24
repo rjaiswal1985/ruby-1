@@ -26,22 +26,24 @@ public with sharing class CM_AcctContRelation_CDC_TriggerHelper {
         for(AccountContactRelationChangeEvent ace : chgEvntLst) { 
             Eventbus.ChangeEventHeader header = ace.ChangeEventHeader;                       
             system.debug('changedFieldsSet==>>'+header.changedFields.contains('IsActive'));                                  
+            system.debug('All changedFieldsSet==>>'+header.changedFields);
             system.debug('JSON==>>'+JSON.Serialize(ace));
             system.debug('is active==>>'+ ace.IsActive );
             system.debug('is direct==>>'+ ace.IsDirect );
             system.debug('change type==>>'+ header.changetype );
-            if(header.changetype == 'UPDATE' && ace.IsActive == FALSE 
-              && header.changedFields.contains('IsActive')) {                            	                
-                if(!acctContMap.containsKey('Acct_Cont_Assc')) {                	
-                    acctContMap.put('Acct_Cont_Assc',new List<Id>()); 
+            system.debug('rel status=>>'+ace.Status__c );
+            if(header.changetype == 'UPDATE' && ace.Status__c == INACTIVE_STATUS 
+              && header.changedFields.contains('Status__c')) {                            	                
+                if(!acctContMap.containsKey('Acct_Cont_Inactivation')) {                	
+                    acctContMap.put('Acct_Cont_Inactivation',new List<Id>()); 
                 } 
-                acctContMap.get('Acct_Cont_Assc').addAll(ace.ChangeEventHeader.getRecordIds());
+                acctContMap.get('Acct_Cont_Inactivation').addAll(ace.ChangeEventHeader.getRecordIds());
         	}
         }
 
 		system.debug('acctContMap==>>'+acctContMap);
-        if(acctContMap!= null && !acctContMap.isEmpty() && acctContMap.containsKey('Acct_Cont_Assc')) {
-        	CM_AccountContactRelationInactiveService.acctContRelationInactivated(acctContMap.get('Acct_Cont_Assc'));    
+        if(acctContMap!= null && !acctContMap.isEmpty() && acctContMap.containsKey('Acct_Cont_Inactivation')) {
+        	CM_AccountContactRelationInactiveService.acctContRelationInactivated(acctContMap.get('Acct_Cont_Inactivation'));    
         }                                        
     }
     /**

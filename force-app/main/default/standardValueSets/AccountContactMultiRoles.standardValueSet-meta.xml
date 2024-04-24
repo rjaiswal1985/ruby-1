@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Organization Finance</fullName>
+        <default>false</default>
+        <label>Organization Finance</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Organization Procurement</fullName>
+        <default>false</default>
+        <label>Organization Procurement</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Basic</fullName>
+        <default>false</default>
+        <label>Basic</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Treatment Decisions</fullName>
+        <default>false</default>
+        <label>Treatment Decisions</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Patient Finance</fullName>
+        <default>false</default>
+        <label>Patient Finance</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Admin</fullName>
+        <default>false</default>
+        <label>Admin</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Compliance</fullName>
+        <default>false</default>
+        <label>Compliance</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Vigilance</fullName>
+        <default>false</default>
+        <label>Vigilance</label>
+    </standardValue>
+</StandardValueSet>
