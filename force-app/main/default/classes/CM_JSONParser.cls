@@ -23,7 +23,8 @@ public with sharing class CM_JSONParser {
         UCB_LoggerService.logger(new UCB_Log('ReltioParser', 'Deserialization started.', inputJson), false);
         final Map<String, Object> requestObject = (Map<String, Object>)(JSON.deserializeUntyped(inputJson));
         final Map<String, Object> objectJson = (Map<String, Object>)requestObject.get(CM_ReltioConstants.OBJECTSTRING);
-        final CM_ReltioHandlerService.ATTRIBUTEPARSER attriParser = attibuteParsers(objectJson, sobjectData,(String)objectJson.get('mdmId'));
+        final String masterRecordId=(String)objectJson.get('mdmId');
+        final CM_ReltioHandlerService.ATTRIBUTEPARSER attriParser = attibuteParsers(objectJson, sobjectData,masterRecordId);
         parser.key2value = attriParser.key2value;
         parser.apiType=(String)requestObject.get('type');
         parser.mdmId2parent = attriParser.mdmId2parent;  

@@ -64,7 +64,7 @@ public with sharing class CM_LoggerUtil {
     public static void dmlLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
         final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();
         CM_ReltioHandlerService.EVENTDETAILS event ;
-        LOGWRAPPER logger;   
+        LOGWRAPPER logger; 
         for(String mdmId: dmlWrapMap.keyset()) {
             logger = new LOGWRAPPER();
             logger.mdmId = mdmId; 

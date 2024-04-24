@@ -24,7 +24,7 @@ public with sharing class CM_ReltioHCORelationshipService {
         Map < String, Map < String, Sobject >> upsertMap = new Map < String, Map < String, Sobject >> ();
         Map < String, Map < String, Map < String, Object >>> key2value = new Map < String, Map < String, Map < String, Object >>>();
         
-        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOPHCO));
+        final CM_ReltioHandlerService.JSPARSER parser = CM_JSONParser.objectJsonParser(inputJson, process2Metadata.get(CM_ReltioConstants.RELTIOHCOHCO));
         key2value = parser.key2value;
         objParser.apiType=parser.apiType;
         objParser.mdmId2parent=parser.mdmId2parent;
@@ -67,7 +67,6 @@ public with sharing class CM_ReltioHCORelationshipService {
             for(Organization_E_Invoice__c invoice: acc.Organization_E_Invoices__r) {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
             }
-            UCB_LoggerService.logger(new UCB_Log(CM_ReltioConstants.RELTIOHCOPHCO, 'acc.Account_Relationships__r', JSON.serialize(acc.Account_Relationships__r)),false);
             for(Account_Relationship__c relationship: acc.Account_Relationships__r) {
                 upsertOldMap.get(ACCRELATION).put(relationship.MDM_Id__c,relationship); 
             }

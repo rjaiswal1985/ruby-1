@@ -51,7 +51,7 @@ public with sharing class CM_ReltioHCOHCPPayloadTriggerHandler extends UCB_Trigg
             eventDetail.eventUUId =event.eventUUId;
             mdmId2Event.put(objParser.masterRecordId,eventDetail);
             mdmId2parent.putall(objParser.mdmId2parent);
-            upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(objParser.resultMap, upsertNewMap);
+            upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(objParser.resultMap, upsertNewMap);  
             contact2Account.putall(objParser.contact2Account);
         }   
 
@@ -65,10 +65,10 @@ public with sharing class CM_ReltioHCOHCPPayloadTriggerHandler extends UCB_Trigg
         upsertContactMap =CM_ReltioHCOHCPService.upsertContacttMap(contactNewList,conwithAccount,contact2Account);
         upsertNewMap.get('Contact').putall(upsertContactMap);
 
-        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCO,mdmId2Event); 
-        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCO).dmlMaps);
+        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCPHCO,mdmId2Event); 
+        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCPHCO).dmlMaps);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
-        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
+        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
 
         UCB_LoggerService.publishLogs();  
     }
