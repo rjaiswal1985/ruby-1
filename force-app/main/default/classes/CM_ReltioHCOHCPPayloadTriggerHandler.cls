@@ -55,7 +55,10 @@ public with sharing class CM_ReltioHCOHCPPayloadTriggerHandler extends UCB_Trigg
             contact2Account.putall(objParser.contact2Account);
         }   
 
-        upsertOldMap =CM_ReltioHCOHCPService.getOldHCOHCPMap(upsertNewMap);
+        final CM_ReltioHandlerService.OBJECTPARSER oldObjParser = CM_ReltioHCOHCPService.getOldHCOHCPMap(upsertNewMap);
+        upsertOldMap = oldObjParser.resultMap;
+        mdmId2parent.putall(oldObjParser.mdmId2parent);
+
         contactNewList = upsertNewMap.get('Contact').values();  
         conwithAccount = CM_ReltioHCOHCPService.conwithAccount(upsertOldMap.get('Contact').values());
 

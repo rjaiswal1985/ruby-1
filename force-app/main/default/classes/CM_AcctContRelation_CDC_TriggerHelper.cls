@@ -12,38 +12,34 @@
 ***********************************************************************************************************************/
 public with sharing class CM_AcctContRelation_CDC_TriggerHelper {
     /* Account status inactive */
-    final static string INACTIVE_STATUS = 'Inactive';   
+    final static string INACTIVE_STATUS = 'Inactive';
+    /* Process name Account Contact Inactivation */
+    final static string ACCT_CONT_INACTIVE = 'Acct_Cont_Inactivation';
     /**
 * @description : This method gets the account Ids from changeEvent invokes 
 * corresponding account inactive service
 * @parameters : list of AccountChangeEvents
 */  
-    public static void accountContactRelations(List<AccountContactRelationChangeEvent> chgEvntLst) {
-                
-        //Set<String> changedFieldsSet;
-        final Map < String, List<Id> > acctContMap = new Map < String, List<Id> > ();        
-        
+    public static void accountContactRelations(List<AccountContactRelationChangeEvent> chgEvntLst) {                
+        List<Id> accConRelIds;
+        final Map < String, Set<Id> > acctContMap = new Map < String, Set<Id> > ();        
+        Eventbus.ChangeEventHeader header;
         for(AccountContactRelationChangeEvent ace : chgEvntLst) { 
-            Eventbus.ChangeEventHeader header = ace.ChangeEventHeader;                       
-            system.debug('changedFieldsSet==>>'+header.changedFields.contains('IsActive'));                                  
-            system.debug('All changedFieldsSet==>>'+header.changedFields);
-            system.debug('JSON==>>'+JSON.Serialize(ace));
-            system.debug('is active==>>'+ ace.IsActive );
-            system.debug('is direct==>>'+ ace.IsDirect );
-            system.debug('change type==>>'+ header.changetype );
-            system.debug('rel status=>>'+ace.Status__c );
+            header = ace.ChangeEventHeader; 
             if(header.changetype == 'UPDATE' && ace.Status__c == INACTIVE_STATUS 
-              && header.changedFields.contains('Status__c')) {                            	                
-                if(!acctContMap.containsKey('Acct_Cont_Inactivation')) {                	
-                    acctContMap.put('Acct_Cont_Inactivation',new List<Id>()); 
+              && header.changedFields.contains('Status__c')) { 
+                accConRelIds = new List<Id>(); 
+                accConRelIds.addAll(ace.ChangeEventHeader.getRecordIds());  
+                if(!acctContMap.containsKey(ACCT_CONT_INACTIVE)) {                	
+                    acctContMap.put(ACCT_CONT_INACTIVE,new Set<Id>()); 
                 } 
-                acctContMap.get('Acct_Cont_Inactivation').addAll(ace.ChangeEventHeader.getRecordIds());
+                acctContMap.get(ACCT_CONT_INACTIVE).addAll(accConRelIds);
         	}
         }
 
 		system.debug('acctContMap==>>'+acctContMap);
-        if(acctContMap!= null && !acctContMap.isEmpty() && acctContMap.containsKey('Acct_Cont_Inactivation')) {
-        	CM_AccountContactRelationInactiveService.acctContRelationInactivated(acctContMap.get('Acct_Cont_Inactivation'));    
+        if(acctContMap!= null && !acctContMap.isEmpty() && acctContMap.containsKey(ACCT_CONT_INACTIVE)) {
+        	CM_AccountContactRelationInactiveService.acctContRelationInactivated(acctContMap.get(ACCT_CONT_INACTIVE));    
         }                                        
     }
     /**

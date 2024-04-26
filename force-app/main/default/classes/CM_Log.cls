@@ -28,11 +28,23 @@ public with sharing class CM_Log {
     @InvocableVariable(label ='timestamp' description='Name of the business timestamp making log.' required=true)
     public String timestamp;
     /**
+     * @description : property to capture the timestamp this log belongs to.
+     */
+    @InvocableVariable(label ='key' description='Name of the business timestamp making log.' required=true)
+    public String loggerKey;
+    /**
+     * @description : property to capture the timestamp this log belongs to.
+     */
+    @InvocableVariable(label ='key' description='Name of the business timestamp making log.' required=true)
+    public String logType;
+    /**
      * 
      */
-    public CM_Log(String timestamp , String mdmId, String message) {
+    public CM_Log(String loggerKey,String logType,String timestamp , String mdmId, String message) {
         this.mdmId = mdmId;
         this.message = message;
         this.timestamp = timestamp;
+        this.loggerKey=loggerKey;
+        this.logtype=logtype;
     }
 }

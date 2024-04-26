@@ -231,6 +231,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CRM_AssetChangeEventTriggerHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CRM_AssetChangeEventTriggerHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CRM_AssetEventService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -247,6 +255,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CRM_AssetOwnerService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CRM_AssetService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -256,6 +268,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CRM_AssetTriggerHandler_Test</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CRM_OrderChangeEventTriggerHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CRM_OrderChangeEventTriggerHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -272,6 +292,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CRM_OrderEventSubcriberHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CRM_OrderOwnerService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

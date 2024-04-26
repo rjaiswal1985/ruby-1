@@ -3,10 +3,10 @@ import { getRelatedListRecords} from 'lightning/uiRelatedListApi';
 import OrgPersonEditURL from '@salesforce/label/c.OrgPersonEditURL';
 import OrgPersonNewURL from '@salesforce/label/c.OrgPersonNewURL';
 import relationDescription from '@salesforce/apex/CM_SobjectController.relationDescription';
-let relationColumns = [];
 export default class AccountContactRelationsRelatedList extends LightningElement {
     @api recordId;
     @api objectApiName;
+    @api isAccount;
     @api title;
     @track isCreatable;
     @track isUpdatable;
@@ -16,11 +16,12 @@ export default class AccountContactRelationsRelatedList extends LightningElement
     @track recordHomeURL;
     @track recordName;
     @track recordUrl;
+    @track accountColumns;
+    @track contactColumns;
     isPerson;
     recordMDMId;
     hasRecords;
     records;
-    columns;
 
     @wire(relationDescription) wiredAccountsWithContacts({
         data
@@ -58,7 +59,9 @@ export default class AccountContactRelationsRelatedList extends LightningElement
         }
     }
     relationshipColumns(data) {
-        this.actions = [];
+        this.actions = [];        
+        let accountColumns = [];
+        let contactColumns = [];
         const parsedObj = JSON.parse(data);
         this.isCreatable = parsedObj.createable;
         this.isUpdatable = parsedObj.updateable;
@@ -71,9 +74,9 @@ export default class AccountContactRelationsRelatedList extends LightningElement
                 label: 'Edit Relationship',
                 name: 'edit'
             });
-        }
-        relationColumns = [{
-            label: (this.recordId.startsWith("001")?'Person':'Organization')+' Name',
+        }        
+        accountColumns = [{
+            label: 'Person'+' Name',
             fieldName: 'recordLink',
             type: 'url',
             hideDefaultActions: true,
@@ -95,7 +98,7 @@ export default class AccountContactRelationsRelatedList extends LightningElement
             hideDefaultActions: true
         },
         {
-            label: 'Status',
+            label: 'Person'+' Status',
             fieldName: 'Status__c',
             hideDefaultActions: true
         },
@@ -115,7 +118,51 @@ export default class AccountContactRelationsRelatedList extends LightningElement
                 rowActions: this.actions
             }
         } ];
-        this.columns = relationColumns;
+        contactColumns = [{
+            label: 'Organization '+' Name',
+            fieldName: 'recordLink',
+            type: 'url',
+            hideDefaultActions: true,
+            typeAttributes: {
+                label: {
+                    fieldName: 'recordName'
+                },
+                target: '_self'
+            }
+        },
+        {
+            label: 'Role',
+            fieldName: 'Roles',
+            hideDefaultActions: true
+        },
+        {
+            label: 'Relationship Type',
+            fieldName: 'Relationship_Type__c',
+            hideDefaultActions: true
+        },
+        {
+            label: 'Organization '+' Status',
+            fieldName: 'Status__c',
+            hideDefaultActions: true
+        },
+        {
+            label: 'Email',
+            fieldName: 'Email',
+            hideDefaultActions: true
+        },
+        {
+            label: 'Phone',
+            fieldName: 'Phone',
+            hideDefaultActions: true
+        },
+        {
+            type: 'action',
+            typeAttributes: {
+                rowActions: this.actions
+            }
+        } ];
+        this.accountColumns=accountColumns;
+        this.contactColumns=contactColumns;
     }
     relationshipData(data) {
         let tempRecords = [];

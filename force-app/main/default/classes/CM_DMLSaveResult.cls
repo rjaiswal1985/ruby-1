@@ -55,12 +55,15 @@ public with sharing class CM_DMLSaveResult {
     private static Map<String,DMLWrapper> createDMLResult(List < Database.UpsertResult > upsertResultList, List < Sobject > records) {
         final List<DMLWrapper> dmlWraps= new List<DMLWrapper>();
         final Map<String,DMLWrapper> dmlWrapMap = new Map<String,DMLWrapper>();
-        DMLWrapper dmlWrap;       
+        DMLWrapper dmlWrap;      
+        Database.UpsertResult upserResult; 
         for (Integer recordCount = 0; recordCount < records.size(); recordCount++) {
+            upserResult = upsertResultList[recordCount];
             dmlWrap = new DMLWrapper();
             dmlWrap.record = records[recordCount];
-            dmlWrap.upsertResult= upsertResultList[recordCount];
-            dmlWrap.isDMLSucess = upsertResultList[recordCount].isSuccess();
+            dmlWrap.upsertResult= upserResult;
+            dmlWrap.salesforceId = upserResult.getId();
+            dmlWrap.isDMLSucess = upserResult.isSuccess();
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWraps.add(dmlWrap);
             dmlWrapMap.put((String)dmlWrap.record.get('MDM_Id__c'),dmlWrap);
@@ -74,7 +77,7 @@ public with sharing class CM_DMLSaveResult {
         for (Integer recordCount = 0; recordCount < toBeDelSobjects.size(); recordCount++) {
             dmlWrap = new DMLWrapper();
             dmlWrap.record = toBeDelSobjects[recordCount];
-            dmlWrap.daeleteResult = deleteResults[recordCount];
+            dmlWrap.deleteResult = deleteResults[recordCount];
             dmlWrap.isDMLSucess = deleteResults[recordCount].isSuccess();
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWraps.add(dmlWrap);
@@ -88,10 +91,12 @@ public with sharing class CM_DMLSaveResult {
         public SObject record;
         /* List of input records */
         public String timeStamp;
+        /* List of input records */
+        public String salesforceId;
         /* List of Saveresult */
         public Database.UpsertResult upsertResult;
          /* List of Saveresult */
-        public Database.DeleteResult daeleteResult;
+        public Database.DeleteResult deleteResult;
         /* DML result */
         public Boolean isDMLSucess;
     }

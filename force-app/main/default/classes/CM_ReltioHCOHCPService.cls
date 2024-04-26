@@ -54,13 +54,24 @@ public with sharing class CM_ReltioHCOHCPService {
     * @description : Method to get old Map of Account
     * @Parameters : New map of the record received
     */
-    public  static Map<String, Map < String, Sobject >> getOldHCOHCPMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+    public  static CM_ReltioHandlerService.OBJECTPARSER getOldHCOHCPMap(Map <String, Map < String, Sobject >> upsertNewMap) {
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
-        upsertOldMap.putall(getOldAccountMap(upsertNewMap));
-        upsertOldMap.putall(getOldContactMap(upsertNewMap));
-        return upsertOldMap;
+        final Map<String,String> mdmId2parent = new Map<String,String>();
+        CM_ReltioHandlerService.OBJECTPARSER objParser= new CM_ReltioHandlerService.OBJECTPARSER();
+        objParser= getOldAccountMap(upsertNewMap);
+        upsertOldMap.putall(objParser.resultMap);
+        mdmId2parent.putall(objParser.mdmId2parent);
+
+        objParser= getOldContactMap(upsertNewMap);
+        upsertOldMap.putall(objParser.resultMap);
+        mdmId2parent.putall(objParser.mdmId2parent);
+
+        objParser.resultMap = upsertOldMap;
+        objParser.mdmId2parent = mdmId2parent;
+        return objParser;
     }
-    private  static Map<String, Map < String, Sobject >> getOldAccountMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+    private  static CM_ReltioHandlerService.OBJECTPARSER getOldAccountMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+        final CM_ReltioHandlerService.OBJECTPARSER objParser= new CM_ReltioHandlerService.OBJECTPARSER();
         final Set<String> recordIds = upsertNewMap.get(ACCOUNTSTRING).keyset();
         final Set<String> relationIds = upsertNewMap.get(ACCCONRELATION).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
@@ -68,52 +79,65 @@ public with sharing class CM_ReltioHCOHCPService {
         upsertOldMap.put('Organization_Communication__c',new Map <String, Sobject>());  
         upsertOldMap.put('Organization_E_Invoice__c',new Map <String, Sobject>());  
         upsertOldMap.put(ACCCONRELATION,new Map <String, Sobject>()); 
+        objParser.mdmId2parent = new Map<String,String>();
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r),
                         (Select Id,MDM_Id__c,Contact.MDM_Id__c,Account.MDM_Id__c,TimeStamp_Decimal__c from AccountContactRelations where AccountContact_Id__c=:relationIds) 
                         from Account where MDM_Id__c = :recordIds with SECURITY_ENFORCED]) {
             upsertOldMap.get(ACCOUNTSTRING).put(acc.MDM_Id__c,acc);
+            objParser.mdmId2parent.put(acc.MDM_Id__c,acc.MDM_Id__c);
             for(Organization_Communication__c communication: acc.Organization_Communications__r) {
                 upsertOldMap.get('Organization_Communication__c').put(communication.MDM_Id__c,communication);  
+                objParser.mdmId2parent.put(communication.MDM_Id__c,acc.MDM_Id__c);
             }
             for(Organization_E_Invoice__c invoice: acc.Organization_E_Invoices__r) {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
+                objParser.mdmId2parent.put(invoice.MDM_Id__c,acc.MDM_Id__c);
             }
             for(AccountContactRelation relationship: acc.AccountContactRelations) {
                 upsertOldMap.get('AccountContactRelation').put(relationship.Account.MDM_Id__c+relationship.Contact.MDM_Id__c,relationship); 
+                objParser.mdmId2parent.put(relationship.Account.MDM_Id__c+relationship.Contact.MDM_Id__c,acc.MDM_Id__c);
             }
         }
-        return upsertOldMap;
+        objParser.resultMap = upsertOldMap;
+        return objParser;
     }
     /**
     * @description : Method to get old Map of Contact
     * @Parameters : New map of the record received
     */
-    private  static Map<String, Map < String, Sobject >> getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+    private  static CM_ReltioHandlerService.OBJECTPARSER getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+        final CM_ReltioHandlerService.OBJECTPARSER objParser= new CM_ReltioHandlerService.OBJECTPARSER();
         final Set<String> recordIds = upsertNewMap.get('Contact').keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put('Contact',new Map <String, Sobject>());  
         upsertOldMap.put('Educational_Detail__c',new Map <String, Sobject>());  
         upsertOldMap.put('Person_Communication__c',new Map <String, Sobject>());  
         upsertOldMap.put('License_Information__c',new Map <String, Sobject>()); 
+        objParser.mdmId2parent = new Map<String,String>();
         for(Contact con : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,Account.MDM_Id__c,Account.Status__c,
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Educational_Details__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Person_Communications__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from License_Informations__r) 
             from Contact where MDM_Id__c = :recordIds with SECURITY_ENFORCED]) {
             upsertOldMap.get('Contact').put(con.MDM_Id__c,con);
+            objParser.mdmId2parent.put(con.MDM_Id__c,con.MDM_Id__c);
             for(Educational_Detail__c education : con.Educational_Details__r) {
-                upsertOldMap.get('Educational_Detail__c').put(education.MDM_Id__c,education);  
+                upsertOldMap.get('Educational_Detail__c').put(education.MDM_Id__c,education);
+                objParser.mdmId2parent.put(education.MDM_Id__c,con.MDM_Id__c);  
             }
             for(Person_Communication__c communication: con.Person_Communications__r) {
                 upsertOldMap.get('Person_Communication__c').put(communication.MDM_Id__c,communication); 
+                objParser.mdmId2parent.put(communication.MDM_Id__c,con.MDM_Id__c);
             }
             for(License_Information__c licence: con.License_Informations__r) {
                 upsertOldMap.get('License_Information__c').put(licence.MDM_Id__c,licence); 
+                objParser.mdmId2parent.put(licence.MDM_Id__c,con.MDM_Id__c);
             }
         }
-        return upsertOldMap;
+        objParser.resultMap = upsertOldMap;
+        return objParser;
     }
     /**
     * @description : Method to update Account on Contact record if not associated with Account

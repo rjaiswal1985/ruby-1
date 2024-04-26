@@ -21,7 +21,7 @@ public with sharing class CM_ReltioHandlerService {
         Map < String, String > srceFld2TargField;
         SobjectData objData;
         final List<String> processList = new List<String>{relatioProcess};
-        if(relatioProcess == CM_ReltioConstants.RELTIOHCOHCO) {
+        if(relatioProcess == CM_ReltioConstants.RELTIOHCOPHCO) {
             processList.add(CM_ReltioConstants.RELTIOHCO);   
         } else if(relatioProcess == CM_ReltioConstants.RELTIOHCPHCO) {
             processList.add(CM_ReltioConstants.RELTIOHCO);  

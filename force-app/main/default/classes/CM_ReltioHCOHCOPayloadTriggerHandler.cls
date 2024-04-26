@@ -12,7 +12,7 @@
  ***********************************************************************************************************************/
 public with sharing class CM_ReltioHCOHCOPayloadTriggerHandler extends UCB_TriggerVirtual {
     /**********Metadat Records.************ */
-    final Static Map <String, CM_ReltioHandlerService.SobjectData > PROCESS = CM_ReltioHandlerService.metadataRecords(CM_ReltioConstants.RELTIOHCOHCO);
+    final Static Map <String, CM_ReltioHandlerService.SobjectData > PROCESS = CM_ReltioHandlerService.metadataRecords(CM_ReltioConstants.RELTIOHCOPHCO);
     /**
      * Variable name method names 
      * @description : After insert trigger handlers
@@ -50,14 +50,18 @@ public with sharing class CM_ReltioHCOHCOPayloadTriggerHandler extends UCB_Trigg
             mdmId2parent.putall(objParser.mdmId2parent);
             upsertNewMap = CM_ReltioHandlerService.upsertSobjectMap(objParser.resultMap, upsertNewMap);
         }
-        
-        upsertOldMap =CM_ReltioHCORelationshipService.getOldHCOHCOMap(upsertNewMap);
+        final CM_ReltioHandlerService.OBJECTPARSER oldObjParser =CM_ReltioHCORelationshipService.getOldHCOHCOMap(upsertNewMap);
+        upsertOldMap =  oldObjParser.resultMap;
+        mdmId2parent.putall(oldObjParser.mdmId2parent);
+
         toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
         upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);
-        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCOHCO,mdmId2Event); 
-        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCOHCO).dmlMaps);
+        
+        dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCOPHCO).dmlMaps);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
-        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCOHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
+        
+        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCOPHCO,mdmId2Event); 
+        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCOPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
 
         UCB_LoggerService.publishLogs();  
     }

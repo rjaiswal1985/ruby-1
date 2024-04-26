@@ -14,7 +14,7 @@ public with sharing class CM_LoggerUtil {
     /**
      * @description : property to capture list of logEvents
      */
-    public static List<CM_Log> logEvents;
+    private static List<CM_Log> logEvents;
     /**
      * @desciption : initialiser block to instantiate the list of events
      */
@@ -41,18 +41,20 @@ public with sharing class CM_LoggerUtil {
         LOGWRAPPER logger ;
         CM_ReltioHandlerService.EVENTDETAILS eventDetail;        
         for(CM_Log log : logEvents) {
-            if(!moduleLog.containsKey(log.message)) {
-                moduleLog.put(log.message,new List<LOGWRAPPER>());   
+            if(!moduleLog.containsKey(log.loggerKey)) {
+                moduleLog.put(log.loggerKey,new List<LOGWRAPPER>());   
             } 
             logger = new LOGWRAPPER();
-            eventDetail = mdmId2Event.get(log.mdmId);
-            logger.replayID =eventDetail.ReplayId; 
-            logger.eventUUId =eventDetail.EventUuid;
-            logger.module = module;
-            logger.mdmId =log.mdmId; 
-            logger.timeStamp =log.timestamp;
+            if(mdmId2Event.containskey(log.mdmId)) {
+                eventDetail = mdmId2Event.get(log.mdmId);
+                logger.Replay_ID =eventDetail.ReplayId; 
+                logger.EventUUId =eventDetail.EventUuid;
+            }
+            logger.Process_Name = module;
+            logger.MDMId =log.mdmId; 
+            logger.UTC_Timestamp =log.timestamp;
             logger.message =log.message;
-            moduleLog.get(log.message).add(logger);       
+            moduleLog.get(log.loggerKey).add(logger);       
         }
         for(String log: moduleLog.keySet()) {
             UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
@@ -67,13 +69,16 @@ public with sharing class CM_LoggerUtil {
         LOGWRAPPER logger; 
         for(String mdmId: dmlWrapMap.keyset()) {
             logger = new LOGWRAPPER();
-            logger.mdmId = mdmId; 
-            logger.module = mdmId2parent.get(mdmId); 
-            event=mdmId2Event.get(logger.module);
-            logger.replayID =event.ReplayId; 
-            logger.eventUUId =event.EventUuid; 
-            logger.module = module; 
-            logger.timeStamp =dmlWrapMap.get(mdmId).timeStamp;
+            logger.MDMId = mdmId; 
+            logger.Parent_MDMId = mdmId2parent.get(mdmId); 
+            logger.Sucess = dmlWrapMap.get(mdmId).isDMLSucess;
+            logger.MDM_Org_Id = logger.Parent_MDMId;
+            logger.Internal_Org_Id=dmlWrapMap.get(mdmId).salesforceId;
+            event=mdmId2Event.get(logger.parent_MDMId);
+            logger.Replay_ID =event.ReplayId; 
+            logger.EventUUId =event.EventUuid; 
+            logger.Process_Name = module; 
+            logger.UTC_Timestamp =dmlWrapMap.get(mdmId).timeStamp;
             logger.message =JSON.serialize(dmlWrapMap.get(mdmId));
             moduleLog.add(logger);
         }
@@ -82,16 +87,28 @@ public with sharing class CM_LoggerUtil {
     /*Acount Relation wrapper */
     private class LOGWRAPPER {
         /* Map of upserted record */
-        String replayID ;
+        String Replay_ID ;
         /* Contact 2 Account Map */
-        String eventUUId;
+        String EventUUId;
         /* Contact 2 Account Map */
-        String timeStamp; 
+        String UTC_Timestamp; 
         /* Contact 2 Account Map */
-        String mdmId; 
+        String MDMId; 
         /* Contact 2 Account Map */
-        String message; 
+        String Message; 
         /* Contact 2 Account Map */
-        String module; 
+        String Parent_MDMId; 
+        /* Contact 2 Account Map */
+        String Process_Name; 
+        /* Contact 2 Account Map */
+        String MDM_Org_Id; 
+        /* Contact 2 Account Map */
+        String MDM_Person_Id; 
+         /* Contact 2 Account Map */
+        String Internal_Org_Id; 
+        /* Contact 2 Account Map */
+        Boolean Sucess;
+        /* Contact 2 Account Map */
+        String Internal_Person_Id; 
     }
 }

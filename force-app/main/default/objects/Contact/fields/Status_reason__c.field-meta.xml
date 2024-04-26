@@ -55,7 +55,6 @@
             <value>
                 <fullName>Business Decision</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
                 <label>Business Decision</label>
             </value>
             <value>

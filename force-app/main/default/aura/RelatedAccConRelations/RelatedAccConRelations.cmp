@@ -1,9 +1,10 @@
 <aura:component implements="lightning:isUrlAddressable">
     <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="isAccount" type="Boolean" />
     <aura:handler name="init" value="{!this}" action="{!c.onPageReferenceChange}" />
     <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChange}" />
     <aura:if isTrue="{!v.recordId}">
-        <c:accountContactRelationRelatedList recordId="{!v.recordId}">
+        <c:accountContactRelationRelatedList recordId="{!v.recordId}" isAccount="{!v.isAccount}">
             </c:accountContactRelationRelatedList>
     </aura:if>
 </aura:component>

@@ -13,14 +13,12 @@
 public with sharing class CM_JSONParser {
     /*********Map of MD Ids  */
     private static Map<String,String> mdmId2parent;
-    /*********Map of MD Ids  */
-    private static String masterRecordId;
      /**
      * @description : parses the JSON returns sobject data
      */
     public static CM_ReltioHandlerService.JSPARSER objectJsonParser(String inputJson, CM_ReltioHandlerService.SobjectData sobjectData) {
         final CM_ReltioHandlerService.JSPARSER parser= new CM_ReltioHandlerService.JSPARSER();
-        UCB_LoggerService.logger(new UCB_Log('ReltioParser', 'Deserialization started.', inputJson), false);
+        CM_LoggerUtil.logger(new CM_Log('JsonParser','Info',String.valueof(Datetime.now()), 'Deserialization started.', inputJson));
         final Map<String, Object> requestObject = (Map<String, Object>)(JSON.deserializeUntyped(inputJson));
         final Map<String, Object> objectJson = (Map<String, Object>)requestObject.get(CM_ReltioConstants.OBJECTSTRING);
         final String masterRecordId=(String)objectJson.get('mdmId');
@@ -29,7 +27,7 @@ public with sharing class CM_JSONParser {
         parser.apiType=(String)requestObject.get('type');
         parser.mdmId2parent = attriParser.mdmId2parent;  
         parser.masterRecordId = masterRecordId;    
-        CM_LoggerUtil.logger(new CM_Log('ReltioParser', masterRecordId, 'Deserialization completed.'));  
+        CM_LoggerUtil.logger(new CM_Log('JsonParser','Info',String.valueof(Datetime.now()), masterRecordId, 'Deserialization completed.'));  
         return parser;
     }
     /**

@@ -21,39 +21,87 @@ public with sharing class CM_AssociateActiveAccountonContact {
 * when direct account is deactivated, based on the accountcontact relation 
 * @parameters : Set of contact IDs
 */  
-    public static void updateContwithActiveAccnt(Set<Id> contIdSet) {        
+    public static void updateContwithActiveAccnt(Set<Id> recIdSet, String processName) {        
         final List<Contact> contUpdateLst = new List<Contact>();
         List<Database.UpsertResult> upsertResults;
-        Contact contRec;       
-        system.debug('contIdSet==>>'+contIdSet);
-        for(Contact cont : [Select Id,
-                            (Select accountId,Relationship_Type__c from AccountContactRelations where Relationship_Type__c='Owner'
-                             AND Account.Status__c='Active' AND Status__c = 'Active' order by startdate asc LIMIT 1) from Contact
-                            where ID IN :contIdSet WITH SECURITY_ENFORCED ]) { 
-        	if(cont.AccountContactRelations.size() == RELATIONS_COUNT) {            	 
-                contIdSet.remove(cont.Id);
-                system.debug('contRec==>>'+contRec);
-                contRec = instantiateContwithAcct(cont.AccountContactRelations[0].AccountId,cont); //send accConRec to instantiate               
-                contUpdateLst.add(contRec); 
-                system.debug('contRec==>>'+contRec);
+        Contact contToUpdate; 
+        List<Contact> contOwnerLst;
+        List<Contact> contRelMembersLst;
+        Boolean acctInactivation = false;
+        Boolean acctContRelInactivation = false;
+        
+        String queryString1 = 'Select Id,AccountId,(Select accountId,contactId,Relationship_Type__c from AccountContactRelations where ';
+        String ownerWhereClause = 'Relationship_Type__c=\'Owner\' AND ';
+        String queryString2 = 'Account.Status__c=\'Active\' AND Status__c = \'Active\' order by startdate asc LIMIT 1)';
+        string accntWhereClause;
+        String acctContWhereClause;
+        string finalQuery;
+        
+        if(processName == 'Account_Inactivation') {
+            acctInactivation = true;
+        	accntWhereClause = ' from Contact where AccountID IN:recIdSet WITH SECURITY_ENFORCED ';             
+        }
+        
+        if(processName == 'Acct_Cont_Inactivation') {
+            acctContRelInactivation = true;
+        	acctContWhereClause = 'from Contact where ID IN:recIdSet WITH SECURITY_ENFORCED ';             
+        }
+        
+        if(accntWhereClause!=null) {
+        	finalQuery = queryString1+ownerWhereClause+queryString2+accntWhereClause;    
+        }
+        
+        if(acctContWhereClause!=null) {
+        	finalQuery = queryString1+ownerWhereClause+queryString2+acctContWhereClause;    
+        }
+        
+        system.debug('owner query==>>'+finalQuery);
+        contOwnerLst = Database.query(finalQuery);
+        
+        system.debug('contOwnerLst==>>'+contOwnerLst);
+        system.debug('recIdSet==>>'+recIdSet);
+        
+        for(Contact cont : contOwnerLst) {
+        	if(cont.AccountContactRelations.size() == RELATIONS_COUNT) { 
+                system.debug('owner list==>>'+cont.AccountContactRelations);
+                if(acctInactivation) {
+                	recIdSet.remove(cont.AccountId);    
+                }
+                if(acctContRelInactivation) {
+                	recIdSet.remove(cont.Id);    
+                }
+                
+                system.debug('contToUpdate==>>'+contToUpdate);                
+                contToUpdate = instantiateContwithAcct(cont.AccountContactRelations[0]);
+                contUpdateLst.add(contToUpdate); 
+                system.debug('contToUpdate==>>'+contToUpdate);
                 system.debug('contUpdateLst==>>'+contUpdateLst);                
             } 
         }  
         
-        system.debug('contIdSet==>>'+contIdSet);
+        system.debug('recIdSet==>>'+recIdSet);
         
-        if(contIdSet != null && !contIdSet.isEmpty()) {            
-            for(Contact con: [Select Id,
-                              (Select accountId,Relationship_Type__c from AccountContactRelations                               
-                               where Account.Status__c='Active' AND Status__c = 'Active' 
-                               order by startdate asc LIMIT 1)
-                              from Contact where ID IN:contIdSet WITH SECURITY_ENFORCED] ) {
-                                  system.debug('related member==>>'+con);
+        if(recIdSet != null && !recIdSet.isEmpty()) {
+            finalQuery = null;
+            if(acctInactivation) {
+                finalQuery = queryString1+queryString2+accntWhereClause;    
+            }
+            if(acctContRelInactivation) {
+                finalQuery = queryString1+queryString2+acctContWhereClause;    
+            }
+            
+            system.debug('member query ==>>'+finalQuery);
+            contRelMembersLst = Database.Query(finalQuery);
+            
+            system.debug('contRelMembersLst==>>'+contRelMembersLst);
+            for(Contact con: contRelMembersLst) {
+            system.debug('related member==>>'+con);
             	for(AccountContactRelation rels : con.AccountContactRelations) {                	
                     system.debug('rels==>>'+rels);                    
-                    contRec = instantiateContwithAcct(con.AccountContactRelations[0].AccountId,con);                
-                	contUpdateLst.add(contRec);
-                    system.debug('contRec==>>'+contRec);
+                    
+                    contToUpdate = instantiateContwithAcct(con.AccountContactRelations[0]);                
+                	contUpdateLst.add(contToUpdate);
+                    system.debug('contToUpdate==>>'+contToUpdate);
                 	system.debug('contUpdateLst==>>'+contUpdateLst);
                 }	               
             }
@@ -63,11 +111,14 @@ public with sharing class CM_AssociateActiveAccountonContact {
         UCB_LoggerService.logger(new UCB_Log('Contact update with Active Account', 'DML Upsert Result', JSON.Serialize(upsertResults)),false);  
         UCB_LoggerService.publishLogs();         
     }
-    
-    public static Contact instantiateContwithAcct(Id accntId, Contact cont) {    	
-    	Contact con = new Contact(Id=cont.Id,AccountID=accntId);                       
-        system.debug('contact instantiated==>>'+con);
-        return con;
+    /**
+* @description : associate contact with active accountID
+* @Parameters : accountcontactrelation record
+*/     
+    public static Contact instantiateContwithAcct(AccountContactRelation accConRel) {    	
+    	Contact conRec = new Contact(Id = accConRel.ContactId,AccountId = accConRel.AccountId);                       
+        system.debug('contact instantiated==>>'+conRec);
+        return conRec;        
     }
     /**
 * @description : constructor  

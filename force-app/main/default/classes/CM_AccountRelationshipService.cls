@@ -15,7 +15,7 @@ public with sharing class CM_AccountRelationshipService {
      * @description : typecasts input sobject map to account-account data to upsert 
      */
     public static AccountRelation upsertAccountRelationship(Map < String, Map < String, Object >> objParser,String masterRecordId) {
-        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service started')); 
+        CM_LoggerUtil.logger(new CM_Log('AccountRelation','Info',String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service started')); 
         final Account_Relationship__c accRelation = new Account_Relationship__c();
         Map < String, Object > objectMap = new Map < String, Object > ();
         Map < String, Object > startObjDetails;
@@ -44,7 +44,7 @@ public with sharing class CM_AccountRelationshipService {
         accRelationship.resultMap = resultMap;
         accRelationship.startObjDetails = startObjDetails;
         accRelationship.endObjectDetails = endObjectDetails;
-        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service started')); 
+        CM_LoggerUtil.logger(new CM_Log('AccountRelation','Info',String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service Completed.')); 
         return accRelationship;
     }
     /*Wrapper Class to handle the Account-Account Relation from inputJson start object, end object */

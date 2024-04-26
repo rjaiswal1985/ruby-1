@@ -15,7 +15,7 @@ public with sharing class CM_PersonCommunicationService {
      * @description : Method to get List of HCP Communication details.
      */
     public static Map < String, Person_Communication__c > upsertHCPcommunicationInfo(Map < String, Map < String, Object >> objParser, Contact reltdContact,String masterRecordId) {
-        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Person Communication Creation Service Started'));
+        CM_LoggerUtil.logger(new CM_Log('PersonCommunication','Info',String.valueof(Datetime.now()), masterRecordId, 'Person Communication Creation Service Started'));
         final Map < String, Person_Communication__c > communicationMap = new Map < String, Person_Communication__c > ();
         Person_Communication__c communicationInfo;
 
@@ -31,7 +31,7 @@ public with sharing class CM_PersonCommunicationService {
             }
             communicationMap.put(objectKey, communicationInfo);
         }
-        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Person Communication Creation Service Completed'));
+        CM_LoggerUtil.logger(new CM_Log('PersonCommunication','Info',String.valueof(Datetime.now()), masterRecordId, 'Person Communication Creation Service Completed'));
         return communicationMap;
     }
     private CM_PersonCommunicationService() {}

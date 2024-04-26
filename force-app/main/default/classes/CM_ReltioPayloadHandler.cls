@@ -14,6 +14,13 @@ public with sharing class CM_ReltioPayloadHandler {
         newEvent.Input_Json__c = jsonPayload; // If you need to pass the whole payload
 
         platformEvents.add(newEvent);
+        System.debug('platformEvents== ' +platformEvents);
+        
+        JSON_Data__c jsonD = new JSON_Data__c();
+        jsonD.Name = 'UCB Replay 1';
+        jsonD.Input_Json__c = jsonPayload;
+        insert jsonD;
+        System.debug('jsonD = '+jsonD.Id);
 
         // Now call the reltioPayloadTriggerService with the list of platform event objects
         CM_ReltioHCOInboundPayloadTriggerHandler.reltioPayloadTriggerService(platformEvents);

@@ -15,7 +15,7 @@ public with sharing class CM_AccountService {
     * @description : returns Account data to upsert
     */
     public static Account upsertAccount(Map<String,Map<String,Object>> objParser,String masterRecordId) { 
-        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Account Creation Service started'));  
+        CM_LoggerUtil.logger(new CM_Log('Account','Info',String.valueof(Datetime.now()), masterRecordId, 'Account Creation Service started'));  
         final Account accountVar = new Account();         
         Map<String,  Object> objectMap = new Map<String,  Object>();
         for(String objectKey : objParser.keySet()) { 
@@ -24,7 +24,7 @@ public with sharing class CM_AccountService {
                 accountVar.put(key,objectMap.get(key)); 
             }
         }        
-        CM_LoggerUtil.logger(new CM_Log(String.valueof(Datetime.now()), masterRecordId, 'Account Creation Service completed'));  
+        CM_LoggerUtil.logger(new CM_Log('Account','Info',String.valueof(Datetime.now()), masterRecordId, 'Account Creation Service completed'));  
         return  accountVar;
     } 
     private CM_AccountService() {}

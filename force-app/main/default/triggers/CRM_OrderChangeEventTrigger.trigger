@@ -1,18 +1,15 @@
 /***********************************************************************************************************************
-* Name: CM_AcctContRelation_CDC_Trigger
+* Name: CRM_OrderChangeEventTrigger
 * Copyright © Align Tech
 * ========================================================================================================================
-* Purpose: Trigger fired on Account Data Change 
-* TestClass : CM_AcctContRelation_CDC_Trigger
+* Purpose: Trigger fired on Order Change Events 
+* TestClass : CRM_OrderChangeEventTrigger
 * ========================================================================================================================
 * History
 *
 * VERSION         AUTHOR                          DATE                DETAIL
-* 1.0             Sruthi M                  02/04/2024          Account data change event
+* 1.0             Sruthi M                  24/04/2024          Trigger fired on Order Change Events
 ***********************************************************************************************************************/
-trigger CM_AcctContRelationCDC_Trigger on AccountContactRelationChangeEvent (after insert) {
-   system.debug('trigger.new==>>'+trigger.new); 
-   UCB_MessageTriggerFactory.createHandler(AccountContactRelationChangeEvent.SObjectType); 
-      
-    //CM_AcctContRelation_CDC_TriggerHelper.accountContactRelations(trigger.new);
+trigger CRM_OrderChangeEventTrigger on OrderChangeEvent (after insert) {
+    UCB_MessageTriggerFactory.createHandler(AccountChangeEvent.SObjectType); 
 }

@@ -91,44 +91,37 @@ public with sharing class CM_ReltioHCPService {
  * @description :  Method to get the Old Contact Map
  * Parameters : Map of new Records
  */
-    public  static QUERYRESULT getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
-        final QUERYRESULT result= new QUERYRESULT();
+    public  static CM_ReltioHandlerService.OBJECTPARSER getOldContactMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+        final CM_ReltioHandlerService.OBJECTPARSER objParser= new CM_ReltioHandlerService.OBJECTPARSER();
         final Set<String> recordId = upsertNewMap.get(CONTACTSTRING).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
         upsertOldMap.put(CONTACTSTRING,new Map <String, Sobject>());  
         upsertOldMap.put(EDUDETAILS,new Map <String, Sobject>());  
         upsertOldMap.put(PERCOMMUNICATION,new Map <String, Sobject>());  
         upsertOldMap.put(LICINFORMATION,new Map <String, Sobject>()); 
+        objParser.mdmId2parent = new Map<String,String>();
         for(Contact con : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,Account.MDM_Id__c,
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Educational_Details__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from Person_Communications__r),
             (Select Id,MDM_Id__c,Contact__r.MDM_Id__c,TimeStamp_Decimal__c from License_Informations__r) 
             from Contact where MDM_Id__c = :recordId with SECURITY_ENFORCED]) {
             upsertOldMap.get(CONTACTSTRING).put(con.MDM_Id__c,con);
-            //apiMdmIds.get(con.MDM_Id__c).add(con.MDM_Id__c);
+            objParser.mdmId2parent.put(con.MDM_Id__c,con.MDM_Id__c);
             for(Educational_Detail__c education : con.Educational_Details__r) {
                 upsertOldMap.get(EDUDETAILS).put(education.MDM_Id__c,education);
-                //apiMdmIds.get(con.MDM_Id__c).add(education.MDM_Id__c);  
+                objParser.mdmId2parent.put(education.MDM_Id__c,con.MDM_Id__c);
             }
             for(Person_Communication__c communication: con.Person_Communications__r) {
                 upsertOldMap.get(PERCOMMUNICATION).put(communication.MDM_Id__c,communication); 
-                //apiMdmIds.get(con.MDM_Id__c).add(communication.MDM_Id__c);
+                objParser.mdmId2parent.put(communication.MDM_Id__c,con.MDM_Id__c);
             }
             for(License_Information__c licence: con.License_Informations__r) {
                 upsertOldMap.get(LICINFORMATION).put(licence.MDM_Id__c,licence); 
-                //apiMdmIds.get(con.MDM_Id__c).add(licence.MDM_Id__c);
+                objParser.mdmId2parent.put(licence.MDM_Id__c,con.MDM_Id__c);
             }
         }
-        result.upsertOldMap = upsertOldMap;
-        //result.apiMdmIds = apiMdmIds;
-        return result;
-    }
-    /*Acount Relation wrapper */
-    public class QUERYRESULT {
-        /* Map of upserted record */
-        public Map <String, Map < String, Sobject >> upsertOldMap;
-        /* Contact 2 Account Map */
-        public Map<String,Set<String>> apiMdmIds;
+        objParser.resultMap = upsertOldMap;
+        return objParser;
     }
     private CM_ReltioHCPService() {}
 }

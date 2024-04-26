@@ -12,7 +12,9 @@
 ***********************************************************************************************************************/
 public with sharing class CM_AccountChangeEventTriggerHelper {
     /* Account status inactive */
-    final static string INACTIVE_STATUS = 'Inactive';   
+    final static string INACTIVE_STATUS = 'Inactive'; 
+    /* Process name helps to invoke corresponding service */
+    final static string ACCOUNT_INACTIVE = 'Account_Inactive'; 
     /**
 * @description : From the list of AccountChangeEvents this method gets the account Ids 
 * and invokes corresponding service(account inactive)
@@ -20,24 +22,26 @@ public with sharing class CM_AccountChangeEventTriggerHelper {
 */  
     public static void processAccountUpdates(List<AccountChangeEvent> chgEvntLst) {        
         List<Id> acctIDs;             
-        final Map < String, List<Id> > accntMap = new Map < String, List<Id> > ();                
+        final Map < String, Set<Id> > accntMap = new Map < String, Set<Id> > (); 
+        Eventbus.ChangeEventHeader header;
         for(AccountChangeEvent ace : chgEvntLst) { 
-            Eventbus.ChangeEventHeader header = ace.ChangeEventHeader;
+            //Eventbus.ChangeEventHeader header = ace.ChangeEventHeader;
+            header = ace.ChangeEventHeader;
+            system.debug('header==>>'+header);
             if(header.changetype == 'UPDATE' && ace.Status__c == INACTIVE_STATUS
               && header.changedFields.contains('Status__c')) {                
                 acctIDs = new List<Id>();
                 acctIDs.addAll(ace.ChangeEventHeader.getRecordIds());
-                if(accntMap.containsKey('Account_Inactive')) {
-                    accntMap.get('Account_Inactive').addAll(acctIDs);                      
-                } else {
-                    accntMap.put('Account_Inactive',acctIDs);
-                }                                               
+                if(!accntMap.containsKey(ACCOUNT_INACTIVE)) {                	
+                    accntMap.put(ACCOUNT_INACTIVE,new Set<Id>()); 
+                }
+                accntMap.get(ACCOUNT_INACTIVE).addAll(acctIDs);  
             }
         }
 
         system.debug('accntMap==>>'+accntMap);        
-        if(accntMap!= null && !accntMap.isEmpty() && accntMap.containsKey('Account_Inactive')) {
-            CM_AccountInactiveService.accountInactivationProcess(accntMap.get('Account_Inactive'));            
+        if(accntMap!= null && !accntMap.isEmpty() && accntMap.containsKey(ACCOUNT_INACTIVE)) {
+            CM_AccountInactiveService.accountInactivationProcess(accntMap.get(ACCOUNT_INACTIVE));            
         }                                        
     }
     /**

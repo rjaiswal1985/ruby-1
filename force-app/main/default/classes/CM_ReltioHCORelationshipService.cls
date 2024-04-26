@@ -47,7 +47,8 @@ public with sharing class CM_ReltioHCORelationshipService {
     /**     
      * @description : get old Map of the Account
      */
-    public static Map<String, Map < String, Sobject >> getOldHCOHCOMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+    public static CM_ReltioHandlerService.OBJECTPARSER getOldHCOHCOMap(Map <String, Map < String, Sobject >> upsertNewMap) {
+        final CM_ReltioHandlerService.OBJECTPARSER objParser= new CM_ReltioHandlerService.OBJECTPARSER();
         final Set<String> recordIds = upsertNewMap.get(ACCOUNTSTRING).keyset();
         final Set<String> accRelIds = upsertNewMap.get(ACCRELATION).keyset();
         final Map <String, Map < String, Sobject >> upsertOldMap = new Map < String, Map < String, Sobject >> ();
@@ -55,23 +56,29 @@ public with sharing class CM_ReltioHCORelationshipService {
         upsertOldMap.put('Organization_Communication__c',new Map <String, Sobject>());  
         upsertOldMap.put('Organization_E_Invoice__c',new Map <String, Sobject>());  
         upsertOldMap.put(ACCRELATION,new Map <String, Sobject>()); 
+        objParser.mdmId2parent = new Map<String,String>();
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r),
                         (Select Id,MDM_Id__c,To_Account__r.MDM_Id__c,From_Account__r.MDM_Id__c,TimeStamp_Decimal__c from Account_Relationships__r where MDM_Id__c=:accRelIds)
                         from Account where MDM_Id__c = :recordIds with SECURITY_ENFORCED]) {
             upsertOldMap.get(ACCOUNTSTRING).put(acc.MDM_Id__c,acc);
+            objParser.mdmId2parent.put(acc.MDM_Id__c,acc.MDM_Id__c);
             for(Organization_Communication__c communication: acc.Organization_Communications__r) {
                 upsertOldMap.get('Organization_Communication__c').put(communication.MDM_Id__c,communication);  
+                objParser.mdmId2parent.put(communication.MDM_Id__c,acc.MDM_Id__c);
             }
             for(Organization_E_Invoice__c invoice: acc.Organization_E_Invoices__r) {
                 upsertOldMap.get('Organization_E_Invoice__c').put(invoice.MDM_Id__c,invoice); 
+                objParser.mdmId2parent.put(invoice.MDM_Id__c,acc.MDM_Id__c);
             }
             for(Account_Relationship__c relationship: acc.Account_Relationships__r) {
                 upsertOldMap.get(ACCRELATION).put(relationship.MDM_Id__c,relationship); 
+                objParser.mdmId2parent.put(relationship.MDM_Id__c,acc.MDM_Id__c);
             }
         }
-        return upsertOldMap;
+        objParser.resultMap = upsertOldMap;
+        return objParser;
     }
     private CM_ReltioHCORelationshipService() {}
 }
