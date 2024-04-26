@@ -27,7 +27,7 @@ public with sharing class CM_JSONParser {
         parser.apiType=(String)requestObject.get('type');
         parser.mdmId2parent = attriParser.mdmId2parent;  
         parser.masterRecordId = masterRecordId;    
-        CM_LoggerUtil.logger(new CM_Log('JsonParser','Info',String.valueof(Datetime.now()), masterRecordId, 'Deserialization completed.'));  
+        CM_LoggerUtil.logger(new CM_Log('JsonParserCompleted','Info',String.valueof(Datetime.now()), masterRecordId, 'Deserialization completed.'));  
         return parser;
     }
     /**

@@ -55,17 +55,23 @@ public with sharing class CM_DMLSaveResult {
     private static Map<String,DMLWrapper> createDMLResult(List < Database.UpsertResult > upsertResultList, List < Sobject > records) {
         final List<DMLWrapper> dmlWraps= new List<DMLWrapper>();
         final Map<String,DMLWrapper> dmlWrapMap = new Map<String,DMLWrapper>();
+        final Map<String,String> mdmI2SFId= new Map<String,String>();
         DMLWrapper dmlWrap;      
         Database.UpsertResult upserResult; 
+        Id salesforceId;
         for (Integer recordCount = 0; recordCount < records.size(); recordCount++) {
             upserResult = upsertResultList[recordCount];
             dmlWrap = new DMLWrapper();
             dmlWrap.record = records[recordCount];
             dmlWrap.upsertResult= upserResult;
-            dmlWrap.salesforceId = upserResult.getId();
+            salesforceId = upserResult.getId();
+            dmlWrap.salesforceId = salesforceId;
+            dmlWrap.mdmId = (String)record.get('MDM_Id__c');
+            dmlWrap.sobject_Name = salesforceId.getSObjectType().getDescribe().getName();
             dmlWrap.isDMLSucess = upserResult.isSuccess();
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWraps.add(dmlWrap);
+            mdmI2SFId.put(dmlWrapMap.get(mdmId).salesforceId);
             dmlWrapMap.put((String)dmlWrap.record.get('MDM_Id__c'),dmlWrap);
         }
         return dmlWrapMap;
@@ -90,6 +96,8 @@ public with sharing class CM_DMLSaveResult {
         /* List of input records */
         public SObject record;
         /* List of input records */
+        public String mdmId;
+        /* List of input records */
         public String timeStamp;
         /* List of input records */
         public String salesforceId;
@@ -99,6 +107,8 @@ public with sharing class CM_DMLSaveResult {
         public Database.DeleteResult deleteResult;
         /* DML result */
         public Boolean isDMLSucess;
+        /* Contact 2 Account Map */
+        public String sobject_Name;
     }
     private CM_DMLSaveResult() {}
 }

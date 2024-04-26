@@ -50,8 +50,11 @@ public with sharing class CM_LoggerUtil {
                 logger.Replay_ID =eventDetail.ReplayId; 
                 logger.EventUUId =eventDetail.EventUuid;
             }
+            logger.Sucess = true;
+            logger.Logger_Type = log.logtype;
             logger.Process_Name = module;
             logger.MDMId =log.mdmId; 
+            logger.Parent_MDMId = log.mdmId; 
             logger.UTC_Timestamp =log.timestamp;
             logger.message =log.message;
             moduleLog.get(log.loggerKey).add(logger);       
@@ -65,6 +68,7 @@ public with sharing class CM_LoggerUtil {
      */
     public static void dmlLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
         final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();
+        
         CM_ReltioHandlerService.EVENTDETAILS event ;
         LOGWRAPPER logger; 
         for(String mdmId: dmlWrapMap.keyset()) {
@@ -72,14 +76,15 @@ public with sharing class CM_LoggerUtil {
             logger.MDMId = mdmId; 
             logger.Parent_MDMId = mdmId2parent.get(mdmId); 
             logger.Sucess = dmlWrapMap.get(mdmId).isDMLSucess;
-            logger.MDM_Org_Id = logger.Parent_MDMId;
-            logger.Internal_Org_Id=dmlWrapMap.get(mdmId).salesforceId;
+            logger.Internal_Id=dmlWrapMap.get(mdmId).salesforceId;
             event=mdmId2Event.get(logger.parent_MDMId);
             logger.Replay_ID =event.ReplayId; 
             logger.EventUUId =event.EventUuid; 
             logger.Process_Name = module; 
+            logger.Sobject_Name=dmlWrapMap.get(mdmId).sobject_Name;
             logger.UTC_Timestamp =dmlWrapMap.get(mdmId).timeStamp;
             logger.message =JSON.serialize(dmlWrapMap.get(mdmId));
+            logger.Logger_Type ='debug';
             moduleLog.add(logger);
         }
         UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
@@ -93,6 +98,8 @@ public with sharing class CM_LoggerUtil {
         /* Contact 2 Account Map */
         String UTC_Timestamp; 
         /* Contact 2 Account Map */
+        String Logger_Type; 
+        /* Contact 2 Account Map */
         String MDMId; 
         /* Contact 2 Account Map */
         String Message; 
@@ -100,15 +107,11 @@ public with sharing class CM_LoggerUtil {
         String Parent_MDMId; 
         /* Contact 2 Account Map */
         String Process_Name; 
-        /* Contact 2 Account Map */
-        String MDM_Org_Id; 
-        /* Contact 2 Account Map */
-        String MDM_Person_Id; 
          /* Contact 2 Account Map */
-        String Internal_Org_Id; 
+        String Internal_Id; 
         /* Contact 2 Account Map */
         Boolean Sucess;
         /* Contact 2 Account Map */
-        String Internal_Person_Id; 
+        String Sobject_Name;
     }
 }
