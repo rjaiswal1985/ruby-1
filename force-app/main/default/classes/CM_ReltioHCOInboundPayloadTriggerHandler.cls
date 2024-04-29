@@ -41,14 +41,9 @@ public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_T
         CM_ReltioHandlerService.OBJECTPARSER objParser;
         Boolean entiryUpdated = false;
         CM_ReltioHandlerService.EVENTDETAILS eventDetail;
-		
-        System.debug('Invoke for loop');
-        
         for (Reltio_CM_HCO_Inbound_Payload__e event: masterRecord) {
-            System.debug('Initated Loop');
-            UCB_LoggerService.logger(new UCB_Log('HCO', 'Event_Log', JSON.serialize(event)),false);
-            UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('HCO','Event_Log',JSON.serialize(event))});
-            System.debug('After Logger invokation');
+            CM_LoggerUtil.jsonLogger(new CM_Log(CM_ReltioConstants.RELTIOHCO, event.replayid,event.eventuuid, event.Input_Json__c));
+            UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log(CM_ReltioConstants.RELTIOHCO,'Event_Log',JSON.serialize(event))});
             objParser = CM_ReltioHCOService.upsertHCOServices(event.Input_Json__c, PROCESS);
             if(objParser.apiType==CM_ReltioConstants.ENTITYUPDATED && !entiryUpdated) {
                 entiryUpdated=true;
@@ -74,6 +69,6 @@ public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_T
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
         CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
          
-        UCB_LoggerService.publishLogs();  
+        //UCB_LoggerService.publishLogs();  
     }
 }

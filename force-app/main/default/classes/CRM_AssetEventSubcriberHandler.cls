@@ -22,8 +22,8 @@ public with sharing class CRM_AssetEventSubcriberHandler extends UCB_TriggerVirt
             if( asstEvntLst != null && !asstEvntLst.isEmpty() ) {
                 final List<Asset> assetUpdateLst = CRM_AssetEventSubcriberHelper.assetOwnerupdate(asstEvntLst);             
                 final List <Database.SaveResult> updateResult = UCB_DMLUtility.updateRecords(assetUpdateLst,false);   
-                UCB_LoggerService.logger(new UCB_Log('Asset Owner Update', 'DML Upsert Result', JSON.Serialize(updateResult)),false);  
-                UCB_LoggerService.publishLogs(); 
+                //UCB_LoggerService.logger(new UCB_Log('Asset Owner Update', 'DML Upsert Result', JSON.Serialize(updateResult)),false);  
+                //UCB_LoggerService.publishLogs(); 
             }                        
         } catch(Exception excp) {                            
         	custExcp = new UCB_CustomExceptionWrapper();

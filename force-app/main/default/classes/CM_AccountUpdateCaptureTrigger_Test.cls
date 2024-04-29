@@ -34,7 +34,8 @@ public class CM_AccountUpdateCaptureTrigger_Test{
         
             UCB_TestDataFactory.createSObjectList('Account', new Map<String, Object>{ 
             'Name' => 'Test Acc',
-                'Operating_Units__c' => '4050_Exocad_America'}, 20);
+                'Operating_Units__c' => '4050_Exocad_America',
+                'Status__c' => 'Active'}, 20);
             
             final List<Account> accLst = [select id,name from Account where name like'Test Acc%'];
             system.debug('accLst==>>'+accLst);
@@ -44,6 +45,7 @@ public class CM_AccountUpdateCaptureTrigger_Test{
            UCB_TestDataFactory.createSObjectList('Contact', new Map<String, Object>{ 
             'FirstName' => 'Test',
                 'LastName' =>  'Cont', 
+                'Status__c' => 'Active',
                 'AccountID' => acc.Id},1); 
         }
          final List<Contact> conLst = [select id,firstname,lastname from Contact where name like'Test Cont%'];  
@@ -69,7 +71,7 @@ public class CM_AccountUpdateCaptureTrigger_Test{
         
         UCB_TestDataFactory.createSObjectList('Account', new Map<String, Object>{ 
             'Name' => 'Test Acc2',
-                'Operating_Units__c' => '4050_Exocad_America'}, 1);
+                'Operating_Units__c' => '4050_Exocad_America','Status__c' => 'Active'}, 1);
        final List<Account> accLst2 = [select id,name from Account where name like'Test Acc2%'];
             system.debug('accLst2==>>'+accLst);
         for(Contact con : conLst) {

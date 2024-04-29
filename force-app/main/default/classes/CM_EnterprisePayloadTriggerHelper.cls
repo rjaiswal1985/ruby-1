@@ -34,7 +34,7 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
         if(accConRelations!=null && !accConRelations.isEmpty()) {
             accountContactRelations(accConRelations);
         }
-        UCB_LoggerService.publishLogs(); 
+        //UCB_LoggerService.publishLogs(); 
     }
     /**      
      * @description : Method to handle Account-Account relation data
@@ -60,7 +60,7 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
         for(AccountContactRelation relation : accConRelations) {
             conIdSet.add(relation.contactId);            
         }
-        CM_AssociateActiveAccountonContact.updateContwithActiveAccnt(conIdSet);
+       // CM_AssociateActiveAccountonContact.updateContwithActiveAccnt(conIdSet);
     }
     private CM_EnterprisePayloadTriggerHelper() {}
 }

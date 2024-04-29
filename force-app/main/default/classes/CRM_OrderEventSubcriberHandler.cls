@@ -19,8 +19,8 @@ public with sharing class CRM_OrderEventSubcriberHandler extends UCB_TriggerVirt
         final UCB_CustomExceptionWrapper custExcp;
         try {              
         	CRM_OrderEventService.processOrderEvents(trgCtx.newList);
-            UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Update Order owner', 'CRM_OrderEventSubcriberHandler','Updated Owner' )});
-            UCB_LoggerService.publishLogs();             
+            //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Update Order owner', 'CRM_OrderEventSubcriberHandler','Updated Owner' )});
+            //UCB_LoggerService.publishLogs();             
         } catch(Exception excp) {
         	custExcp = new UCB_CustomExceptionWrapper();
             excpLst = new List<UCB_CustomExceptionWrapper>();

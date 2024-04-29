@@ -40,8 +40,8 @@ public with sharing class CRM_OrderOwnerService {
             }                
         }
         updateResult = UCB_DMLUtility.updateRecords(orderUpdateLst,false);                                  
-        UCB_LoggerService.logger(new UCB_Log('Order_Owner_Update', 'DML_Upsert_Result', JSON.Serialize(updateResult)),false);        
-        UCB_LoggerService.publishLogs(); 
+        //UCB_LoggerService.logger(new UCB_Log('Order_Owner_Update', 'DML_Upsert_Result', JSON.Serialize(updateResult)),false);        
+        //UCB_LoggerService.publishLogs(); 
     }
     
     /**

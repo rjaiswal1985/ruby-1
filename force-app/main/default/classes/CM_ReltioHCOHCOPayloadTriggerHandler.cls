@@ -63,6 +63,6 @@ public with sharing class CM_ReltioHCOHCOPayloadTriggerHandler extends UCB_Trigg
         CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCOPHCO,mdmId2Event); 
         CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCOPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
 
-        UCB_LoggerService.publishLogs();  
+        //UCB_LoggerService.publishLogs();  
     }
 }

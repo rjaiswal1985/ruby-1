@@ -16,7 +16,7 @@ public with sharing class CM_LoggerInitializationUtil {
     * @description : Service calss for the Reltio Reply class    
     */   
     public static void replayService(Exception excp,String className) { 
-       UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','errorMessage','Exception cause: '+excp.getcause()+' \n Error type: '+excp.getTypeName()+' \n Line number: '+excp.getLineNumber()+'\n Error message: '+excp.getMessage()+' \n Stack message: '+excp.getStackTraceString())});   
+       //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('ReltioPayloadTriggerHandler','errorMessage','Exception cause: '+excp.getcause()+' \n Error type: '+excp.getTypeName()+' \n Line number: '+excp.getLineNumber()+'\n Error message: '+excp.getMessage()+' \n Stack message: '+excp.getStackTraceString())});   
     }
     private CM_LoggerInitializationUtil() {}
 }

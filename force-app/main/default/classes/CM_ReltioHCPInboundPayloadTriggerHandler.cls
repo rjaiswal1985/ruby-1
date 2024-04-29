@@ -64,6 +64,6 @@ public with sharing class CM_ReltioHCPInboundPayloadTriggerHandler extends UCB_T
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
         CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCP, mdmId2Event,dmlWrapMap,mdmId2parent); 
          
-        UCB_LoggerService.publishLogs(); 
+        //UCB_LoggerService.publishLogs(); 
     } 
 }

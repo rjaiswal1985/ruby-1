@@ -33,8 +33,8 @@ public class CM_AccountOwnerBatchUpdate implements Database.Batchable<sObject> {
             List <Database.SaveResult> updateResult;
             if (accUpdateLst != null && !accUpdateLst.isEmpty()) {                
                 updateResult = UCB_DMLUtility.updateRecords(accUpdateLst,false);
-                //UCB_LoggerService.logger(new UCB_Log('Account Owner Update Batch', 'DML Upsert Result', JSON.Serialize(updateResult)),false);
-                //UCB_LoggerService.publishLogs();
+                ////UCB_LoggerService.logger(new UCB_Log('Account Owner Update Batch', 'DML Upsert Result', JSON.Serialize(updateResult)),false);
+                ////UCB_LoggerService.publishLogs();
             }    
         } Catch(Exception excp) {
             custExcp = new UCB_CustomExceptionWrapper();

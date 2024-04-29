@@ -27,6 +27,26 @@ public with sharing class CM_LoggerUtil {
     @testVisible
     private CM_LoggerUtil() {
     }
+     /**
+     * @description : method to make logs
+     */
+    public static void jsonLogger(CM_Log log) {
+        final LOGWRAPPER logger = new LOGWRAPPER();
+        logger.Replay_ID =log.logType; 
+        logger.EventUUId =log.mdmId;
+        logger.Logger_Type = 'Info';
+        logger.Process_Name = log.loggerKey;
+        logger.MDMId =''; 
+        logger.Parent_MDMId = ''; 
+        logger.UTC_Timestamp =String.valueof(Datetime.now());
+        logger.message ='';
+        logger.Request =log.message;
+        logger.Response ='';
+        logger.Sobject_Name ='';
+        logger.Response ='';
+        logger.Parent_Sobject_Name ='';
+        //UCB_LoggerService.logger(new UCB_Log(log.loggerKey, 'JsonParser', JSON.serialize(logger)),false);
+    }
     /**
      * @description : method to make logs
      */
@@ -50,17 +70,16 @@ public with sharing class CM_LoggerUtil {
                 logger.Replay_ID =eventDetail.ReplayId; 
                 logger.EventUUId =eventDetail.EventUuid;
             }
-            logger.Sucess = true;
             logger.Logger_Type = log.logtype;
             logger.Process_Name = module;
             logger.MDMId =log.mdmId; 
             logger.Parent_MDMId = log.mdmId; 
-            logger.UTC_Timestamp =log.timestamp;
+            logger.UTC_Timestamp =String.valueof(Datetime.now());
             logger.message =log.message;
             moduleLog.get(log.loggerKey).add(logger);       
         }
         for(String log: moduleLog.keySet()) {
-            UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
+            //UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
         }         
     }
     /**
@@ -81,7 +100,6 @@ public with sharing class CM_LoggerUtil {
             dmlWrap = dmlWrapMap.get(mdmId);
             logger.MDMId = mdmId; 
             logger.Parent_MDMId = mdmId2parent.get(mdmId); 
-            logger.Sucess = dmlWrap.isDMLSucess;
             logger.Internal_Id=dmlWrap.salesforceId;
             logger.Parent_Internal_Id = mdm2SfId.get(logger.Parent_MDMId);
             logger.Parent_Sobject_Name = logger.Parent_Internal_Id.getSObjectType().getDescribe().getName();
@@ -92,12 +110,12 @@ public with sharing class CM_LoggerUtil {
             logger.EventUUId =event.EventUuid; 
             logger.Process_Name = module; 
             logger.Sobject_Name=dmlWrap.sobjectName;
-            logger.UTC_Timestamp =dmlWrap.timeStamp;
-            logger.message =JSON.serialize(dmlWrap);
-            logger.Logger_Type ='debug';
+            logger.UTC_Timestamp =String.valueof(Datetime.now());
+            logger.Message =dmlWrap.message;
+            logger.Logger_Type ='Info';
             moduleLog.add(logger);
         }
-        UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
+        //UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
     }
     /*Acount Relation wrapper */
     private class LOGWRAPPER {
@@ -113,8 +131,6 @@ public with sharing class CM_LoggerUtil {
         String Message;
         /* Contact 2 Account Map */
         String Logger_Type; 
-        /* Contact 2 Account Map */
-        Boolean Sucess;
         /* Contact 2 Account Map */
         String Parent_MDMId;        
         /* Contact 2 Account Map */

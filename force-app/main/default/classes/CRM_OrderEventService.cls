@@ -32,8 +32,8 @@ public with sharing class CRM_OrderEventService {
         if( ordEvntLst != null && !ordEvntLst.isEmpty() ) {
             orderUpdateLst = CRM_OrderEventSubcriberHelper.orderOwnerupdate(ordEvntLst);             
             updateResult = UCB_DMLUtility.updateRecords(orderUpdateLst,false);                                  
-            UCB_LoggerService.logger(new UCB_Log('Order Owner Update', 'DML Upsert Result', JSON.Serialize(updateResult)),false);        
-            UCB_LoggerService.publishLogs();     
+            //UCB_LoggerService.logger(new UCB_Log('Order Owner Update', 'DML Upsert Result', JSON.Serialize(updateResult)),false);        
+            //UCB_LoggerService.publishLogs();     
         }
   
     }

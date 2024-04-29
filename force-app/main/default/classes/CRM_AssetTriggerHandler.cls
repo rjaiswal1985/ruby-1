@@ -24,8 +24,8 @@ public with sharing class CRM_AssetTriggerHandler extends UCB_TriggerVirtual {
             if(trgCtx.isInsert) { 
                 trgContextStr =  CM_ReltioConstants.ASSETCREATED;                                                                
                 CRM_AssetService.publishAssetEvent(trgCtx.newList,trgContextStr);
-                UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Publish Asset platformevent', 'CRM_AssetTriggerHandler','Published Asset platformevent' )});
-            	UCB_LoggerService.publishLogs();
+                //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Publish Asset platformevent', 'CRM_AssetTriggerHandler','Published Asset platformevent' )});
+            	//UCB_LoggerService.publishLogs();
             }            
         } catch(Exception excp) { 
         	custExcp = new UCB_CustomExceptionWrapper();

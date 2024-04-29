@@ -68,7 +68,7 @@ public with sharing class CM_DMLSaveResult {
             dmlWrap.response=JSON.serialize(upserResult);
             dmlWrap.mdmId = (String)record.get('MDM_Id__c');
             dmlWrap.sobjectName = salesforceId.getSObjectType().getDescribe().getName();
-            dmlWrap.isDMLSucess = upserResult.isSuccess();
+            dmlWrap.message = upserResult.isSuccess()?'Sucess':'Fail';
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWrapMap.put(dmlWrap.mdmId,dmlWrap);
         }
@@ -90,7 +90,7 @@ public with sharing class CM_DMLSaveResult {
             dmlWrap.response=JSON.serialize(deleteResult);
             dmlWrap.mdmId = (String)record.get('MDM_Id__c');
             dmlWrap.sobjectName = salesforceId.getSObjectType().getDescribe().getName();
-            dmlWrap.isDMLSucess = deleteResult.isSuccess();
+            dmlWrap.message = deleteResult.isSuccess()?'Sucess':'Fail';
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
             dmlWrapMap.put(dmlWrap.mdmId,dmlWrap);
         }
@@ -111,7 +111,7 @@ public with sharing class CM_DMLSaveResult {
         /* List of input records */
         public String salesforceId;
         /* DML result */
-        public Boolean isDMLSucess;
+        public String message;
         /* Contact 2 Account Map */
         public String sobjectName;
     }

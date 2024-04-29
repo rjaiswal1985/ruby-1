@@ -27,8 +27,8 @@ public with sharing class CRM_AssetOwnerService {
             }                
         }
         updateResult = UCB_DMLUtility.updateRecords(assetUpdateLst,false);                                  
-        UCB_LoggerService.logger(new UCB_Log('Asset_Owner_Update', 'DML_Upsert_Result', JSON.Serialize(updateResult)),false);        
-        UCB_LoggerService.publishLogs(); 
+        //UCB_LoggerService.logger(new UCB_Log('Asset_Owner_Update', 'DML_Upsert_Result', JSON.Serialize(updateResult)),false);        
+        //UCB_LoggerService.publishLogs(); 
     }
     
     /**

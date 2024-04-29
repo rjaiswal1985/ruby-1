@@ -19,15 +19,15 @@ public without sharing class CM_ScheduleAccountOwnerBatchUpdate implements Sched
         final UCB_CustomExceptionWrapper custExcp;
         try {
         	database.executebatch(new CM_AccountOwnerBatchUpdate(),Integer.valueOf(Batch_Jobs_Execution__c.getInstance('Account Ownership Batch').Batch_size__c)); 
-            UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Schedule Account Owner Update Batch', 'CM_ScheduleAccountOwnerBatchUpdate', 'Updated Account Owner')});
-            UCB_LoggerService.publishLogs();   
+            //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Schedule Account Owner Update Batch', 'CM_ScheduleAccountOwnerBatchUpdate', 'Updated Account Owner')});
+            //UCB_LoggerService.publishLogs();   
         } Catch(Exception excp) {
             custExcp = new UCB_CustomExceptionWrapper();
             excpLst = new List<UCB_CustomExceptionWrapper>();
             custExcp.module = 'Scheduled Account Owner Update Batch';
             custExcp.exceptn =  excp;                       
             excpLst.add(custExcp);            
-            UCB_ExceptionService.logException(excpLst);            
+            //UCB_ExceptionService.logException(excpLst);            
         }
     }
 }

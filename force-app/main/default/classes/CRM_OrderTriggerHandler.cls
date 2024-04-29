@@ -25,8 +25,8 @@ public with sharing class CRM_OrderTriggerHandler extends UCB_TriggerVirtual {
             if(trgCtx.isInsert) {                                                                      
                 trgContextStr = CM_ReltioConstants.ORDERCREATED;                                                              
                 CRM_OrderService.publishOrderEvent(trgCtx.newList,trgContextStr);
-                UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Publish Order platformevent', 'CRM_OrderTriggerHandler', 'Published Order platformevent')});
-                UCB_LoggerService.publishLogs();                
+                //UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('Publish Order platformevent', 'CRM_OrderTriggerHandler', 'Published Order platformevent')});
+                //UCB_LoggerService.publishLogs();                
             } 
             
         } catch(Exception excp) {
