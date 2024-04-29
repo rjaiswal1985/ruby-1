@@ -15,7 +15,7 @@ public with sharing class CM_LicenseInformationService {
      * @description : Method to get List of HCP License Information
      */
     public static Map < String, License_Information__c > upsertLicenseInformationDetails(Map < String, Map < String, Object >> objParser, Contact reltdContact,String masterRecordId) {
-        CM_LoggerUtil.logger(new CM_Log('PersonLicenseInformation','Info',String.valueof(Datetime.now()), masterRecordId, 'License Information Creation Service Started'));
+        CM_LoggerUtil.logger(new CM_Log('PersonLicenseInformation','Info', masterRecordId, 'License Information Creation Service Started'));
         final Map < String, License_Information__c > hcpLicenseMap = new Map < String, License_Information__c > ();
         License_Information__c hcpLicenseInfo;
 
@@ -31,7 +31,7 @@ public with sharing class CM_LicenseInformationService {
             }
             hcpLicenseMap.put(objectKey, hcpLicenseInfo);
         }
-        CM_LoggerUtil.logger(new CM_Log('PersonLicenseInformation','Info',String.valueof(Datetime.now()), masterRecordId, 'License Information Creation Service Completed.'));
+        CM_LoggerUtil.logger(new CM_Log('PersonLicenseInformation','Info', masterRecordId, 'License Information Creation Service Completed.'));
         return hcpLicenseMap;
     }
     private CM_LicenseInformationService() {}

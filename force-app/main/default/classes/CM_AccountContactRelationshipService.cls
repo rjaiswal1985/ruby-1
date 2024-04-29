@@ -15,7 +15,7 @@ public with sharing class CM_AccountContactRelationshipService {
      * @description : typecasts input sobject map to accountcontact data to upsert
      */
     public static AccountRelation upsertAccountRelationship(Map < String, Map < String, Object >> objParser,String masterRecordId) {
-        CM_LoggerUtil.logger(new CM_Log('AccountContactRelation','Info',String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service started')); 
+        CM_LoggerUtil.logger(new CM_Log('AccountContactRelation','Info', masterRecordId, 'Account Relationship Creation Service started')); 
         final AccountContactRelation accRelation = new AccountContactRelation();
         Map < String, Object > objectMap = new Map < String, Object > ();
         final Map < String, String > contact2Account = new Map < String, String > ();
@@ -42,7 +42,7 @@ public with sharing class CM_AccountContactRelationshipService {
         }
         resultMap.put('AccountContactRelation', relationMap);
         contact2Account.put(accRelation.Contact.MDM_Id__c, accRelation.Account.MDM_Id__c);
-        CM_LoggerUtil.logger(new CM_Log('AccountContactRelation','Info',String.valueof(Datetime.now()), masterRecordId, 'Account Relationship Creation Service completed'));  
+        CM_LoggerUtil.logger(new CM_Log('AccountContactRelation','Info', masterRecordId, 'Account Relationship Creation Service completed'));  
 
         final AccountRelation relationship = new AccountRelation();
         relationship.resultMap = resultMap;

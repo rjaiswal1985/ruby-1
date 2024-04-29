@@ -15,7 +15,7 @@ public with sharing class CM_EducationalDetailsService {
      * @description : Method returns data about HCP Education 
      */
     public static Map < String, Educational_Detail__c > upsertEducationalDetails(Map < String, Map < String, Object >> objParser, Contact reltdContact,String masterRecordId) {
-        CM_LoggerUtil.logger(new CM_Log('PersonEducationDetails','Info',String.valueof(Datetime.now()), masterRecordId, 'Education Details Creation Service Started'));
+        CM_LoggerUtil.logger(new CM_Log('PersonEducationDetails','Info', masterRecordId, 'Education Details Creation Service Started'));
         final Map < String, Educational_Detail__c > hcpEduMap = new Map < String, Educational_Detail__c > ();
         Educational_Detail__c hcpEduDetails;
 
@@ -31,7 +31,7 @@ public with sharing class CM_EducationalDetailsService {
             }
             hcpEduMap.put(objectKey, hcpEduDetails);
         }
-        CM_LoggerUtil.logger(new CM_Log('PersonEducationDetails','Info',String.valueof(Datetime.now()), masterRecordId, 'Education Details Creation Service Completed.'));
+        CM_LoggerUtil.logger(new CM_Log('PersonEducationDetails','Info', masterRecordId, 'Education Details Creation Service Completed.'));
         return hcpEduMap;
     }
     private CM_EducationalDetailsService() {}

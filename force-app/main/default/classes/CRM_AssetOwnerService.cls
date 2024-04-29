@@ -3,7 +3,7 @@
 * Copyright © Align Tech
 * ========================================================================================================================
 * Purpose: Service class for asset owner update
-* TestClass : CRM_AssetOwnerService
+* TestClass : CRM_AssetOwnerService_Test
 * ========================================================================================================================
 * History
 *
@@ -13,9 +13,8 @@
 public with sharing class CRM_AssetOwnerService {
 
     /**
-* @description : From orders get corresponding Account and update owner
-* on Order based on Account's territory related primary owner
-* @parameters : list of Order IDs
+* @description : From assets get corresponding Order owner and update Asset Owner 
+* @parameters : list of Asset IDs
 */  
     public static void updateAssetOwner(List<Id> assetIds) { 
         final List<Asset> assetUpdateLst = new List<Asset>();
@@ -39,7 +38,7 @@ public with sharing class CRM_AssetOwnerService {
 */
     public static Map<Id,Asset> getAsstOrdrMap(List<Id> assetIds) {         
         final Map<Id,Asset> asstOrdrMap = new Map<Id,Asset>(); 
-        for(Asset asst: [Select Id,Order__c,Order__r.OwnerId from Asset where Id IN:assetIds]) {
+        for(Asset asst: [Select Id,Order__c,Order__r.OwnerId from Asset where Id IN:assetIds WITH SECURITY_ENFORCED ]) {
         	asstOrdrMap.put(asst.Id,asst);            
         }                                                        
         return asstOrdrMap;

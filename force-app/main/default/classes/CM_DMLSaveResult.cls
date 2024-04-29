@@ -52,42 +52,47 @@ public with sharing class CM_DMLSaveResult {
     /**
      * @description : Method to log the results of DML in UCB Logger Service
      */
-    private static Map<String,DMLWrapper> createDMLResult(List < Database.UpsertResult > upsertResultList, List < Sobject > records) {
-        final List<DMLWrapper> dmlWraps= new List<DMLWrapper>();
+    private static Map<String,DMLWrapper> createDMLResult(List <Database.UpsertResult> upsertResultList, List < Sobject > records) {
         final Map<String,DMLWrapper> dmlWrapMap = new Map<String,DMLWrapper>();
-        final Map<String,String> mdmI2SFId= new Map<String,String>();
-        DMLWrapper dmlWrap;      
+        DMLWrapper dmlWrap;   
+        Sobject record;   
         Database.UpsertResult upserResult; 
         Id salesforceId;
         for (Integer recordCount = 0; recordCount < records.size(); recordCount++) {
             upserResult = upsertResultList[recordCount];
+            record = records[recordCount];
             dmlWrap = new DMLWrapper();
-            dmlWrap.record = records[recordCount];
-            dmlWrap.upsertResult= upserResult;
             salesforceId = upserResult.getId();
             dmlWrap.salesforceId = salesforceId;
+            dmlwrap.request= JSON.serialize(record);
+            dmlWrap.response=JSON.serialize(upserResult);
             dmlWrap.mdmId = (String)record.get('MDM_Id__c');
-            dmlWrap.sobject_Name = salesforceId.getSObjectType().getDescribe().getName();
+            dmlWrap.sobjectName = salesforceId.getSObjectType().getDescribe().getName();
             dmlWrap.isDMLSucess = upserResult.isSuccess();
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
-            dmlWraps.add(dmlWrap);
-            mdmI2SFId.put(dmlWrapMap.get(mdmId).salesforceId);
-            dmlWrapMap.put((String)dmlWrap.record.get('MDM_Id__c'),dmlWrap);
+            dmlWrapMap.put(dmlWrap.mdmId,dmlWrap);
         }
         return dmlWrapMap;
     }
-    private static Map<String,DMLWrapper> createDeleteResult(List < Database.DeleteResult > deleteResults, List <Sobject> toBeDelSobjects) {
-        final List<DMLWrapper> dmlWraps= new List<DMLWrapper>();
+    private static Map<String,DMLWrapper> createDeleteResult(List < Database.DeleteResult > deleteResults, List <Sobject> records) {
         final Map<String,DMLWrapper> dmlWrapMap = new Map<String,DMLWrapper>();
-        DMLWrapper dmlWrap;       
-        for (Integer recordCount = 0; recordCount < toBeDelSobjects.size(); recordCount++) {
+        DMLWrapper dmlWrap;   
+        Sobject record;   
+        Database.DeleteResult deleteResult; 
+        Id salesforceId;
+        for (Integer recordCount = 0; recordCount < records.size(); recordCount++) {
+            deleteResult = deleteResults[recordCount];
+            record = records[recordCount];
             dmlWrap = new DMLWrapper();
-            dmlWrap.record = toBeDelSobjects[recordCount];
-            dmlWrap.deleteResult = deleteResults[recordCount];
-            dmlWrap.isDMLSucess = deleteResults[recordCount].isSuccess();
+            salesforceId = deleteResult.getId();
+            dmlWrap.salesforceId = salesforceId;
+            dmlwrap.request= JSON.serialize(record);
+            dmlWrap.response=JSON.serialize(deleteResult);
+            dmlWrap.mdmId = (String)record.get('MDM_Id__c');
+            dmlWrap.sobjectName = salesforceId.getSObjectType().getDescribe().getName();
+            dmlWrap.isDMLSucess = deleteResult.isSuccess();
             dmlWrap.timeStamp = String.valueOf(Datetime.now());
-            dmlWraps.add(dmlWrap);
-            dmlWrapMap.put((String)dmlWrap.record.get('MDM_Id__c'),dmlWrap);
+            dmlWrapMap.put(dmlWrap.mdmId,dmlWrap);
         }
         return dmlWrapMap;
     }
@@ -100,15 +105,15 @@ public with sharing class CM_DMLSaveResult {
         /* List of input records */
         public String timeStamp;
         /* List of input records */
+        public String request;
+        /* List of input records */
+        public String response;
+        /* List of input records */
         public String salesforceId;
-        /* List of Saveresult */
-        public Database.UpsertResult upsertResult;
-         /* List of Saveresult */
-        public Database.DeleteResult deleteResult;
         /* DML result */
         public Boolean isDMLSucess;
         /* Contact 2 Account Map */
-        public String sobject_Name;
+        public String sobjectName;
     }
     private CM_DMLSaveResult() {}
 }

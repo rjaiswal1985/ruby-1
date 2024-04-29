@@ -44,7 +44,7 @@ export default class PE_ReplayEmpApiPubSub extends LightningElement {
 
     submitPayload() {
         // Call the Apex method to process and trigger the service
-        processAndTriggerService({ jsonPayload: this.requiredEvent })
+        processAndTriggerService({ jsonPayload: this.requiredEvent, channelName: this.selectedEventName })
             .then(() => {
                 console.log('Payload processed and service triggered successfully.');
             })

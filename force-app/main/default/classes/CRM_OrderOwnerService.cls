@@ -2,13 +2,13 @@
 * Name: CRM_OrderOwnerService
 * Copyright © Align Tech
 * ========================================================================================================================
-* Purpose: Helper for Order Creation
-* TestClass : CRM_OrderCreationService
+* Purpose: Helper for Updating Order owner on Order Creation
+* TestClass : CRM_OrderCreationService_Test
 * ========================================================================================================================
 * History
 *
 * VERSION         AUTHOR                   DATE                DETAIL
-* 1.0             Sruthi M                 24/04/2024          Helper for Order Creation
+* 1.0             Sruthi M                 24/04/2024          Service class to update owner on order
 ***********************************************************************************************************************/
 public with sharing class CRM_OrderOwnerService {
     
@@ -21,11 +21,19 @@ public with sharing class CRM_OrderOwnerService {
 */  
     public static void updateOrderOwner(List<Id> orderIds) { 
         final List<order> orderUpdateLst = new List<order>();
-        final Map<Id,Id> orderAcctMap = getOrderRelatedAccount(orderIds);
-        final Map<Id,Id> accTerrMap = getAccTerrMap(orderAcctMap.values());  
-        final Map<Id,Id> terrMngrMap =  getTerrMangrMap(accTerrMap.values());
         final List <Database.SaveResult> updateResult ;
+        final Map<Id,Id> accTerrMap;
+        final Map<Id,Id> terrMngrMap;
         
+        final Map<Id,Id> orderAcctMap = getOrderRelatedAccount(orderIds);
+        
+        if(orderAcctMap!=null && !orderAcctMap.isEmpty()) {
+            accTerrMap = getAccTerrMap(orderAcctMap.values());
+        }
+        if(accTerrMap!=null && !accTerrMap.isEmpty()) {
+            terrMngrMap =  getTerrMangrMap(accTerrMap.values());
+        }  
+                        
         for( Id ordId : orderAcctMap.keySet() ) {                
             if(terrMngrMap.get(accTerrMap.get(orderAcctMap.get(ordId)))!=null) {
                 orderUpdateLst.add( new Order(Id = ordId,OwnerId = terrMngrMap.get(accTerrMap.get(orderAcctMap.get(ordId))) ));
@@ -41,8 +49,8 @@ public with sharing class CRM_OrderOwnerService {
 * @parameters : order Ids
 */
     public static Map<Id,Id> getOrderRelatedAccount(List<Id> orderIds) { 
-        Map<Id,Id> orderAcctMap = new Map<Id,Id>();
-        for(Order ord : [Select id,AccountId from Order where ID IN:orderIds]) {
+        final Map<Id,Id> orderAcctMap = new Map<Id,Id>();
+        for(Order ord : [Select id,AccountId from Order where ID IN:orderIds WITH SECURITY_ENFORCED ]) {
             orderAcctMap.put(ord.Id,ord.AccountId);    
         } 
         return orderAcctMap;                                

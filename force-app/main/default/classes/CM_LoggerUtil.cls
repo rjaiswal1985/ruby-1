@@ -67,23 +67,33 @@ public with sharing class CM_LoggerUtil {
      * @description : method to make logs
      */
     public static void dmlLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
-        final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();
-        
+        final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();        
+        final Map<String,String> mdm2SfId = new Map<String,String>();  
         CM_ReltioHandlerService.EVENTDETAILS event ;
+        CM_DMLSaveResult.DMLWrapper dmlWrap;
         LOGWRAPPER logger; 
         for(String mdmId: dmlWrapMap.keyset()) {
+            dmlWrap = dmlWrapMap.get(mdmId);
+            mdm2SfId.put(mdmId,dmlWrap.salesforceId);
+        }
+        for(String mdmId: dmlWrapMap.keyset()) {
             logger = new LOGWRAPPER();
+            dmlWrap = dmlWrapMap.get(mdmId);
             logger.MDMId = mdmId; 
             logger.Parent_MDMId = mdmId2parent.get(mdmId); 
-            logger.Sucess = dmlWrapMap.get(mdmId).isDMLSucess;
-            logger.Internal_Id=dmlWrapMap.get(mdmId).salesforceId;
+            logger.Sucess = dmlWrap.isDMLSucess;
+            logger.Internal_Id=dmlWrap.salesforceId;
+            logger.Parent_Internal_Id = mdm2SfId.get(logger.Parent_MDMId);
+            logger.Parent_Sobject_Name = logger.Parent_Internal_Id.getSObjectType().getDescribe().getName();
+            logger.Request =dmlWrap.request;
+            logger.Response = dmlWrap.response;
             event=mdmId2Event.get(logger.parent_MDMId);
             logger.Replay_ID =event.ReplayId; 
             logger.EventUUId =event.EventUuid; 
             logger.Process_Name = module; 
-            logger.Sobject_Name=dmlWrapMap.get(mdmId).sobject_Name;
-            logger.UTC_Timestamp =dmlWrapMap.get(mdmId).timeStamp;
-            logger.message =JSON.serialize(dmlWrapMap.get(mdmId));
+            logger.Sobject_Name=dmlWrap.sobjectName;
+            logger.UTC_Timestamp =dmlWrap.timeStamp;
+            logger.message =JSON.serialize(dmlWrap);
             logger.Logger_Type ='debug';
             moduleLog.add(logger);
         }
@@ -91,27 +101,35 @@ public with sharing class CM_LoggerUtil {
     }
     /*Acount Relation wrapper */
     private class LOGWRAPPER {
-        /* Map of upserted record */
-        String Replay_ID ;
         /* Contact 2 Account Map */
-        String EventUUId;
+        String Process_Name; 
         /* Contact 2 Account Map */
         String UTC_Timestamp; 
+        /* Contact 2 Account Map */        
+        String Request; 
+        /* Contact 2 Account Map */
+        String Response; 
+        /* Contact 2 Account Map */
+        String Message;
         /* Contact 2 Account Map */
         String Logger_Type; 
         /* Contact 2 Account Map */
-        String MDMId; 
-        /* Contact 2 Account Map */
-        String Message; 
-        /* Contact 2 Account Map */
-        String Parent_MDMId; 
-        /* Contact 2 Account Map */
-        String Process_Name; 
-         /* Contact 2 Account Map */
-        String Internal_Id; 
-        /* Contact 2 Account Map */
         Boolean Sucess;
         /* Contact 2 Account Map */
+        String Parent_MDMId;        
+        /* Contact 2 Account Map */
+        String MDMId; 
+        /* Contact 2 Account Map */
+        String Internal_Id;
+        /* Contact 2 Account Map */
+        Id Parent_Internal_Id;
+        /* Contact 2 Account Map */
         String Sobject_Name;
+        /* Contact 2 Account Map */
+        String Parent_Sobject_Name;
+        /* Map of upserted record */
+        String Replay_ID ;
+        /* Contact 2 Account Map */
+        String EventUUId;        
     }
 }

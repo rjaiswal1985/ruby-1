@@ -41,8 +41,14 @@ public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_T
         CM_ReltioHandlerService.OBJECTPARSER objParser;
         Boolean entiryUpdated = false;
         CM_ReltioHandlerService.EVENTDETAILS eventDetail;
-
+		
+        System.debug('Invoke for loop');
+        
         for (Reltio_CM_HCO_Inbound_Payload__e event: masterRecord) {
+            System.debug('Initated Loop');
+            UCB_LoggerService.logger(new UCB_Log('HCO', 'Event_Log', JSON.serialize(event)),false);
+            UCB_LoggerService.logger(new List<UCB_Log>{new UCB_Log('HCO','Event_Log',JSON.serialize(event))});
+            System.debug('After Logger invokation');
             objParser = CM_ReltioHCOService.upsertHCOServices(event.Input_Json__c, PROCESS);
             if(objParser.apiType==CM_ReltioConstants.ENTITYUPDATED && !entiryUpdated) {
                 entiryUpdated=true;

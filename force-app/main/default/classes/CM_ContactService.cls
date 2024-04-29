@@ -15,7 +15,7 @@ public with sharing class CM_ContactService {
     * @description : returns Contact data to upsert 
     */
     public static Contact upsertContact(Map<String,Map<String,Object>> objParser,String masterRecordId) {
-        CM_LoggerUtil.logger(new CM_Log('Person','Info',String.valueof(Datetime.now()), masterRecordId, 'Contact Creation Service started'));  
+        CM_LoggerUtil.logger(new CM_Log('Person','Info', masterRecordId, 'Contact Creation Service started'));  
         final Contact contactRec = new Contact();         
         Map<String,  Object> objectMap = new Map<String,  Object>();
         for(String objectKey : objParser.keySet()) { 
@@ -24,7 +24,7 @@ public with sharing class CM_ContactService {
                 contactRec.put(key,objectMap.get(key)); 
             }
         }
-        CM_LoggerUtil.logger(new CM_Log('Person','Info',String.valueof(Datetime.now()), masterRecordId, 'Contact Creation Service completed.')); 
+        CM_LoggerUtil.logger(new CM_Log('Person','Info', masterRecordId, 'Contact Creation Service completed.')); 
         return  contactRec;
     }   
     private CM_ContactService() {}

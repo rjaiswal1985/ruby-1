@@ -8,7 +8,7 @@
 * History
 *
 * VERSION         AUTHOR               DATE                DETAIL
-* 1.0             Sruthi M             24/04/2024          Handler/Subscriber for Account Change event
+* 1.0             Sruthi M             24/04/2024          Handler/Subscriber for Order Change event
 ***********************************************************************************************************************/
 public with sharing class CRM_OrderChangeEventTriggerHandler extends UCB_TriggerVirtual {
     /**     

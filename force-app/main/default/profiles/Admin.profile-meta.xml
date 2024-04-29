@@ -219,6 +219,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_ReplayMechanismPayloadHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_ScheduleAccountOwnerBatchUpdate</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1741,6 +1745,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Organization_LOB_Information__c.Customer_Status_Reason__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Organization_LOB_Information__c.Customer_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Organization_LOB_Information__c.Line_of_Business__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Person_Communication__c.Email_Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1856,6 +1875,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Replay_Mechanism_Subscriber__mdt.Channel_Name__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Replay_Mechanism_Subscriber__mdt.Subscriber_Class__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Replay_Mechanism_Subscriber__mdt.Subscriber_Method__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Territory2.Business_unit__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1899,6 +1933,9 @@
         <layout>Organization_E_Invoice__c-Organization E-Invoice Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Organization_LOB_Information__c-Organization LOB Information Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Person_Communication__c-Person Communication Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1906,6 +1943,9 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Reltio_Field_Mapping__mdt-Reltio Field Mapping Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Replay_Mechanism_Subscriber__mdt-Replay Mechanism Subscriber Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Territory2-Territory Layout</layout>
@@ -2041,6 +2081,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
         <object>Organization_E_Invoice__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>Organization_LOB_Information__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

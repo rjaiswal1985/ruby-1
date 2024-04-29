@@ -7,14 +7,20 @@
 * ========================================================================================================================
 * History
 *
-* VERSION         AUTHOR                          DATE                DETAIL
-* 1.0             Sruthi M                   17/04/2024             Associates AccountContact when direct account is made inactive
+* VERSION         AUTHOR                  DATE                DETAIL
+* 1.0             Sruthi M                17/04/2024          Associates AccountContact when direct account is made inactive
 ***********************************************************************************************************************/
 public with sharing class CM_AssociateActiveAccountonContact {
     /* Null Value */
-    final static string NULL_VALUE = null;
+    final static String NULL_VALUE = null;
     /* Count of no of relations */
     final static Integer RELATIONS_COUNT = 1;  
+    /* Process account inactivation */
+    final static String ACCOUNT_INACTIVATION = 'Account_Inactivation';
+    /* Process account contact relation inactivation */
+    final static String ACCT_CONT_INACTIVATION = 'Acct_Cont_Inactivation'; 
+    /* String variable Owner */
+    final static String OWNER = 'Owner';
     
     /**
 * @description : This method updates contact with Active account
@@ -25,49 +31,20 @@ public with sharing class CM_AssociateActiveAccountonContact {
         final List<Contact> contUpdateLst = new List<Contact>();
         List<Database.UpsertResult> upsertResults;
         Contact contToUpdate; 
-        List<Contact> contOwnerLst;
-        List<Contact> contRelMembersLst;
-        Boolean acctInactivation = false;
-        Boolean acctContRelInactivation = false;
-        
-        String queryString1 = 'Select Id,AccountId,(Select accountId,contactId,Relationship_Type__c from AccountContactRelations where ';
-        String ownerWhereClause = 'Relationship_Type__c=\'Owner\' AND ';
-        String queryString2 = 'Account.Status__c=\'Active\' AND Status__c = \'Active\' order by startdate asc LIMIT 1)';
-        string accntWhereClause;
-        String acctContWhereClause;
-        string finalQuery;
-        
-        if(processName == 'Account_Inactivation') {
-            acctInactivation = true;
-        	accntWhereClause = ' from Contact where AccountID IN:recIdSet WITH SECURITY_ENFORCED ';             
-        }
-        
-        if(processName == 'Acct_Cont_Inactivation') {
-            acctContRelInactivation = true;
-        	acctContWhereClause = 'from Contact where ID IN:recIdSet WITH SECURITY_ENFORCED ';             
-        }
-        
-        if(accntWhereClause!=null) {
-        	finalQuery = queryString1+ownerWhereClause+queryString2+accntWhereClause;    
-        }
-        
-        if(acctContWhereClause!=null) {
-        	finalQuery = queryString1+ownerWhereClause+queryString2+acctContWhereClause;    
-        }
-        
-        system.debug('owner query==>>'+finalQuery);
-        contOwnerLst = Database.query(finalQuery);
-        
-        system.debug('contOwnerLst==>>'+contOwnerLst);
+
+                                       
+        final String queryOwnerStr = getDynamicQuery(processName,'Owner');
+        system.debug('queryOwnerStr==>>'+queryOwnerStr);
+
         system.debug('recIdSet==>>'+recIdSet);
         
-        for(Contact cont : contOwnerLst) {
+        for(Contact cont : System.Database.query(queryOwnerStr)) {
         	if(cont.AccountContactRelations.size() == RELATIONS_COUNT) { 
                 system.debug('owner list==>>'+cont.AccountContactRelations);
-                if(acctInactivation) {
+                if(processName == ACCOUNT_INACTIVATION) {
                 	recIdSet.remove(cont.AccountId);    
                 }
-                if(acctContRelInactivation) {
+                if(processName == ACCT_CONT_INACTIVATION) {
                 	recIdSet.remove(cont.Id);    
                 }
                 
@@ -82,19 +59,11 @@ public with sharing class CM_AssociateActiveAccountonContact {
         system.debug('recIdSet==>>'+recIdSet);
         
         if(recIdSet != null && !recIdSet.isEmpty()) {
-            finalQuery = null;
-            if(acctInactivation) {
-                finalQuery = queryString1+queryString2+accntWhereClause;    
-            }
-            if(acctContRelInactivation) {
-                finalQuery = queryString1+queryString2+acctContWhereClause;    
-            }
+            final String queryNonOwnerStr = getDynamicQuery(processName,'Non_Owner');
             
-            system.debug('member query ==>>'+finalQuery);
-            contRelMembersLst = Database.Query(finalQuery);
-            
-            system.debug('contRelMembersLst==>>'+contRelMembersLst);
-            for(Contact con: contRelMembersLst) {
+            system.debug('queryNonOwnerStr ==>>'+queryNonOwnerStr);
+
+            for(Contact con: System.Database.Query(queryNonOwnerStr)) {
             system.debug('related member==>>'+con);
             	for(AccountContactRelation rels : con.AccountContactRelations) {                	
                     system.debug('rels==>>'+rels);                    
@@ -108,18 +77,45 @@ public with sharing class CM_AssociateActiveAccountonContact {
         }                   
         system.debug('contUpdateLst==>>'+contUpdateLst);
         upsertResults = UCB_DMLUtility.upsertRecords(contUpdateLst,false,System.AccessLevel.SYSTEM_MODE); 
-        UCB_LoggerService.logger(new UCB_Log('Contact update with Active Account', 'DML Upsert Result', JSON.Serialize(upsertResults)),false);  
-        UCB_LoggerService.publishLogs();         
+        //UCB_LoggerService.logger(new UCB_Log('Contact update with Active Account', 'DML Upsert Result', JSON.Serialize(upsertResults)),false);  
+        //UCB_LoggerService.publishLogs();         
     }
     /**
 * @description : associate contact with active accountID
 * @Parameters : accountcontactrelation record
 */     
     public static Contact instantiateContwithAcct(AccountContactRelation accConRel) {    	
-    	Contact conRec = new Contact(Id = accConRel.ContactId,AccountId = accConRel.AccountId);                       
+    	final Contact conRec = new Contact(Id = accConRel.ContactId,AccountId = accConRel.AccountId);                       
         system.debug('contact instantiated==>>'+conRec);
         return conRec;        
     }
+    /**
+* @description : get dynamic query based on the process
+* @Parameters : process name, member type
+*/ 
+    public static String getDynamicQuery(String processName, String relMemberType) { 
+        final String startQuery = 'Select Id,AccountId,(Select accountId,contactId,Relationship_Type__c from AccountContactRelations where ';
+        //final String ownerWhereClause = 'Relationship_Type__c=\'Owner\' AND ';
+        String subQuery = 'Account.Status__c=\'Active\' AND Status__c = \'Active\' order by startdate asc LIMIT 1)';
+        String finalQuery;
+
+        if(processName == ACCOUNT_INACTIVATION) {            
+        	subQuery += ' from Contact where AccountID IN:recIdSet WITH SECURITY_ENFORCED ';                                                                  
+        }
+        
+        if(processName == ACCT_CONT_INACTIVATION) {                      
+        	subQuery += 'from Contact where ID IN:recIdSet WITH SECURITY_ENFORCED ';                                                            
+        }   
+        if(relMemberType == OWNER) {
+            final String ownerWhereClause = 'Relationship_Type__c=\'Owner\' AND ';
+            finalQuery = startQuery+ownerWhereClause+subQuery;
+        } else {
+            finalQuery = startQuery+subQuery;
+        }  
+        system.debug('finalQuery==>>'+finalQuery);            
+        return finalQuery;
+    }
+
     /**
 * @description : constructor  
 */  

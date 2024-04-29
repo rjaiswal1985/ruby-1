@@ -18,16 +18,19 @@ public with sharing class CM_JSONParser {
      */
     public static CM_ReltioHandlerService.JSPARSER objectJsonParser(String inputJson, CM_ReltioHandlerService.SobjectData sobjectData) {
         final CM_ReltioHandlerService.JSPARSER parser= new CM_ReltioHandlerService.JSPARSER();
-        CM_LoggerUtil.logger(new CM_Log('JsonParser','Info',String.valueof(Datetime.now()), 'Deserialization started.', inputJson));
         final Map<String, Object> requestObject = (Map<String, Object>)(JSON.deserializeUntyped(inputJson));
         final Map<String, Object> objectJson = (Map<String, Object>)requestObject.get(CM_ReltioConstants.OBJECTSTRING);
+        System.debug('Test OBJECTSTRING==> ' +CM_ReltioConstants.OBJECTSTRING);
+        System.debug('Test inputJson ==> '+inputJson);
+        //System.debug('Test requestObject ==> '+requestObject);
+        System.debug('Test masterRecordId ==> '+objectJson);
         final String masterRecordId=(String)objectJson.get('mdmId');
         final CM_ReltioHandlerService.ATTRIBUTEPARSER attriParser = attibuteParsers(objectJson, sobjectData,masterRecordId);
         parser.key2value = attriParser.key2value;
         parser.apiType=(String)requestObject.get('type');
         parser.mdmId2parent = attriParser.mdmId2parent;  
         parser.masterRecordId = masterRecordId;    
-        CM_LoggerUtil.logger(new CM_Log('JsonParserCompleted','Info',String.valueof(Datetime.now()), masterRecordId, 'Deserialization completed.'));  
+        CM_LoggerUtil.logger(new CM_Log('JsonParserCompleted','Info', masterRecordId, 'Deserialization completed.'));  
         return parser;
     }
     /**

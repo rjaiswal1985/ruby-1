@@ -40,11 +40,11 @@ public with sharing class CM_Log {
     /**
      * 
      */
-    public CM_Log(String loggerKey,String logType,String timestamp , String mdmId, String message) {
+    public CM_Log(String loggerKey,String logType, String mdmId, String message) {
         this.mdmId = mdmId;
         this.message = message;
-        this.timestamp = timestamp;
-        this.loggerKey=loggerKey;
+        this.timestamp =  String.valueof(Datetime.now());
+        this.loggerKey= loggerKey;
         this.logtype=logtype;
     }
 }
