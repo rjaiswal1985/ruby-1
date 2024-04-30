@@ -17,6 +17,8 @@ public with sharing class CM_ReltioHCOService {
     final static string ORGCOMMUNICATION = 'Organization_Communication__c';
     /* Org Communication String */
     final static string ORGINVOICE = 'Organization_E_Invoice__c';
+     /* Org LOB String */
+    final static string ORGLOB = 'Organization_LOB_Information__c';
     /**    
      * @description :  Method to parse input json and get Account data
      * @Parameters : input json, process name from platfrom event
@@ -37,7 +39,6 @@ public with sharing class CM_ReltioHCOService {
         final Map < String, Map < String, Sobject >> resultMap = new Map < String, Map < String, Sobject >> ();
         Map < String, Organization_Communication__c > cusCommunication = new Map < String, Organization_Communication__c > ();
         final Map < String, Account > accountMap = new Map < String, Account > ();
-
         Account account = new Account();
         if (key2value.containsKey(ACCOUNTSTRING)) {
             account = CM_AccountService.upsertAccount(key2value.get(ACCOUNTSTRING),masterRecordId);
@@ -45,14 +46,16 @@ public with sharing class CM_ReltioHCOService {
 
         if (key2value.containsKey(ORGCOMMUNICATION)) {
             cusCommunication = CM_CustomerInformationService.upsertCommInformation(key2value.get(ORGCOMMUNICATION), account,masterRecordId);
-            resultMap.put(ORGCOMMUNICATION, cusCommunication);
+            resultMap.put(ORGCOMMUNICATION, cusCommunication);            
         }
-
         if (key2value.containsKey(ORGINVOICE)) {
             final Map < String, Organization_E_Invoice__c > cosInvoiceMap = CM_CustomerInvoiceService.upsertCustomerInvoice(key2value.get(ORGINVOICE), account,masterRecordId);
             resultMap.put(ORGINVOICE, cosInvoiceMap);
         }
-
+        if (key2value.containsKey(ORGLOB)) {
+            final Map < String, Organization_LOB_Information__c > orgLobInfoMap = CM_OrganizationLOB.upsertOrganizationLOB(key2value.get(ORGLOB), account,masterRecordId);
+            resultMap.put(ORGLOB, orgLobInfoMap);           
+        }
         //update phone and email in the Account from Customer Communication
         account = getAccountList(account, cusCommunication.values());
         accountMap.put(account.MDM_Id__c, account);
@@ -72,6 +75,7 @@ public with sharing class CM_ReltioHCOService {
                 account.Company_Email__c = cusInformation.value__c;
             }
         }
+
         account.ShippingStreet = CM_ReltioHandlerService.addressLine(account.ShippingStreet,account.Address_Line_1__c,true);
         account.ShippingStreet = CM_ReltioHandlerService.addressLine(account.ShippingStreet,account.Address_Line_2__c,false);
         account.ShippingStreet = CM_ReltioHandlerService.addressLine(account.ShippingStreet,account.Address_Line_3__c,false);
@@ -98,7 +102,7 @@ public with sharing class CM_ReltioHCOService {
         objParser.mdmId2parent = new Map<String,String>();
         for(Account acc : [Select Id,MDM_Id__c,TimeStamp_Decimal__c,
                         (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_Communications__r),
-                        (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r) 
+                        (Select Id,MDM_Id__c,Account__r.MDM_Id__c,TimeStamp_Decimal__c from Organization_E_Invoices__r)
                         from Account where MDM_Id__c = :recordId with SECURITY_ENFORCED]) {
             upsertOldMap.get(ACCOUNTSTRING).put(acc.MDM_Id__c,acc);
             objParser.mdmId2parent.put(acc.MDM_Id__c,acc.MDM_Id__c);

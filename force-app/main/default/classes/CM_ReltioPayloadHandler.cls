@@ -16,8 +16,6 @@ public with sharing class CM_ReltioPayloadHandler {
 
         // Populate the platform event object with data from the payload
         Reltio_CM_HCO_Inbound_Payload__e newEvent = new Reltio_CM_HCO_Inbound_Payload__e();
-        //newEvent.ReplayId = (Long) payloadData.get('ReplayId');
-        //newEvent.eventUUId = (String) payloadData.get('eventUUId');
         newEvent.Input_Json__c = jsonPayload; // If you need to pass the whole payload
 
         

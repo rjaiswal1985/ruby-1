@@ -164,6 +164,7 @@ public class CM_AccountUpdateCaptureTrigger_Test{
                                                            AccountContactRelation where Id IN:checkQuerySet AND isDirect = true)                                                                                    
                                                           AND Status__c='Active' WITH SECURITY_ENFORCED]);
         system.debug('contMap==>>'+contMap);
+        system.debug('contMapkeySet==>>'+contMap.keySet());
         
         for(AccountContactRelation accConRell : [Select Id,AccountId,ContactID
                             from AccountContactRelation where ID IN :checkQuerySet AND isDirect = true 

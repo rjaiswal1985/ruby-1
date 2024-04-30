@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>Channel_Name__c</field>
-        <value xsi:type="xsd:string">UCB_Exception__e</value>
+        <value xsi:type="xsd:string">Reltio_CM_HCO_Inbound_Payload__e</value>
     </values>
     <values>
         <field>Subscriber_Class__c</field>

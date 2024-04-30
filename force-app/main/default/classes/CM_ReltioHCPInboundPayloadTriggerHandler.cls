@@ -40,6 +40,7 @@ public with sharing class CM_ReltioHCPInboundPayloadTriggerHandler extends UCB_T
         CM_ReltioHandlerService.EVENTDETAILS eventDetail;
 
         for (Reltio_CM_HCP_Inbound_Payload__e event: masterRecord) {
+            CM_LoggerUtil.jsonLogger(new CM_Log(CM_ReltioConstants.RELTIOHCP, event.replayid,event.eventuuid, event.Input_Json__c));
             objParser = CM_ReltioHCPService.upsertHCPServices(event.Input_Json__c, PROCESS);
             if(objParser.apiType==CM_ReltioConstants.ENTITYUPDATED && !entiryUpdated) {
                 entiryUpdated=true;
@@ -59,11 +60,13 @@ public with sharing class CM_ReltioHCPInboundPayloadTriggerHandler extends UCB_T
             toBeDelSobjects = CM_CompareOldNewRecords.toBeDeletedRecords(upsertNewMap,upsertOldMap);
             upsertNewMap= CM_CompareOldNewRecords.toBeUpsertedRecords(upsertNewMap,upsertOldMap);            
         }
-        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCP,mdmId2Event); 
+         
         dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCP).dmlMaps);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
+        
+        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCP,mdmId2Event);
         CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCP, mdmId2Event,dmlWrapMap,mdmId2parent); 
          
-        //UCB_LoggerService.publishLogs(); 
+        UCB_LoggerService.publishLogs(); 
     } 
 }

@@ -1,7 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 import { subscribe, unsubscribe, onError } from 'lightning/empApi';
 import getPlatformEvents from '@salesforce/apex/FetchPlatformEvents.getPlatformEvents';
-import processAndTriggerService from '@salesforce/apex/CM_ReltioPayloadHandler.processAndTriggerService';
+import processAndTriggerService from '@salesforce/apex/CM_ReplayMechanismPayloadHandler.processAndTriggerService';
 
 export default class PE_ReplayEmpApiPubSub extends LightningElement {
     title;

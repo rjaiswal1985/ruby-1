@@ -20,7 +20,7 @@ public with sharing class CM_CompareOldNewRecords {
                 if(upsertOldMap.containsKey(obj)  
                 && upsertOldMap.get(obj).containsKey(mdmId) && upsertOldMap.get(obj).get(mdmId).get('TimeStamp_Decimal__c')!=null &&  
                 Datetime.valueOf(upsertOldMap.get(obj).get(mdmId).get('TimeStamp_Decimal__c'))>=Datetime.valueOf(upsertNewMap.get(obj).get(mdmId).get('TimeStamp_Decimal__c'))) { 
-                    ////UCB_LoggerService.logger(new UCB_Log(CM_ReltioConstants.RELTIOHCO, mdmIdMap.get(mdmId), 'Entry removed due to TimeStamp issue.'+JSON.serialize(upsertOldMap.get(obj).get(mdmId))),false);
+                    CM_LoggerUtil.logger(new CM_Log('DML_TimeStamp','Info', mdmId,'Entry removed due to TimeStamp issue.'+JSON.serialize(upsertOldMap.get(obj).get(mdmId))));  
                     upsertNewMap.get(obj).remove(mdmId);
                 }                
             }            

@@ -55,6 +55,11 @@
                 <default>false</default>
                 <label>Roles</label>
             </value>
+            <value>
+                <fullName>LineOfBusiness</fullName>
+                <default>false</default>
+                <label>LineOfBusiness</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

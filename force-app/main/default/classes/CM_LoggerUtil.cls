@@ -32,8 +32,8 @@ public with sharing class CM_LoggerUtil {
      */
     public static void jsonLogger(CM_Log log) {
         final LOGWRAPPER logger = new LOGWRAPPER();
-        logger.Replay_ID =log.logType; 
-        logger.EventUUId =log.mdmId;
+        logger.SFPE_Replay_Id =log.logType; 
+        logger.SFPE_EventId =log.mdmId;
         logger.Logger_Type = 'Info';
         logger.Process_Name = log.loggerKey;
         logger.MDMId =''; 
@@ -45,7 +45,8 @@ public with sharing class CM_LoggerUtil {
         logger.Sobject_Name ='';
         logger.Response ='';
         logger.Parent_Sobject_Name ='';
-        //UCB_LoggerService.logger(new UCB_Log(log.loggerKey, 'JsonParser', JSON.serialize(logger)),false);
+        logger.Source='Salesforce';
+        UCB_LoggerService.logger(new UCB_Log(log.loggerKey, 'JsonParser', JSON.serialize(logger)),false);
     }
     /**
      * @description : method to make logs
@@ -67,8 +68,8 @@ public with sharing class CM_LoggerUtil {
             logger = new LOGWRAPPER();
             if(mdmId2Event.containskey(log.mdmId)) {
                 eventDetail = mdmId2Event.get(log.mdmId);
-                logger.Replay_ID =eventDetail.ReplayId; 
-                logger.EventUUId =eventDetail.EventUuid;
+                logger.SFPE_Replay_Id =eventDetail.ReplayId; 
+                logger.SFPE_EventId =eventDetail.EventUuid;
             }
             logger.Logger_Type = log.logtype;
             logger.Process_Name = module;
@@ -76,10 +77,11 @@ public with sharing class CM_LoggerUtil {
             logger.Parent_MDMId = log.mdmId; 
             logger.UTC_Timestamp =String.valueof(Datetime.now());
             logger.message =log.message;
+            logger.Source='Salesforce';
             moduleLog.get(log.loggerKey).add(logger);       
         }
         for(String log: moduleLog.keySet()) {
-            //UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
+            UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
         }         
     }
     /**
@@ -106,46 +108,49 @@ public with sharing class CM_LoggerUtil {
             logger.Request =dmlWrap.request;
             logger.Response = dmlWrap.response;
             event=mdmId2Event.get(logger.parent_MDMId);
-            logger.Replay_ID =event.ReplayId; 
-            logger.EventUUId =event.EventUuid; 
+            logger.SFPE_Replay_Id =event.ReplayId; 
+            logger.SFPE_EventId =event.EventUuid; 
             logger.Process_Name = module; 
             logger.Sobject_Name=dmlWrap.sobjectName;
             logger.UTC_Timestamp =String.valueof(Datetime.now());
             logger.Message =dmlWrap.message;
             logger.Logger_Type ='Info';
+            logger.Source='Salesforce';
             moduleLog.add(logger);
         }
-        //UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
+        UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
     }
     /*Acount Relation wrapper */
     private class LOGWRAPPER {
-        /* Contact 2 Account Map */
+        /* Process Name */
         String Process_Name; 
-        /* Contact 2 Account Map */
+        /* TimeStamp */
         String UTC_Timestamp; 
-        /* Contact 2 Account Map */        
+        /* Request */        
         String Request; 
-        /* Contact 2 Account Map */
+        /* Response */
         String Response; 
-        /* Contact 2 Account Map */
+        /* Message */
         String Message;
-        /* Contact 2 Account Map */
+        /* Logger Type */
         String Logger_Type; 
-        /* Contact 2 Account Map */
+        /* Parent MDM Id */
         String Parent_MDMId;        
-        /* Contact 2 Account Map */
+        /* MDM Id */
         String MDMId; 
-        /* Contact 2 Account Map */
+        /* SF Internal ID */
         String Internal_Id;
-        /* Contact 2 Account Map */
+        /* SF parent Internal Id */
         Id Parent_Internal_Id;
-        /* Contact 2 Account Map */
+        /* Sobject Name */
         String Sobject_Name;
-        /* Contact 2 Account Map */
+        /* Parent Sobject Name*/
         String Parent_Sobject_Name;
-        /* Map of upserted record */
-        String Replay_ID ;
-        /* Contact 2 Account Map */
-        String EventUUId;        
+        /* Salesforce replay Id */
+        String SFPE_Replay_Id ;
+        /* Salesforce Event Id */
+        String SFPE_EventId; 
+        /* Source */
+        String Source;        
     }
 }

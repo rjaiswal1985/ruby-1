@@ -151,6 +151,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CM_OrganizationLOB</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CM_PersonCommunicationService</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -1757,6 +1761,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Organization_LOB_Information__c.MDM_Id__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Organization_LOB_Information__c.TimeStamp_Decimal__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Organization_LOB_Information__c.Timestamp__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person_Communication__c.Email_Address__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1931,6 +1950,9 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Organization_LOB_Information__c-Organization LOB Information Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Organization_Relationship__c-Organization Relationship Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Person_Communication__c-Person Communication Layout</layout>

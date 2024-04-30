@@ -77,17 +77,6 @@ public with sharing class UCB_MessageTriggerFactory {
         if (skip) {
             return;
         }
-        System.debug('--! Trigger.isBefore '+Trigger.isBefore);
-        //System.debug('--! Trigger.new '+Trigger.new);
-        System.debug('--! Trigger.isAfter '+Trigger.isAfter);
-        System.debug('--! Trigger.isInsert '+Trigger.isInsert);
-        System.debug('--! Trigger.isUpdate '+Trigger.isUpdate);
-        System.debug('--! Trigger.isDelete '+Trigger.isDelete);
-        System.debug('--! Trigger.isUndelete '+Trigger.isUndelete);
-        
-                System.debug('--! Trigger.newMap '+Trigger.newMap);
-                System.debug('--! Trigger.old '+Trigger.old);
-                System.debug('--! Trigger.oldMap '+Trigger.oldMap);        
         final UCB_Trigger.TriggerContext trgCtx = new UCB_Trigger.TriggerContext(Trigger.isBefore, Trigger.isAfter, Trigger.isInsert, Trigger.isUpdate, Trigger.isDelete, Trigger.isUndelete, Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
         if (Trigger.isBefore) {
             handler.bulkBefore(trgCtx);
@@ -107,13 +96,11 @@ public with sharing class UCB_MessageTriggerFactory {
         final UCB_TriggerVirtual handler;
         Map<String, String> mapSoTypeHandler = new Map<String, String>();
         mapSoTypeHandler = UCB_FactorySelector.getFactoryHandlers();
-        System.debug('--! Map of Handlers : '+mapSoTypeHandler);
         final String sObjectType = String.valueOf(soType);
         if (mapSoTypeHandler.containsKey(sObjectType)) {
             final Type type = Type.forName(mapSoTypeHandler.get(sObjectType));
             handler = (UCB_TriggerVirtual) type.newInstance();
         }
-        System.debug('---! Handler Created ' +handler);
         return handler;
     }
 }

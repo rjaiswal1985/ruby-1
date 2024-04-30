@@ -45,6 +45,7 @@ public with sharing class CM_ReltioHCOHCPPayloadTriggerHandler extends UCB_Trigg
         CM_ReltioHandlerService.OBJECTPARSER objParser;
 
         for (Reltio_CM_HCO_HCP_Inbound_Payload__e event: masterRecord) {
+            CM_LoggerUtil.jsonLogger(new CM_Log(CM_ReltioConstants.RELTIOHCPHCO, event.replayid,event.eventuuid, event.Input_Json__c));
             objParser = CM_ReltioHCOHCPService.upsertHCOHCPService(event.Input_Json__c, PROCESS);
             eventDetail = new CM_ReltioHandlerService.EVENTDETAILS();
             eventDetail.replayID = event.ReplayId;
@@ -73,6 +74,6 @@ public with sharing class CM_ReltioHCOHCPPayloadTriggerHandler extends UCB_Trigg
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
         CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
 
-        //UCB_LoggerService.publishLogs();  
+        UCB_LoggerService.publishLogs();  
     }
 }

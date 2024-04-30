@@ -34,7 +34,7 @@ public with sharing class CM_EnterprisePayloadTriggerHelper {
         if(accConRelations!=null && !accConRelations.isEmpty()) {
             accountContactRelations(accConRelations);
         }
-        //UCB_LoggerService.publishLogs(); 
+        UCB_LoggerService.publishLogs(); 
     }
     /**      
      * @description : Method to handle Account-Account relation data
