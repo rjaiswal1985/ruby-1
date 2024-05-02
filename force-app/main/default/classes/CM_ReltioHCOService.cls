@@ -53,7 +53,7 @@ public with sharing class CM_ReltioHCOService {
             resultMap.put(ORGINVOICE, cosInvoiceMap);
         }
         if (key2value.containsKey(ORGLOB)) {
-            final Map < String, Organization_LOB_Information__c > orgLobInfoMap = CM_OrganizationLOB.upsertOrganizationLOB(key2value.get(ORGLOB), account,masterRecordId);
+            final Map < String, Organization_LOB_Information__c > orgLobInfoMap = CM_OrganizationLOBService.upsertOrgLOBService(key2value.get(ORGLOB), account,masterRecordId);
             resultMap.put(ORGLOB, orgLobInfoMap);           
         }
         //update phone and email in the Account from Customer Communication

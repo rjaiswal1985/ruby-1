@@ -71,6 +71,6 @@ public with sharing class UCB_LoggerService {
         logEvent.Additional_Info_JSON__c = log.message;
         logEvent.Component_Name__c = log.componentName;
         logEvent.Sequence__c = ++sequence;
-        return logEvent;
+        return logEvent; 
     }
 }

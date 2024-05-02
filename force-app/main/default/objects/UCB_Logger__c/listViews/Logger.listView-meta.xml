@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Logger</fullName>
+    <columns>NAME</columns>
+    <columns>Logger_Type__c</columns>
+    <columns>Publish__c</columns>
+    <columns>Process__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>Logger</label>
+</ListView>

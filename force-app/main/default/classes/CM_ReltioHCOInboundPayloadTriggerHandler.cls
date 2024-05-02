@@ -10,13 +10,22 @@
  * VERSION         AUTHOR                          DATE                DETAIL
  * 1.0             Sruthi M                   11/12/2023          Class invoked from the Subscriber of the Reltio MDM HCO platform event.
  ***********************************************************************************************************************/
-public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_TriggerVirtual {
+public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_TriggerVirtual implements ReplaySubscriber {
     /**********Metadat Records.************ */
     final Static Map <String, CM_ReltioHandlerService.SobjectData > PROCESS = CM_ReltioHandlerService.metadataRecords(CM_ReltioConstants.RELTIOHCO);
     /**
      * Variable name method names 
      * @description : After insert trigger handlers
      */
+    
+    public void processPayload(List<SObject> platformEvents){
+        try {
+            reltioPayloadTriggerService(platformEvents);
+        } catch (Exception excp) {
+            CM_LoggerInitializationUtil.replayService(excp, 'CM_ReltioHCOInboundPayloadTriggerHandler'); //rename to logger
+        }
+    }
+    
     public override void afterTrigger(UCB_Trigger.TriggerContext trgCtx) {
         try {
             reltioPayloadTriggerService(trgCtx.newList);
@@ -66,10 +75,6 @@ public with sharing class CM_ReltioHCOInboundPayloadTriggerHandler extends UCB_T
          
         dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCO).dmlMaps);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
-        
-        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCO,mdmId2Event);
-        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
-         
-        UCB_LoggerService.publishLogs();  
+        CM_LoggerUtil.publishLogger(CM_ReltioConstants.RELTIOHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
     }
 }

@@ -6,10 +6,5 @@
     <columns>LAST_UPDATE</columns>
     <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
-    <filters>
-        <field>NAME</field>
-        <operation>startsWith</operation>
-        <value>HCO1</value>
-    </filters>
     <label>All</label>
 </ListView>

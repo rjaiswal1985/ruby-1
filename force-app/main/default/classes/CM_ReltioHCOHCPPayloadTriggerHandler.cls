@@ -69,11 +69,8 @@ public with sharing class CM_ReltioHCOHCPPayloadTriggerHandler extends UCB_Trigg
         upsertContactMap =CM_ReltioHCOHCPService.upsertContacttMap(contactNewList,conwithAccount,contact2Account);
         upsertNewMap.get('Contact').putall(upsertContactMap);
 
-        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCPHCO,mdmId2Event); 
         dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCPHCO).dmlMaps);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
-        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
-
-        UCB_LoggerService.publishLogs();  
+        CM_LoggerUtil.publishLogger(CM_ReltioConstants.RELTIOHCPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
     }
 }

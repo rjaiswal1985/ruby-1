@@ -60,10 +60,6 @@ public with sharing class CM_ReltioHCOHCOPayloadTriggerHandler extends UCB_Trigg
         
         dmlWrapMap = CM_DMLSaveResult.upsertRecords(upsertNewMap, PROCESS.get(CM_ReltioConstants.RELTIOHCOPHCO).dmlMaps);
         dmlWrapMap.putAll(CM_DMLSaveResult.deleteRecords(toBeDelSobjects)); 
-        
-        CM_LoggerUtil.publishLogs(CM_ReltioConstants.RELTIOHCOPHCO,mdmId2Event); 
-        CM_LoggerUtil.dmlLogger(CM_ReltioConstants.RELTIOHCOPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
-
-        UCB_LoggerService.publishLogs();  
+        CM_LoggerUtil.publishLogger(CM_ReltioConstants.RELTIOHCOPHCO, mdmId2Event,dmlWrapMap,mdmId2parent); 
     }
 }

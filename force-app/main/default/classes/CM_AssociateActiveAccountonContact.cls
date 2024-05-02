@@ -35,7 +35,7 @@ public with sharing class CM_AssociateActiveAccountonContact {
         final Map<String, Object> bindVars = new Map<String, Object>();
         bindVars.put('Owner','Owner');
         bindVars.put('Status','Active');        
-        bindVars.put('recIdSet','recIdSet');
+        bindVars.put('recIdSet',recIdSet);
                                        
         final String queryOwnerStr = getDynamicQuery(processName,'Owner');
         system.debug('queryOwnerStr==>>'+queryOwnerStr);
@@ -44,7 +44,7 @@ public with sharing class CM_AssociateActiveAccountonContact {
         List<Contact> conWithownerLst =  Database.queryWithBinds(queryOwnerStr, bindVars, AccessLevel.SYSTEM_MODE);
         system.debug('conWithownerLst==>>'+conWithownerLst);
 
-        //for(Contact cont : System.Database.query(queryOwnerStr)) {
+        //for(Contact cont : Database.queryWithBinds(queryOwnerStr, bindVars, AccessLevel.USER_MODE) {
         for(Contact cont : conWithownerLst) {  
         	if(cont.AccountContactRelations.size() == RELATIONS_COUNT) { 
                 system.debug('owner list==>>'+cont.AccountContactRelations);
@@ -69,8 +69,10 @@ public with sharing class CM_AssociateActiveAccountonContact {
             final String queryNonOwnerStr = getDynamicQuery(processName,'Non_Owner');
             
             system.debug('queryNonOwnerStr ==>>'+queryNonOwnerStr);
-
-            for(Contact con: System.Database.Query(queryNonOwnerStr)) {
+            List<Contact> contNonOwnerLst =  Database.queryWithBinds(queryNonOwnerStr, bindVars, AccessLevel.SYSTEM_MODE);
+            system.debug('contNonOwnerLst==>>'+contNonOwnerLst);
+            //for(Contact con: System.Database.Query(queryNonOwnerStr)) {
+            for(Contact con: contNonOwnerLst) {    
             system.debug('related member==>>'+con);
             	for(AccountContactRelation rels : con.AccountContactRelations) {                	
                     system.debug('rels==>>'+rels);                    
@@ -83,7 +85,7 @@ public with sharing class CM_AssociateActiveAccountonContact {
             }
         }                   
         system.debug('contUpdateLst==>>'+contUpdateLst);
-        upsertResults = UCB_DMLUtility.upsertRecords(contUpdateLst,false,System.AccessLevel.USER_MODE); 
+        upsertResults = UCB_DMLUtility.upsertRecords(contUpdateLst,false,System.AccessLevel.SYSTEM_MODE); 
         //UCB_LoggerService.logger(new UCB_Log('Contact update with Active Account', 'DML Upsert Result', JSON.Serialize(upsertResults)),false);  
         //UCB_LoggerService.publishLogs();         
     }
@@ -102,12 +104,12 @@ public with sharing class CM_AssociateActiveAccountonContact {
 */ 
     public static String getDynamicQuery(String processName, String relMemberType) { 
         
-        final String startQuery = 'Select Id,AccountId,(Select accountId,contactId,Relationship_Type__c from AccountContactRelations where ';        
+        final String startQuery = 'Select Id,AccountId,Account.Status__c,(Select accountId,contactId,Relationship_Type__c from AccountContactRelations where ';        
         String subQuery = 'Account.Status__c=:Status AND Status__c =:Status order by startdate asc LIMIT 1)';
         String finalQuery;        
 
         if(processName == ACCOUNT_INACTIVATION) {            
-        	subQuery += ' from Contact where AccountID =:recIdSet WITH SECURITY_ENFORCED ';                                                                  
+        	subQuery += ' from Contact where AccountId =:recIdSet WITH SECURITY_ENFORCED ';                                                                  
         }
         
         if(processName == ACCT_CONT_INACTIVATION) {                      

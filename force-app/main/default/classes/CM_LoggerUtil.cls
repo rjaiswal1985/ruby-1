@@ -11,15 +11,27 @@
 * 1.0             Rohit Jaiswal                   22/04/2024          GSF-1139 - Logger Framework
 ***********************************************************************************************************************/
 public with sharing class CM_LoggerUtil {
+    /* Get all the Replay   record */
+    final public Static Map <String,UCB_Logger__c > LOGGERMAP = new Map <String,UCB_Logger__c >();
     /**
      * @description : property to capture list of logEvents
      */
     private static List<CM_Log> logEvents;
     /**
+     * @description : property to capture list of logEvents
+     */
+    private static List<LOGWRAPPER> loggerList;
+    /**
+     * @description : property to capture list of logEvents
+     */
+    private static Map<String,List<LOGWRAPPER>> moduleLog;
+    /**
      * @desciption : initialiser block to instantiate the list of events
      */
     static {
         logEvents = new List<CM_Log>(); 
+        loggerList = new List<LOGWRAPPER>();
+        moduleLog = new Map<String,List<LOGWRAPPER>>();
     }
     /**
      * @description : private constructor to avoid creating instance of the class
@@ -46,53 +58,35 @@ public with sharing class CM_LoggerUtil {
         logger.Response ='';
         logger.Parent_Sobject_Name ='';
         logger.Source='Salesforce';
-        UCB_LoggerService.logger(new UCB_Log(log.loggerKey, 'JsonParser', JSON.serialize(logger)),false);
+        moduleLog.put('JsonParser',new List<LOGWRAPPER>{logger}); 
     }
     /**
      * @description : method to make logs
      */
     public static void logger(CM_Log log) {
-        logEvents.add(log);
+        if(!moduleLog.containsKey(log.loggerKey)) {
+            moduleLog.put(log.loggerKey,new List<LOGWRAPPER>());   
+        } 
+        final LOGWRAPPER logger = new LOGWRAPPER();
+        logger.Logger_Type = log.logtype;
+        logger.MDMId =log.mdmId; 
+        logger.Parent_MDMId = log.mdmId; 
+        logger.UTC_Timestamp =String.valueof(Datetime.now());
+        logger.message =log.message;
+        logger.Source='Salesforce';
+        moduleLog.get(log.loggerKey).add(logger); 
     }
     /**
      * @description : method to make logs
      */
-    public static void publishLogs(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event) {
-        final Map<String,List<LOGWRAPPER>> moduleLog = new Map<String,List<LOGWRAPPER>>();
+    public static void publishLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
+        for(UCB_Logger__c log: UCB_Logger__c.getAll().values()) {
+            LOGGERMAP.put(log.Process__c+log.Logger_Type__c,log);
+        }
         LOGWRAPPER logger ;
         CM_ReltioHandlerService.EVENTDETAILS eventDetail;        
-        for(CM_Log log : logEvents) {
-            if(!moduleLog.containsKey(log.loggerKey)) {
-                moduleLog.put(log.loggerKey,new List<LOGWRAPPER>());   
-            } 
-            logger = new LOGWRAPPER();
-            if(mdmId2Event.containskey(log.mdmId)) {
-                eventDetail = mdmId2Event.get(log.mdmId);
-                logger.SFPE_Replay_Id =eventDetail.ReplayId; 
-                logger.SFPE_EventId =eventDetail.EventUuid;
-            }
-            logger.Logger_Type = log.logtype;
-            logger.Process_Name = module;
-            logger.MDMId =log.mdmId; 
-            logger.Parent_MDMId = log.mdmId; 
-            logger.UTC_Timestamp =String.valueof(Datetime.now());
-            logger.message =log.message;
-            logger.Source='Salesforce';
-            moduleLog.get(log.loggerKey).add(logger);       
-        }
-        for(String log: moduleLog.keySet()) {
-            UCB_LoggerService.logger(new UCB_Log(module, log, JSON.serialize(moduleLog.get(log))),false);
-        }         
-    }
-    /**
-     * @description : method to make logs
-     */
-    public static void dmlLogger(String module,Map<String,CM_ReltioHandlerService.EVENTDETAILS> mdmId2Event,Map <String,CM_DMLSaveResult.DMLWrapper> dmlWrapMap,Map<String,String> mdmId2parent) {
-        final List<LOGWRAPPER> moduleLog = new List<LOGWRAPPER>();        
-        final Map<String,String> mdm2SfId = new Map<String,String>();  
-        CM_ReltioHandlerService.EVENTDETAILS event ;
-        CM_DMLSaveResult.DMLWrapper dmlWrap;
-        LOGWRAPPER logger; 
+        final Map<String,String> mdm2SfId = new Map<String,String>(); 
+        CM_DMLSaveResult.DMLWrapper dmlWrap;     
         for(String mdmId: dmlWrapMap.keyset()) {
             dmlWrap = dmlWrapMap.get(mdmId);
             mdm2SfId.put(mdmId,dmlWrap.salesforceId);
@@ -107,18 +101,34 @@ public with sharing class CM_LoggerUtil {
             logger.Parent_Sobject_Name = logger.Parent_Internal_Id.getSObjectType().getDescribe().getName();
             logger.Request =dmlWrap.request;
             logger.Response = dmlWrap.response;
-            event=mdmId2Event.get(logger.parent_MDMId);
-            logger.SFPE_Replay_Id =event.ReplayId; 
-            logger.SFPE_EventId =event.EventUuid; 
+            eventDetail=mdmId2Event.get(logger.parent_MDMId);
+            logger.SFPE_Replay_Id =eventDetail.ReplayId; 
+            logger.SFPE_EventId =eventDetail.EventUuid; 
             logger.Process_Name = module; 
             logger.Sobject_Name=dmlWrap.sobjectName;
             logger.UTC_Timestamp =String.valueof(Datetime.now());
             logger.Message =dmlWrap.message;
             logger.Logger_Type ='Info';
             logger.Source='Salesforce';
-            moduleLog.add(logger);
+            if(!moduleLog.containsKey('DML_log')) {
+                moduleLog.put('DML_log',new List<LOGWRAPPER>());   
+            } 
+            moduleLog.get('DML_log').add(logger);  
         }
-        UCB_LoggerService.logger(new UCB_Log(module, 'DML_Log', JSON.serialize(moduleLog)),false);     
+        for(String logType: moduleLog.keySet()) {
+            for(LOGWRAPPER log : moduleLog.get(logType)) {
+                if(mdmId2Event.containskey(log.mdmId)) {
+                    eventDetail = mdmId2Event.get(log.mdmId);
+                    log.SFPE_Replay_Id =eventDetail.replayID; 
+                    log.SFPE_EventId =eventDetail.eventUUId;
+                    log.Process_Name = module;
+                }
+            }
+            if(LOGGERMAP.containskey(module+logType) && LOGGERMAP.get(module+logType).Publish__c) {
+                UCB_LoggerService.logger(new UCB_Log(module, logType, JSON.serialize(moduleLog.get(logType))),false);
+            }
+        }    
+        UCB_LoggerService.publishLogs(); 
     }
     /*Acount Relation wrapper */
     private class LOGWRAPPER {
